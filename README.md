@@ -42,3 +42,6 @@ This is a continuation project which builds on the work of past teams. You can f
 - [2023-2024](https://github.com/bardia-p/carleton-mail-delivery-robot)
 - [2022-2023](https://github.com/Em-kale/carleton-mail-delivery-robot)
 - [2021-2022](https://github.com/SteveWick/carleton-mail-delivery-robot)
+
+## Dashboard Link
+https://tphang46.github.io/Mail-Delivery-Robot/
