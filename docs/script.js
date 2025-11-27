@@ -1,105 +1,94 @@
-console.log("Script loaded");
-
 const apiUrl = "https://api.github.com/repos/tphang46/Carleton-Mail-Delivery-Robot-2025/contents/src/tools/logs/runs";
 
+let runData = [];
+
+// Fetch list of run files
 async function fetchRunFiles() {
-    try {
-        const res = await fetch(apiUrl);
-        if (!res.ok) throw new Error(`Failed to fetch runs: ${res.status}`);
-        const files = await res.json();
-        return files.filter(f => f.name.endsWith(".txt"));
-    } catch (err) {
-        console.error(err);
-        return [];
+    const response = await fetch(apiUrl);
+    const files = await response.json();
+
+    const runListDiv = document.getElementById("run-list");
+    runListDiv.innerHTML = "";
+
+    for (let file of files) {
+        if (file.name.endsWith(".txt")) {
+            const btn = document.createElement("button");
+            btn.textContent = file.name;
+            btn.onclick = () => loadRun(file.download_url, file.name);
+            runListDiv.appendChild(btn);
+        }
     }
 }
 
-async function fetchRunContent(file) {
-    try {
-        const res = await fetch(file.download_url);
-        if (!res.ok) throw new Error(`Failed to fetch ${file.name}`);
-        const text = await res.text();
-        return parseRunText(text);
-    } catch (err) {
-        console.error(err);
-        return null;
-    }
+// Load a single run file when clicked
+async function loadRun(url, runName) {
+    const response = await fetch(url);
+    const text = await response.text();
+
+    const metrics = parseRunText(text);
+    runData.push({run: runName, ...metrics});
+
+    displayCards(metrics);
+    displayGraphs();
 }
 
+// Parse run text file
 function parseRunText(text) {
-    const lines = text.split('\n').filter(l => l.trim() !== '');
+    const lines = text.split("\n");
     const data = {};
-    for (let line of lines) {
-        const [key, value] = line.split('=');
-        if (key && value) data[key.trim()] = value.trim();
-    }
+    lines.forEach(line => {
+        if (line.includes("=")) {
+            const [key, value] = line.split("=");
+            data[key.trim()] = isNaN(parseFloat(value)) ? value : parseFloat(value);
+        }
+    });
     return data;
 }
 
-function displayRunCards(runListDiv, file, data) {
-    const runContainer = document.createElement('div');
-    runContainer.className = 'run-container';
+// Display cards for clicked run
+function displayCards(metrics) {
+    const cardsDiv = document.getElementById("cards");
+    cardsDiv.innerHTML = ""; // clear previous cards
 
-    const runTitle = document.createElement('h2');
-    runTitle.textContent = file.name;
-    runContainer.appendChild(runTitle);
-
-    for (const [key, value] of Object.entries(data)) {
-        const card = document.createElement('div');
-        card.className = 'metric-card';
-        card.innerHTML = `<strong>${key.replace(/_/g, ' ')}:</strong> ${value}`;
-        runContainer.appendChild(card);
+    for (let key in metrics) {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `<strong>${key}</strong>: ${metrics[key]}`;
+        cardsDiv.appendChild(card);
     }
 
-    runListDiv.appendChild(runContainer);
+    document.getElementById("run-details").style.display = "block";
 }
 
-function displayGraphs(allRunData) {
-    const metrics = ['battery_start', 'battery_end', 'battery_used', 'delivery_time', 'voltage_level', 'temperature_level'];
-    const x = allRunData.map(d => new Date(d.trip_start_time));
+// Display graphs for all runs (each metric vs run)
+function displayGraphs() {
+    const graphsDiv = document.getElementById("graphs");
+    graphsDiv.innerHTML = "";
 
-    const traces = metrics.map(metric => ({
-        x: x,
-        y: allRunData.map(d => parseFloat(d[metric] || 0)),
-        mode: 'lines+markers',
-        name: metric.replace(/_/g, ' ')
-    }));
+    if (runData.length === 0) return;
 
-    const layout = {
-        title: 'Robot Metrics Over Time',
-        xaxis: { title: 'Trip Start Time', type: 'date' },
-        yaxis: { title: 'Value' },
-        legend: { orientation: 'h' }
-    };
+    const metrics = Object.keys(runData[0]).filter(k => k !== "run");
 
-    Plotly.newPlot('metrics-graph', traces, layout, {responsive: true});
+    metrics.forEach(metric => {
+        const div = document.createElement("div");
+        div.className = "graph";
+        graphsDiv.appendChild(div);
+
+        const trace = {
+            x: runData.map(d => d.run),
+            y: runData.map(d => d[metric]),
+            type: 'bar'
+        };
+
+        const layout = {
+            title: metric,
+            xaxis: { title: 'Run' },
+            yaxis: { title: metric }
+        };
+
+        Plotly.newPlot(div, [trace], layout);
+    });
 }
 
-async function displayRunListAndGraphs() {
-    const runListDiv = document.getElementById('run-list');
-    runListDiv.innerHTML = 'Loading runs...';
-
-    const files = await fetchRunFiles();
-    if (files.length === 0) {
-        runListDiv.textContent = 'No runs found.';
-        return;
-    }
-
-    runListDiv.innerHTML = '';
-    const allRunData = [];
-
-    for (const file of files) {
-        const data = await fetchRunContent(file);
-        if (!data) continue;
-
-        displayRunCards(runListDiv, file, data);
-        allRunData.push(data);
-    }
-
-    if (allRunData.length > 0) {
-        displayGraphs(allRunData);
-    }
-}
-
-// Initialize
-displayRunListAndGraphs();
+// Initial fetch
+fetchRunFiles();

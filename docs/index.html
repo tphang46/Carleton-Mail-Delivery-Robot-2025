@@ -1,32 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Robot Run Reports</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .run-container { margin-bottom: 30px; }
-        .metric-card {
+        .card {
             display: inline-block;
-            width: 180px;
-            margin: 5px;
-            padding: 10px;
-            border-radius: 8px;
-            background-color: #f0f0f0;
             border: 1px solid #ccc;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 5px;
+            width: 200px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
         }
-        h2 { margin-bottom: 10px; }
+        #run-details { margin-top: 20px; }
+        .graph { width: 600px; height: 400px; margin-bottom: 20px; }
     </style>
 </head>
 <body>
     <h1>Robot Run Reports</h1>
-    <h3>Available Runs</h3>
-    <div id="run-list">Loading runs...</div>
-    <h2>Metrics Over Time</h2>
-    <div id="metrics-graph" style="width:100%;height:600px;"></div>
 
-    <script src="script.js?v=1"></script>
+    <h3>Available Runs</h3>
+    <div id="run-list"></div>
+
+    <div id="run-details" style="display:none;">
+        <h2>Run Metrics</h2>
+        <div id="cards"></div>
+
+        <h2>Graphs</h2>
+        <div id="graphs"></div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
