@@ -7,13 +7,26 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
         .run-container { margin-bottom: 30px; }
-        .metric-card { display: inline-block; width: 180px; margin: 5px; padding: 10px; border-radius: 8px; background-color: #f0f0f0; border: 1px solid #ccc; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
+        .metric-card {
+            display: inline-block;
+            width: 180px;
+            margin: 5px;
+            padding: 10px;
+            border-radius: 8px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+        }
         h2 { margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <h1>Robot Run Reports</h1>
+    <h3>Available Runs</h3>
     <div id="run-list">Loading runs...</div>
-    <script src="script.js"></script>
+    <h2>Metrics Over Time</h2>
+    <div id="metrics-graph" style="width:100%;height:600px;"></div>
+
+    <script src="script.js?v=1"></script>
 </body>
 </html>

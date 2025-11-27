@@ -36,7 +36,6 @@ function parseRunText(text) {
     return data;
 }
 
-// Create cards per metric
 function displayRunCards(runListDiv, file, data) {
     const runContainer = document.createElement('div');
     runContainer.className = 'run-container';
@@ -55,33 +54,25 @@ function displayRunCards(runListDiv, file, data) {
     runListDiv.appendChild(runContainer);
 }
 
-// Create graphs using Plotly
 function displayGraphs(allRunData) {
     const metrics = ['battery_start', 'battery_end', 'battery_used', 'delivery_time', 'voltage_level', 'temperature_level'];
-    const x = allRunData.map(d => d.trip_start_time); // X-axis: trip_start_time
+    const x = allRunData.map(d => new Date(d.trip_start_time));
 
-    metrics.forEach(metric => {
-        const y = allRunData.map(d => parseFloat(d[metric] || 0));
-        const trace = {
-            x: x,
-            y: y,
-            mode: 'lines+markers',
-            name: metric.replace(/_/g, ' ')
-        };
+    const traces = metrics.map(metric => ({
+        x: x,
+        y: allRunData.map(d => parseFloat(d[metric] || 0)),
+        mode: 'lines+markers',
+        name: metric.replace(/_/g, ' ')
+    }));
 
-        const layout = {
-            title: metric.replace(/_/g, ' '),
-            xaxis: { title: 'Trip Start Time' },
-            yaxis: { title: metric.replace(/_/g, ' ') }
-        };
+    const layout = {
+        title: 'Robot Metrics Over Time',
+        xaxis: { title: 'Trip Start Time', type: 'date' },
+        yaxis: { title: 'Value' },
+        legend: { orientation: 'h' }
+    };
 
-        const graphDiv = document.createElement('div');
-        graphDiv.style.width = '600px';
-        graphDiv.style.height = '400px';
-        document.body.appendChild(graphDiv);
-
-        Plotly.newPlot(graphDiv, [trace], layout);
-    });
+    Plotly.newPlot('metrics-graph', traces, layout, {responsive: true});
 }
 
 async function displayRunListAndGraphs() {
@@ -102,7 +93,6 @@ async function displayRunListAndGraphs() {
         if (!data) continue;
 
         displayRunCards(runListDiv, file, data);
-
         allRunData.push(data);
     }
 
