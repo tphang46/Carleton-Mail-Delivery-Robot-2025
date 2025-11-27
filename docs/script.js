@@ -3,7 +3,6 @@ const apiUrl = "https://api.github.com/repos/tphang46/Carleton-Mail-Delivery-Rob
 let allRunsData = [];
 let metricsKeys = [];
 
-// Define some colors for metrics
 const colors = [
     '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
     '#9467bd', '#8c564b', '#e377c2', '#7f7f7f',
@@ -15,27 +14,23 @@ async function fetchRunFiles() {
     const response = await fetch(apiUrl);
     const files = await response.json();
 
-    const runPromises = [];
-
-    for (let file of files) {
-        if (file.name.endsWith(".txt")) {
-            runPromises.push(
-                fetch(file.download_url)
-                    .then(res => res.text())
-                    .then(text => {
-                        const metrics = parseRunText(text);
-                        metrics.run = file.name;
-                        allRunsData.push(metrics);
-                    })
-            );
-        }
-    }
+    const runPromises = files
+        .filter(file => file.name.endsWith(".txt"))
+        .map(async file => {
+            const text = await fetch(file.download_url).then(res => res.text());
+            const metrics = parseRunText(text);
+            metrics.run = file.name;
+            allRunsData.push(metrics);
+        });
 
     await Promise.all(runPromises);
 
     if (allRunsData.length > 0) {
+        // get metric keys from the first run
         metricsKeys = Object.keys(allRunsData[0]).filter(k => k !== "run");
         displayGraphs();
+    } else {
+        console.warn("No run data loaded!");
     }
 }
 
@@ -52,7 +47,7 @@ function parseRunText(text) {
     return data;
 }
 
-// Display line graphs for all metrics
+// Display graphs
 function displayGraphs() {
     const graphsDiv = document.getElementById("graphs");
     graphsDiv.innerHTML = "";
@@ -60,8 +55,6 @@ function displayGraphs() {
     metricsKeys.forEach((metric, index) => {
         const div = document.createElement("div");
         div.className = "graph";
-        div.style.width = "100%";
-        div.style.height = "400px";
         graphsDiv.appendChild(div);
 
         const trace = {
@@ -87,5 +80,5 @@ function displayGraphs() {
     });
 }
 
-// Initial fetch
+// Start
 fetchRunFiles();
