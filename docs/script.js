@@ -1,74 +1,98 @@
+// script.js
+
+const apiUrl = "https://api.github.com/repos/tphang46/Mail-Delivery-Robot/contents/src/tools/logs/runs";
+
 async function fetchRunFiles() {
-    const apiUrl = "https://api.github.com/repos/tphang46/Mail-Delivery-Robot/contents/src/tools/logs/runs";
-
-
-    const res = await fetch(apiUrl);
-    const files = await res.json();
-
-    // Only keep .txt files
-    return files.filter(f => f.name.endsWith(".txt"));
+    try {
+        const res = await fetch(apiUrl);
+        if (!res.ok) throw new Error(`Failed to fetch runs: ${res.status}`);
+        const files = await res.json();
+        // Only .txt files
+        return files.filter(f => f.name.endsWith(".txt"));
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
 }
 
-async function fetchRunFileContent(url) {
-    const res = await fetch(url);
-    return await res.text();
+async function fetchRunContent(file) {
+    try {
+        const res = await fetch(file.download_url);
+        if (!res.ok) throw new Error(`Failed to fetch ${file.name}`);
+        const text = await res.text();
+        return parseRunText(text);
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
 }
 
-function parseRunData(text) {
+// Parse the txt file into a JS object
+function parseRunText(text) {
+    const lines = text.split('\n').filter(l => l.trim() !== '');
     const data = {};
-    text.split("\n").forEach(line => {
-        const [key, value] = line.split("=");
-        if (key && value !== undefined) {
-            data[key.trim()] = value.trim();
-        }
-    });
+    for (let line of lines) {
+        const [key, value] = line.split('=');
+        data[key.trim()] = value.trim();
+    }
     return data;
 }
 
-function showRunDetails(data) {
-    document.getElementById("run-details").textContent =
-        JSON.stringify(data, null, 2);
-
-    // battery graph
-    const trace = {
-        x: ["Start", "End"],
-        y: [
-            parseFloat(data.battery_start),
-            parseFloat(data.battery_end)
-        ],
-        type: "scatter",
-        mode: "lines+markers",
-        marker: { size: 10 }
-    };
-
-    Plotly.newPlot("battery_plot", [trace], {
-        title: "Battery Level (Start → End)"
-    });
-}
-
-async function buildRunList() {
-    const div = document.getElementById("run-list");
+// Display list of runs
+async function displayRunList() {
+    const runListDiv = document.getElementById('run-list');
+    runListDiv.innerHTML = '';
 
     const files = await fetchRunFiles();
-    if (!files.length) {
-        div.innerHTML = "<p>No runs found.</p>";
+    if (files.length === 0) {
+        runListDiv.textContent = 'No runs found.';
         return;
     }
 
     files.forEach(file => {
-        const link = document.createElement("a");
-        link.href = "#";
-        link.textContent = file.name;
-        link.style.display = "block";
-
-        link.onclick = async () => {
-            const text = await fetchRunFileContent(file.download_url);
-            const data = parseRunData(text);
-            showRunDetails(data);
-        };
-
-        div.appendChild(link);
+        const btn = document.createElement('button');
+        btn.textContent = file.name;
+        btn.style.display = 'block';
+        btn.style.margin = '5px 0';
+        btn.onclick = async () => displayRunDetails(file);
+        runListDiv.appendChild(btn);
     });
 }
 
-buildRunList();
+// Display selected run details
+async function displayRunDetails(file) {
+    const runDetails = document.getElementById('run-details');
+    const data = await fetchRunContent(file);
+    if (!data) return;
+
+    runDetails.textContent = JSON.stringify(data, null, 2);
+
+    // Update graph
+    displayBatteryGraph(data);
+}
+
+// Display battery graph
+function displayBatteryGraph(data) {
+    const batteryPlot = document.getElementById('battery_plot');
+
+    // Battery % at start and end
+    const batteryStart = parseFloat(data['battery_start']);
+    const batteryEnd = parseFloat(data['battery_end']);
+
+    const trace = {
+        x: ['Start', 'End'],
+        y: [batteryStart, batteryEnd],
+        type: 'bar',
+        marker: { color: ['green', 'red'] }
+    };
+
+    const layout = {
+        title: 'Battery % for this run',
+        yaxis: { range: [0, 100], title: 'Battery %' }
+    };
+
+    Plotly.newPlot(batteryPlot, [trace], layout);
+}
+
+// Initialize
+displayRunList();
