@@ -1,8 +1,9 @@
 const apiUrl = "https://api.github.com/repos/tphang46/Carleton-Mail-Delivery-Robot-2025/contents/src/tools/logs/runs";
 
-let runData = [];
+let allRunsData = [];
+let metricsKeys = [];
 
-// Fetch list of run files
+// Fetch list of run files and all data upfront
 async function fetchRunFiles() {
     const response = await fetch(apiUrl);
     const files = await response.json();
@@ -10,26 +11,31 @@ async function fetchRunFiles() {
     const runListDiv = document.getElementById("run-list");
     runListDiv.innerHTML = "";
 
+    const runPromises = [];
+
     for (let file of files) {
         if (file.name.endsWith(".txt")) {
             const btn = document.createElement("button");
             btn.textContent = file.name;
-            btn.onclick = () => loadRun(file.download_url, file.name);
+            btn.onclick = () => displayCards(allRunsData.find(d => d.run === file.name));
             runListDiv.appendChild(btn);
+
+            // load all runs upfront
+            runPromises.push(fetch(file.download_url).then(res => res.text()).then(text => {
+                const metrics = parseRunText(text);
+                metrics.run = file.name;
+                allRunsData.push(metrics);
+            }));
         }
     }
-}
 
-// Load a single run file when clicked
-async function loadRun(url, runName) {
-    const response = await fetch(url);
-    const text = await response.text();
+    // wait for all runs to load, then plot graphs
+    await Promise.all(runPromises);
 
-    const metrics = parseRunText(text);
-    runData.push({run: runName, ...metrics});
-
-    displayCards(metrics);
-    displayGraphs();
+    if (allRunsData.length > 0) {
+        metricsKeys = Object.keys(allRunsData[0]).filter(k => k !== "run");
+        displayGraphs();
+    }
 }
 
 // Parse run text file
@@ -51,6 +57,7 @@ function displayCards(metrics) {
     cardsDiv.innerHTML = ""; // clear previous cards
 
     for (let key in metrics) {
+        if (key === "run") continue;
         const card = document.createElement("div");
         card.className = "card";
         card.innerHTML = `<strong>${key}</strong>: ${metrics[key]}`;
@@ -65,18 +72,14 @@ function displayGraphs() {
     const graphsDiv = document.getElementById("graphs");
     graphsDiv.innerHTML = "";
 
-    if (runData.length === 0) return;
-
-    const metrics = Object.keys(runData[0]).filter(k => k !== "run");
-
-    metrics.forEach(metric => {
+    metricsKeys.forEach(metric => {
         const div = document.createElement("div");
         div.className = "graph";
         graphsDiv.appendChild(div);
 
         const trace = {
-            x: runData.map(d => d.run),
-            y: runData.map(d => d[metric]),
+            x: allRunsData.map(d => d.run),
+            y: allRunsData.map(d => d[metric]),
             type: 'bar'
         };
 
@@ -90,5 +93,4 @@ function displayGraphs() {
     });
 }
 
-// Initial fetch
 fetchRunFiles();
