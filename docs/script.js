@@ -50,7 +50,15 @@ function parseRunText(text) {
     lines.forEach(line => {
         if (line.includes("=")) {
             const [key, value] = line.split("=");
-            data[key.trim()] = isNaN(parseFloat(value)) ? value : parseFloat(value);
+            const trimmedKey = key.trim();
+            const trimmedValue = value.trim();
+
+            // Only parse numeric values; keep timestamps as string
+            if (!isNaN(trimmedValue) && trimmedValue !== "") {
+                data[trimmedKey] = parseFloat(trimmedValue);
+            } else {
+                data[trimmedKey] = trimmedValue;
+            }
         }
     });
     return data;
@@ -82,21 +90,37 @@ function displayGraphs() {
         div.className = "graph";
         graphsDiv.appendChild(div);
 
+        // x-axis: formatted date + HH:MM
+        const xData = allRunsData.map(d => {
+            const dt = new Date(d.trip_start_time);
+            const year = dt.getFullYear();
+            const month = String(dt.getMonth() + 1).padStart(2, '0');
+            const day = String(dt.getDate()).padStart(2, '0');
+            const hour = String(dt.getHours()).padStart(2, '0');
+            const min = String(dt.getMinutes()).padStart(2, '0');
+            return `${year}-${month}-${day} ${hour}:${min}`;
+        });
+
         const trace = {
-            x: allRunsData.map(d => d.run),
+            x: xData,
             y: allRunsData.map(d => d[metric]),
             type: 'scatter',
             mode: 'lines+markers',
             name: metric,
             line: { color: colors[index % colors.length], width: 3 },
             marker: { size: 6 },
-            text: allRunsData.map(d => `${metric}: ${d[metric]}`),
+            // hover shows full timestamp
+            text: allRunsData.map(d => `${metric}: ${d[metric]}<br>Time: ${d.trip_start_time}`),
             hoverinfo: 'x+text'
         };
 
         const layout = {
             title: metric,
-            xaxis: { title: 'Run', tickangle: -45 },
+            xaxis: {
+                title: 'Trip Start Time',
+                tickangle: -45,
+                automargin: true
+            },
             yaxis: { title: metric },
             margin: { t: 50, l: 60, r: 30, b: 60 }
         };
