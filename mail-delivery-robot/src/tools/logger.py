@@ -1,128 +1,140 @@
 import os
-import threading
-from datetime import datetime
+import time
+import re
+from datetime import datetime, timedelta
+
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
-from sensors.lidar_sensor import LidarSensor
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy
+
 from sensor_msgs.msg import BatteryState
-from jinja2 import Environment, FileSystemLoader
-import re
-import time
-
-class Logger(Node):
-    """
-    Logger node that logs messages from multiple topics into a .txt file, 
-    and tracks how long the robot is wall-following.
-    To run: ros2 run mail-delivery-robot logger
-
-    """
+from irobot_create_msgs.msg import DockStatus
 
 
 class GeneralLogger(Node):
     def __init__(self):
         super().__init__('general_logger')
 
-        start_time = self.start_timer()
-
+        # --- Log directory ---
         self.declare_parameter('log_dir', './tools/logs')
-        self.log_dir = self.get_parameter('log_dir').value
+        self.log_dir = os.path.abspath(self.get_parameter('log_dir').value)
         os.makedirs(self.log_dir, exist_ok=True)
+        self.get_logger().info(f"Logs will be saved to: {self.log_dir}")
 
-        self.log_path = os.path.join(self.log_dir, "robot_log_wallFollowing.txt")
-        self.wall_log_file = open(self.log_path, "a")
-        self.write_log("SYSTEM", f"Logging all data to {self.log_path}", wall_log_file)
+        # --- Run directory inside logs ---
+        self.runs_dir = os.path.join(self.log_dir, "runs")
+        os.makedirs(self.runs_dir, exist_ok=True)
+        self.get_logger().info(f"Run files will be stored in: {self.runs_dir}")
 
-        self.log_path = os.path.join(self.log_dir, "robot_log_tripTime.txt")
-        self.delivery_log_file = open(self.log_path, "a")
-        self.end_timer(start_time)
-        self.write_log("SYSTEM", f"Logging all data to {self.log_path}", delivery_log_file)
+        # --- Wall-following log path ---
+        self.wall_log_path = os.path.join(self.log_dir, "robot_log_wallFollowing.txt")
+        self.wall_log_file = open(self.wall_log_path, "a")
 
-        self.generate_report()
+        # Write startup log
+        self.write_log("SYSTEM", f"Logging all data to {self.wall_log_path}")
 
-    def start_timer():
-        time.perf_counter()
-    
-    def end_timer(start_time):
-        end_time = time.perf_counter()
-        elapsed_time = end_time - start_time
+        # --- Trip timing ---
+        self.trip_start_time = time.perf_counter()
+        self.trip_start_timestamp = datetime.now()
 
-    def write_log(self, source, message, file):
-        self.file.write(f"[{source}] {message}\n")
-        self.file.flush()
+        # --- Battery info ---
+        self.battery = {'level': 0.0, 'voltage': 0.0, 'temperature': 0.0}
+        self.battery_start = None
+        self.battery_end = None
+        self.battery_used = None
 
-    def generate_report(self):
-        battery_data = {}
+        # --- Subscriptions ---
+        qos = QoSProfile(reliability=QoSReliabilityPolicy.BEST_EFFORT, depth=10)
+        self.create_subscription(BatteryState, '/battery_state', self.battery_callback, qos)
+        self.create_subscription(DockStatus, '/dock_status', self.dock_status_callback, 10)
 
-        def battery_callback(msg):
-            battery_data['level'] = msg.percentage * 100
-            battery_data['temperature'] = msg.temperature
+        self.get_logger().info("GeneralLogger started. Waiting for first battery data...")
 
-        qos_profile = QoSProfile(
-            reliability=QoSReliabilityPolicy.BEST_EFFORT,
-            depth=1
-        )
-
-        sub = self.create_subscription(BatteryState, '/battery_state', battery_callback, qos_profile)
-
-        start_time = self.get_clock().now()
-        timeout_sec = 2.0
-        while 'level' not in battery_data:
+        # Wait for first battery message
+        while self.battery['level'] == 0.0 and rclpy.ok():
             rclpy.spin_once(self, timeout_sec=0.1)
-            elapsed = (self.get_clock().now() - start_time).nanoseconds / 1e9
-            if elapsed > timeout_sec:
-                self.get_logger().warn("No battery message received, using default values.")
-                battery_data = {'level': 0.0, 'voltage': 0.0, 'temperature': 0.0}
-                break
 
-        self.destroy_subscription(sub)
+        self.battery_start = self.battery['level']
+        self.get_logger().info(f"Battery at trip start: {self.battery_start:.2f}%")
 
-        battery_level = battery_data['level']
-        temperature_level = battery_data['temperature']
+    def write_log(self, tag, message):
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        self.wall_log_file.write(f"[{timestamp}] [{tag}] {message}\n")
+        self.wall_log_file.flush()
 
-        wall_follow_time = "N/A"
-        if os.path.exists(self.log_path):
-            with open(self.log_path, "r") as f:
-                lines = f.readlines()
-            for line in reversed(lines):
-                match = re.search(r"Total wall-following time:\s*([\d.]+)s", line)
-                if match:
-                    wall_follow_time = f"{match.group(1)} s"
-                    break
 
-       
-        template_dir = os.path.dirname(os.path.realpath(__file__))
-        env = Environment(loader=FileSystemLoader(template_dir))
-        try:
-            template = env.get_template("template.html")
-        except Exception as e:
-            self.get_logger().error(f"template.html not found in {template_dir}: {e}")
-            return
+    def battery_callback(self, msg):
+        self.battery['level'] = msg.percentage * 100
+        self.battery['voltage'] = msg.voltage
+        self.battery['temperature'] = msg.temperature
 
-        html_content = template.render(
-            battery_level=battery_level,
-            voltage_level=voltage_level,
-            temperature_level=temperature_level,
-            wall_follow_time=wall_follow_time
-            delivery_time=delivery_time
+    def dock_status_callback(self, msg: DockStatus):
+        if msg.is_docked:
+            self.get_logger().info("Docking detected, ending trip...")
+            self.end_trip()
+            rclpy.shutdown()
+
+    def get_wall_follow_time(self):
+        if not os.path.exists(self.wall_log_path):
+            return "N/A"
+
+        with open(self.wall_log_path, 'r') as f:
+            lines = f.readlines()
+
+        for line in reversed(lines):
+            match = re.search(r"Total wall-following time:\s*([\d.]+)s", line)
+            if match:
+                return f"{match.group(1)} s"
+
+        return "N/A"
+
+    def end_trip(self):
+        self.trip_end_timestamp = datetime.now()
+        delivery_time_sec = time.perf_counter() - self.trip_start_time
+        delivery_time_str = str(timedelta(seconds=int(delivery_time_sec)))
+
+        self.battery_end = self.battery['level']
+        self.battery_used = self.battery_start - self.battery_end
+
+        self.get_logger().info(
+            f"Battery Start: {self.battery_start:.2f}% | "
+            f"End: {self.battery_end:.2f}% | "
+            f"Used: {self.battery_used:.2f}%"
         )
 
-        output_path = os.path.join(self.log_dir, "robot_report.html")
-        with open(output_path, "w") as f:
-            f.write(html_content)
+        wall_time = self.get_wall_follow_time()
+        self.write_run_file(self.battery, wall_time, delivery_time_sec)
+        open(self.wall_log_path, 'w').close()
+        self.get_logger().info("Trip logging complete.")
+        self.wall_log_file.close()
 
-        self.get_logger().info(f"Report generated at {output_path}!")
+    def write_run_file(self, battery, wall_time, delivery_time):
+        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filepath = os.path.join(self.runs_dir, f"run_{timestamp}.txt")
+        self.get_logger().info(f"Writing run file: {filepath}")
 
-        open(self.log_path, 'w').close()
-        self.get_logger().info(f"Cleared wall-following log: {self.log_path}")
+        with open(filepath, "w") as f:
+            f.write(f"battery_start={self.battery_start}\n")
+            f.write(f"battery_end={self.battery_end}\n")
+            f.write(f"battery_used={self.battery_used}\n")
+            f.write(f"delivery_time={delivery_time:.2f}\n")
+            f.write(f"wall_follow_time={wall_time}\n")
+            f.write(f"voltage_level={battery['voltage']}\n")
+            f.write(f"temperature_level={battery['temperature']}\n")
+            f.write(f"trip_start_time={self.trip_start_timestamp}\n")
+            f.write(f"trip_end_time={self.trip_end_timestamp}\n")
 
 
 def main(args=None):
     rclpy.init(args=args)
     node = GeneralLogger()
-    node.destroy_node()
-    rclpy.shutdown()
+
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        node.get_logger().info("KeyboardInterrupt detected, ending trip...")
+        node.end_trip()
+        rclpy.shutdown()
 
 
 if __name__ == "__main__":
