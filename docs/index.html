@@ -1,21 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <title>Robot Run Reports</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="script.js"></script> <!-- fixed -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        #run-list button {
+            display: block;
+            margin: 5px 0;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        #run-details {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ccc;
+            white-space: pre-wrap;
+        }
+    </style>
 </head>
 <body>
     <h1>Robot Run Reports</h1>
 
     <h3>Available Runs</h3>
-    <div id="run-list"></div>
+    <div id="run-list">Loading runs...</div>
 
     <h2>Run Details</h2>
-    <pre id="run-details"></pre>
+    <pre id="run-details">Select a run to see details.</pre>
 
     <h2>Graphs</h2>
     <div id="battery_plot" style="width:600px;height:400px;"></div>
-
+    <script src="script.js"></script>
 </body>
 </html>
