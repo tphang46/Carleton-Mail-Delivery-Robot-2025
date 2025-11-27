@@ -1,5 +1,6 @@
 async function fetchRunFiles() {
-    const apiUrl = "https://api.github.com/repos/tphang46/Mail-Delivery-Robot/contents/src/tools/logs/runs"
+    const apiUrl = "https://api.github.com/repos/tphang46/Mail-Delivery-Robot/contents/src/tools/logs/runs";
+
 
     const res = await fetch(apiUrl);
     const files = await res.json();
