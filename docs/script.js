@@ -1,4 +1,3 @@
-// script.js
 console.log("Script loaded");
 
 const apiUrl = "https://api.github.com/repos/tphang46/Mail-Delivery-Robot/contents/src/tools/logs/runs";
@@ -47,29 +46,27 @@ async function displayRunList() {
         return;
     }
 
-    runListDiv.innerHTML = ''; // clear loading message
+    runListDiv.innerHTML = '';
 
     for (const file of files) {
         const data = await fetchRunContent(file);
         if (!data) continue;
 
-        const card = document.createElement('div');
-        card.className = 'run-card';
+        const runContainer = document.createElement('div');
+        runContainer.className = 'run-container';
 
-        card.innerHTML = `
-            <h3>${file.name}</h3>
-            <p><strong>Battery Start:</strong> ${data['battery_start']}%</p>
-            <p><strong>Battery End:</strong> ${data['battery_end']}%</p>
-            <p><strong>Battery Used:</strong> ${data['battery_used']}%</p>
-            <p><strong>Delivery Time:</strong> ${data['delivery_time']} s</p>
-            <p><strong>Wall Follow Time:</strong> ${data['wall_follow_time']}</p>
-            <p><strong>Voltage:</strong> ${data['voltage_level']} V</p>
-            <p><strong>Temperature:</strong> ${data['temperature_level']} °C</p>
-            <p><strong>Trip Start:</strong> ${data['trip_start_time']}</p>
-            <p><strong>Trip End:</strong> ${data['trip_end_time']}</p>
-        `;
+        const runTitle = document.createElement('h2');
+        runTitle.textContent = file.name;
+        runContainer.appendChild(runTitle);
 
-        runListDiv.appendChild(card);
+        for (const [key, value] of Object.entries(data)) {
+            const card = document.createElement('div');
+            card.className = 'metric-card';
+            card.innerHTML = `<strong>${key.replace(/_/g, ' ')}:</strong> ${value}`;
+            runContainer.appendChild(card);
+        }
+
+        runListDiv.appendChild(runContainer);
     }
 }
 
