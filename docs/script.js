@@ -1,5 +1,4 @@
 // script.js
-
 console.log("Script loaded");
 
 const apiUrl = "https://api.github.com/repos/tphang46/Mail-Delivery-Robot/contents/src/tools/logs/runs";
@@ -48,47 +47,30 @@ async function displayRunList() {
         return;
     }
 
-    runListDiv.innerHTML = '';
+    runListDiv.innerHTML = ''; // clear loading message
 
-    files.forEach(file => {
-        const btn = document.createElement('button');
-        btn.textContent = file.name;
-        btn.onclick = async () => displayRunDetails(file);
-        runListDiv.appendChild(btn);
-    });
-}
+    for (const file of files) {
+        const data = await fetchRunContent(file);
+        if (!data) continue;
 
-async function displayRunDetails(file) {
-    const runDetails = document.getElementById('run-details');
-    const data = await fetchRunContent(file);
-    if (!data) {
-        runDetails.textContent = "Failed to load run data.";
-        return;
+        const card = document.createElement('div');
+        card.className = 'run-card';
+
+        card.innerHTML = `
+            <h3>${file.name}</h3>
+            <p><strong>Battery Start:</strong> ${data['battery_start']}%</p>
+            <p><strong>Battery End:</strong> ${data['battery_end']}%</p>
+            <p><strong>Battery Used:</strong> ${data['battery_used']}%</p>
+            <p><strong>Delivery Time:</strong> ${data['delivery_time']} s</p>
+            <p><strong>Wall Follow Time:</strong> ${data['wall_follow_time']}</p>
+            <p><strong>Voltage:</strong> ${data['voltage_level']} V</p>
+            <p><strong>Temperature:</strong> ${data['temperature_level']} °C</p>
+            <p><strong>Trip Start:</strong> ${data['trip_start_time']}</p>
+            <p><strong>Trip End:</strong> ${data['trip_end_time']}</p>
+        `;
+
+        runListDiv.appendChild(card);
     }
-
-    runDetails.textContent = JSON.stringify(data, null, 2);
-    displayBatteryGraph(data);
-}
-
-function displayBatteryGraph(data) {
-    const batteryPlot = document.getElementById('battery_plot');
-
-    const batteryStart = parseFloat(data['battery_start']);
-    const batteryEnd = parseFloat(data['battery_end']);
-
-    const trace = {
-        x: ['Start', 'End'],
-        y: [batteryStart, batteryEnd],
-        type: 'bar',
-        marker: { color: ['green', 'red'] }
-    };
-
-    const layout = {
-        title: 'Battery % for this run',
-        yaxis: { range: [0, 100], title: 'Battery %' }
-    };
-
-    Plotly.newPlot(batteryPlot, [trace], layout);
 }
 
 // Initialize
