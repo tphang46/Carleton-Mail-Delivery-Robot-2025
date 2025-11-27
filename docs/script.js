@@ -1,5 +1,7 @@
 // script.js
 
+console.log("Script loaded");
+
 const apiUrl = "https://api.github.com/repos/tphang46/Mail-Delivery-Robot/contents/src/tools/logs/runs";
 
 async function fetchRunFiles() {
@@ -7,7 +9,6 @@ async function fetchRunFiles() {
         const res = await fetch(apiUrl);
         if (!res.ok) throw new Error(`Failed to fetch runs: ${res.status}`);
         const files = await res.json();
-        // Only .txt files
         return files.filter(f => f.name.endsWith(".txt"));
     } catch (err) {
         console.error(err);
@@ -27,21 +28,19 @@ async function fetchRunContent(file) {
     }
 }
 
-// Parse the txt file into a JS object
 function parseRunText(text) {
     const lines = text.split('\n').filter(l => l.trim() !== '');
     const data = {};
     for (let line of lines) {
         const [key, value] = line.split('=');
-        data[key.trim()] = value.trim();
+        if (key && value) data[key.trim()] = value.trim();
     }
     return data;
 }
 
-// Display list of runs
 async function displayRunList() {
     const runListDiv = document.getElementById('run-list');
-    runListDiv.innerHTML = '';
+    runListDiv.innerHTML = 'Loading runs...';
 
     const files = await fetchRunFiles();
     if (files.length === 0) {
@@ -49,33 +48,31 @@ async function displayRunList() {
         return;
     }
 
+    runListDiv.innerHTML = '';
+
     files.forEach(file => {
         const btn = document.createElement('button');
         btn.textContent = file.name;
-        btn.style.display = 'block';
-        btn.style.margin = '5px 0';
         btn.onclick = async () => displayRunDetails(file);
         runListDiv.appendChild(btn);
     });
 }
 
-// Display selected run details
 async function displayRunDetails(file) {
     const runDetails = document.getElementById('run-details');
     const data = await fetchRunContent(file);
-    if (!data) return;
+    if (!data) {
+        runDetails.textContent = "Failed to load run data.";
+        return;
+    }
 
     runDetails.textContent = JSON.stringify(data, null, 2);
-
-    // Update graph
     displayBatteryGraph(data);
 }
 
-// Display battery graph
 function displayBatteryGraph(data) {
     const batteryPlot = document.getElementById('battery_plot');
 
-    // Battery % at start and end
     const batteryStart = parseFloat(data['battery_start']);
     const batteryEnd = parseFloat(data['battery_end']);
 
