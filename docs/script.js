@@ -1,6 +1,6 @@
 console.log("Script loaded");
 
-const apiUrl = "https://api.github.com/repos/tphang46/Mail-Delivery-Robot/contents/src/tools/logs/runs";
+const apiUrl = "https://api.github.com/repos/tphang46/Carleton-Mail-Delivery-Robot-2025/contents/src/tools/logs/runs";
 
 async function fetchRunFiles() {
     try {
