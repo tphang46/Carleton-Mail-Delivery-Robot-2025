@@ -3,7 +3,7 @@ const apiUrl = "https://api.github.com/repos/tphang46/Carleton-Mail-Delivery-Rob
 let allRunsData = [];
 let metricsKeys = [];
 
-// Fetch list of run files and all data upfront
+// Fetch all run files
 async function fetchRunFiles() {
     const response = await fetch(apiUrl);
     const files = await response.json();
@@ -20,16 +20,19 @@ async function fetchRunFiles() {
             btn.onclick = () => displayCards(allRunsData.find(d => d.run === file.name));
             runListDiv.appendChild(btn);
 
-            // load all runs upfront
-            runPromises.push(fetch(file.download_url).then(res => res.text()).then(text => {
-                const metrics = parseRunText(text);
-                metrics.run = file.name;
-                allRunsData.push(metrics);
-            }));
+            // load run data
+            runPromises.push(
+                fetch(file.download_url)
+                    .then(res => res.text())
+                    .then(text => {
+                        const metrics = parseRunText(text);
+                        metrics.run = file.name;
+                        allRunsData.push(metrics);
+                    })
+            );
         }
     }
 
-    // wait for all runs to load, then plot graphs
     await Promise.all(runPromises);
 
     if (allRunsData.length > 0) {
@@ -38,7 +41,7 @@ async function fetchRunFiles() {
     }
 }
 
-// Parse run text file
+// Parse run txt
 function parseRunText(text) {
     const lines = text.split("\n");
     const data = {};
@@ -51,10 +54,10 @@ function parseRunText(text) {
     return data;
 }
 
-// Display cards for clicked run
+// Show cards for clicked run
 function displayCards(metrics) {
     const cardsDiv = document.getElementById("cards");
-    cardsDiv.innerHTML = ""; // clear previous cards
+    cardsDiv.innerHTML = "";
 
     for (let key in metrics) {
         if (key === "run") continue;
@@ -67,7 +70,7 @@ function displayCards(metrics) {
     document.getElementById("run-details").style.display = "block";
 }
 
-// Display graphs for all runs (each metric vs run)
+// Display line graphs for all metrics over all runs
 function displayGraphs() {
     const graphsDiv = document.getElementById("graphs");
     graphsDiv.innerHTML = "";
@@ -80,7 +83,9 @@ function displayGraphs() {
         const trace = {
             x: allRunsData.map(d => d.run),
             y: allRunsData.map(d => d[metric]),
-            type: 'bar'
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: metric
         };
 
         const layout = {
@@ -93,4 +98,5 @@ function displayGraphs() {
     });
 }
 
+// Initial fetch
 fetchRunFiles();
