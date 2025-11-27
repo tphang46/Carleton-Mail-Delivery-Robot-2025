@@ -3,24 +3,22 @@ const apiUrl = "https://api.github.com/repos/tphang46/Carleton-Mail-Delivery-Rob
 let allRunsData = [];
 let metricsKeys = [];
 
+// Define some colors for metrics
+const colors = [
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728',
+    '#9467bd', '#8c564b', '#e377c2', '#7f7f7f',
+    '#bcbd22', '#17becf'
+];
+
 // Fetch all run files
 async function fetchRunFiles() {
     const response = await fetch(apiUrl);
     const files = await response.json();
 
-    const runListDiv = document.getElementById("run-list");
-    runListDiv.innerHTML = "";
-
     const runPromises = [];
 
     for (let file of files) {
         if (file.name.endsWith(".txt")) {
-            const btn = document.createElement("button");
-            btn.textContent = file.name;
-            btn.onclick = () => displayCards(allRunsData.find(d => d.run === file.name));
-            runListDiv.appendChild(btn);
-
-            // load run data
             runPromises.push(
                 fetch(file.download_url)
                     .then(res => res.text())
@@ -54,30 +52,16 @@ function parseRunText(text) {
     return data;
 }
 
-// Show cards for clicked run
-function displayCards(metrics) {
-    const cardsDiv = document.getElementById("cards");
-    cardsDiv.innerHTML = "";
-
-    for (let key in metrics) {
-        if (key === "run") continue;
-        const card = document.createElement("div");
-        card.className = "card";
-        card.innerHTML = `<strong>${key}</strong>: ${metrics[key]}`;
-        cardsDiv.appendChild(card);
-    }
-
-    document.getElementById("run-details").style.display = "block";
-}
-
-// Display line graphs for all metrics over all runs
+// Display line graphs for all metrics
 function displayGraphs() {
     const graphsDiv = document.getElementById("graphs");
     graphsDiv.innerHTML = "";
 
-    metricsKeys.forEach(metric => {
+    metricsKeys.forEach((metric, index) => {
         const div = document.createElement("div");
         div.className = "graph";
+        div.style.width = "100%";
+        div.style.height = "400px";
         graphsDiv.appendChild(div);
 
         const trace = {
@@ -85,16 +69,21 @@ function displayGraphs() {
             y: allRunsData.map(d => d[metric]),
             type: 'scatter',
             mode: 'lines+markers',
-            name: metric
+            name: metric,
+            line: { color: colors[index % colors.length], width: 3 },
+            marker: { size: 8 },
+            text: allRunsData.map(d => `${metric}: ${d[metric]}`),
+            hoverinfo: 'x+text'
         };
 
         const layout = {
             title: metric,
-            xaxis: { title: 'Run' },
-            yaxis: { title: metric }
+            xaxis: { title: 'Run', tickangle: -45 },
+            yaxis: { title: metric },
+            margin: { t: 50, l: 60, r: 30, b: 80 }
         };
 
-        Plotly.newPlot(div, [trace], layout);
+        Plotly.newPlot(div, [trace], layout, { responsive: true });
     });
 }
 
