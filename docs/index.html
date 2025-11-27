@@ -161,30 +161,34 @@
             const graphsDiv = document.getElementById("graphs");
             graphsDiv.innerHTML = "";
 
+            function fixTimestamp(ts) {
+                if (!ts) return null;
+                return ts.replace(" ", "T").split(".")[0];  // Remove microseconds
+            }
+
             metricsKeys.forEach((metric, index) => {
                 const div = document.createElement("div");
                 div.className = "graph";
                 graphsDiv.appendChild(div);
 
-                const xData = allRunsData.map(d => {
-                    const dt = new Date(d.trip_start_time);
-                    const year = dt.getFullYear();
-                    const month = String(dt.getMonth() + 1).padStart(2, '0');
-                    const day = String(dt.getDate()).padStart(2, '0');
-                    const hour = String(dt.getHours()).padStart(2, '0');
-                    const min = String(dt.getMinutes()).padStart(2, '0');
-                    return `${year}-${month}-${day} ${hour}:${min}`;
-                });
+                // Convert timestamps to real Date objects
+                const xData = allRunsData.map(d =>
+                    new Date(fixTimestamp(d.trip_start_time))
+                );
+
+                const yData = allRunsData.map(d => d[metric]);
 
                 const trace = {
                     x: xData,
-                    y: allRunsData.map(d => d[metric]),
+                    y: yData,
                     type: 'scatter',
                     mode: 'lines+markers',
                     name: metric,
                     line: { color: colors[index % colors.length], width: 3 },
                     marker: { size: 6 },
-                    text: allRunsData.map(d => `${metric}: ${d[metric]}<br>Time: ${d.trip_start_time}`),
+                    text: allRunsData.map(d =>
+                        `${metric}: ${d[metric]}<br>Time: ${d.trip_start_time}`
+                    ),
                     hoverinfo: 'x+text'
                 };
 
@@ -195,6 +199,7 @@
                     title: { text: metric, x: 0.5, xanchor: 'center' },
                     xaxis: {
                         title: 'Trip Start Time',
+                        type: 'date',
                         tickangle: -45,
                         automargin: true,
                         gridcolor: '#ffffff33',
@@ -213,11 +218,10 @@
                     margin: { t: 70, l: 80, r: 40, b: 80 },
                     autosize: true
                 };
-
                 Plotly.newPlot(div, [trace], layout, { responsive: true });
             });
         }
-        fetchRunFiles();
+    fetchRunFiles();
     </script>
 </body>
 </html>
