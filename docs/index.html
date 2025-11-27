@@ -3,33 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Robot Run Reports</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .run-container {
-            margin-bottom: 30px;
-        }
-        .metric-card {
-            display: inline-block;
-            width: 180px;
-            margin: 5px;
-            padding: 10px;
-            border-radius: 8px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            box-shadow: 1px 1px 3px rgba(0,0,0,0.1);
-        }
-        h2 {
-            margin-bottom: 10px;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .run-container { margin-bottom: 30px; }
+        .metric-card { display: inline-block; width: 180px; margin: 5px; padding: 10px; border-radius: 8px; background-color: #f0f0f0; border: 1px solid #ccc; box-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
+        h2 { margin-bottom: 10px; }
     </style>
 </head>
 <body>
     <h1>Robot Run Reports</h1>
     <div id="run-list">Loading runs...</div>
-    <script src="script.js?v=2"></script>
     <script src="script.js"></script>
 </body>
 </html>
