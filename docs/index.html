@@ -1,27 +1,240 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Robot Run Reports</title>
+    <title>Robot Dashboard</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        #run-list button { margin: 5px 0; padding: 5px 10px; cursor: pointer; }
-        #battery_plot { margin-top: 20px; }
-        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; }
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #121212; color: #ffffff; }
+        h1, h2, h3 { margin-bottom: 15px; color: #ffffff; }
+        #controls { margin-bottom: 20px; }
+        button { margin: 5px; padding: 6px 12px; border-radius: 4px; border: 1px solid #888; background-color: #1f1f1f; color: #fff; cursor: pointer; }
+        button:hover { background-color: #333; }
+        #cards { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .card { border: 1px solid #444; border-radius: 8px; padding: 10px; width: 150px; box-shadow: 2px 2px 5px rgba(0,0,0,0.7); background-color: #1f1f1f; color: #fff; }
+        #graphs { display: flex; flex-direction: column; gap: 20px; }
+        .graph { width: 100%; height: 300px; }
+        pre { background: #1f1f1f; padding: 10px; border-radius: 4px; color: #fff; overflow-x: auto; }
     </style>
 </head>
 <body>
-    <h1>Robot Run Reports</h1>
 
-    <h3>Available Runs by Day</h3>
-    <div id="run-list"></div>
+<h1>Robot Dashboard</h1>
 
-    <h2>Run Details & Commits/PRs</h2>
-    <pre id="run-details"></pre>
+<div id="controls">
+    <button id="home-btn">Home</button>
+</div>
 
-    <h2>Battery Graph</h2>
-    <div id="battery_plot" style="width:100%; max-width:800px; height:400px;"></div>
+<h3>Available Runs by Day</h3>
+<div id="run-list"></div>
 
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="script.js"></script>
+<div id="run-details" style="display:none;">
+    <h3>Run Metrics</h3>
+    <div id="cards"></div>
+</div>
+
+<h3>Commits & PRs</h3>
+<pre id="commits-prs"></pre>
+
+<h2>Graphs</h2>
+<div id="graphs"></div>
+
+<script>
+const OWNER = "tphang46";
+const REPO = "Carleton-Mail-Delivery-Robot-2025";
+const BRANCH = "main";
+
+let allRunsData = [];
+let metricsKeys = [];
+const colors = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'];
+
+// Fetch all run log files
+async function fetchRunFiles() {
+    const url = `https://api.github.com/repos/${OWNER}/${REPO}/contents/src/tools/logs/runs?ref=${BRANCH}`;
+    const res = await fetch(url);
+    const files = await res.json();
+    return files.filter(f => f.name.endsWith(".txt"));
+}
+
+// Fetch content of a single run file
+async function fetchRunFileContent(url) {
+    const res = await fetch(url);
+    return await res.text();
+}
+
+// Parse run file into key/value metrics
+function parseRunText(text) {
+    const lines = text.split("\n");
+    const data = {};
+    lines.forEach(line => {
+        if (line.includes("=")) {
+            const [key,value] = line.split("=");
+            const k = key.trim();
+            const v = value.trim();
+            data[k] = isNaN(v) || v === "" ? v : parseFloat(v);
+        }
+    });
+    return data;
+}
+
+// Extract date from filename
+function extractRunDate(filename) {
+    return filename.split("_")[1];
+}
+
+// Group files by date
+function groupByDate(files) {
+    const groups = {};
+    files.forEach(f => {
+        const date = extractRunDate(f.name);
+        if(!groups[date]) groups[date]=[];
+        groups[date].push(f);
+    });
+    return groups;
+}
+
+// Fetch commits for a date
+async function fetchCommitsByDate(date){
+    const since = `${date}T00:00:00Z`;
+    const until = `${date}T23:59:59Z`;
+    const url = `https://api.github.com/repos/${OWNER}/${REPO}/commits?since=${since}&until=${until}`;
+    const res = await fetch(url);
+    return await res.json();
+}
+
+// Fetch PRs merged on a date
+async function fetchPRsByDate(date){
+    const url = `https://api.github.com/search/issues?q=repo:${OWNER}/${REPO}+type:pr+merged:${date}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    return data.items || [];
+}
+
+// Display metrics as cards
+function displayCards(metrics){
+    const cardsDiv = document.getElementById("cards");
+    cardsDiv.innerHTML="";
+    for(const key in metrics){
+        if(key==="run") continue;
+        const card = document.createElement("div");
+        card.className="card";
+        card.innerHTML = `<strong>${key}</strong>: ${metrics[key]}`;
+        cardsDiv.appendChild(card);
+    }
+    document.getElementById("run-details").style.display="block";
+}
+
+// Display commits & PRs
+function displayCommitsAndPRs(commits, prs){
+    const pre = document.getElementById("commits-prs");
+    const details = {
+        commits: commits.map(c=>({sha:c.sha,message:c.commit.message})),
+        prs: prs.map(p=>({number:p.number,title:p.title}))
+    };
+    pre.textContent = JSON.stringify(details,null,2);
+}
+
+// Display graphs for runs
+function displayGraphs(runs){
+    const graphsDiv = document.getElementById("graphs");
+    graphsDiv.innerHTML="";
+    function fixTimestamp(ts){ if(!ts) return null; return ts.replace(" ","T").split(".")[0]; }
+
+    runs.sort((a, b) => {
+      const dateA = new Date(fixTimestamp(a.trip_start_time));
+      const dateB = new Date(fixTimestamp(b.trip_start_time));
+      return dateA - dateB;
+    });
+
+    metricsKeys.forEach((metric,index)=>{
+        const div = document.createElement("div");
+        div.className="graph";
+        graphsDiv.appendChild(div);
+
+        const xData = runs.map(d=>new Date(fixTimestamp(d.trip_start_time)));
+        const yData = runs.map(d=>d[metric]);
+
+        const trace = {
+            x:xData, y:yData, type:'scatter', mode:'lines+markers', name:metric,
+            line:{color:colors[index%colors.length], width:3},
+            marker:{size:6},
+            text:runs.map(d=>`${metric}: ${d[metric]}<br>Time: ${d.trip_start_time}`),
+            hoverinfo:'x+text'
+        };
+
+        const layout = {
+            paper_bgcolor:'#121212', plot_bgcolor:'#121212', font:{color:'#fff'},
+            title:{text:metric, x:0.5, xanchor:'center'},
+            xaxis:{title:'Trip Start Time', type:'date', tickangle:-45, automargin:true, gridcolor:'#ffffff33', zerolinecolor:'#fff', linecolor:'#fff', tickcolor:'#fff'},
+            yaxis:{title:metric, automargin:true, gridcolor:'#ffffff33', zerolinecolor:'#fff', linecolor:'#fff', tickcolor:'#fff'},
+            margin:{t:70,l:80,r:40,b:80}, autosize:true
+        };
+
+        Plotly.newPlot(div,[trace],layout,{responsive:true});
+    });
+}
+
+// Build the daily run list
+async function buildRunList(){
+    const div = document.getElementById("run-list");
+    div.innerHTML="<p>Loading...</p>";
+    const files = await fetchRunFiles();
+    if(!files.length){ div.innerHTML="<p>No runs found.</p>"; return; }
+    const groups = groupByDate(files);
+    div.innerHTML="<h3>Runs by Day</h3>";
+
+    Object.keys(groups).forEach(date=>{
+        const btn = document.createElement("button");
+        btn.textContent=`${date} (${groups[date].length} runs)`;
+        btn.className="run-btn";
+
+        btn.onclick=async()=>{
+            allRunsData=[];
+            const runFiles = groups[date];
+
+            for(const f of runFiles){
+                const text = await fetchRunFileContent(f.download_url);
+                const metrics = parseRunText(text);
+                metrics.run=f.name;
+                allRunsData.push(metrics);
+            }
+
+            metricsKeys = Object.keys(allRunsData[0]).filter(k=>!["run","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k));
+
+            const [commits, prs] = await Promise.all([
+                fetchCommitsByDate(date),
+                fetchPRsByDate(date)
+            ]);
+
+            displayGraphs(allRunsData);
+            displayCards(allRunsData[0]);
+            displayCommitsAndPRs(commits, prs);
+        };
+
+        div.appendChild(btn);
+    });
+
+    // Home button click shows all runs
+    document.getElementById("home-btn").onclick = async ()=>{
+        allRunsData=[];
+        for(const f of files){
+            const text = await fetchRunFileContent(f.download_url);
+            const metrics = parseRunText(text);
+            metrics.run=f.name;
+            allRunsData.push(metrics);
+        }
+
+        metricsKeys = Object.keys(allRunsData[0]).filter(k=>!["run","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k));
+
+        displayGraphs(allRunsData);
+        document.getElementById("run-details").style.display="none";
+        document.getElementById("commits-prs").textContent="";
+    };
+
+    // Load Home by default
+    document.getElementById("home-btn").click();
+}
+
+buildRunList();
+</script>
 </body>
 </html>
