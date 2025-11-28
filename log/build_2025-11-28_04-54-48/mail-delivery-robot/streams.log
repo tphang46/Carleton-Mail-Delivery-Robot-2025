@@ -1,0 +1,148 @@
+[2.757s] Invoking command in '/home/capstone2526/cmdr_ws/mail-delivery-robot': PYTHONPATH=/home/capstone2526/cmdr_ws/build/mail-delivery-robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages: /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/mail-delivery-robot build --build-base /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build install --record /home/capstone2526/cmdr_ws/build/mail-delivery-robot/install.log --single-version-externally-managed install_data
+[3.773s] running egg_info
+[3.776s] creating ../build/mail-delivery-robot/mail_delivery_robot.egg-info
+[3.777s] writing ../build/mail-delivery-robot/mail_delivery_robot.egg-info/PKG-INFO
+[3.778s] writing dependency_links to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/dependency_links.txt
+[3.779s] writing entry points to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/entry_points.txt
+[3.780s] writing requirements to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/requires.txt
+[3.780s] writing top-level names to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/top_level.txt
+[3.781s] writing manifest file '../build/mail-delivery-robot/mail_delivery_robot.egg-info/SOURCES.txt'
+[3.787s] package init file 'src/tests/__init__.py' not found (or not a regular file)
+[3.790s] reading manifest file '../build/mail-delivery-robot/mail_delivery_robot.egg-info/SOURCES.txt'
+[3.791s] adding license file 'LICENSE'
+[3.795s] writing manifest file '../build/mail-delivery-robot/mail_delivery_robot.egg-info/SOURCES.txt'
+[3.796s] running build
+[3.797s] running build_py
+[3.798s] creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build
+[3.799s] creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib
+[3.799s] creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src
+[3.800s] creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors
+[3.800s] copying src/sensors/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors
+[3.801s] copying src/sensors/camera_sensor.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors
+[3.802s] copying src/sensors/beacon_sensor.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors
+[3.802s] copying src/sensors/bumper_sensor.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors
+[3.803s] copying src/sensors/lidar_sensor.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors
+[3.804s] copying src/sensors/navigation_unit.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors
+[3.805s] copying src/sensors/intersection_detection_unit.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors
+[3.806s] copying src/sensors/battery_monitor.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors
+[3.807s] creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers
+[3.807s] copying src/layers/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers
+[3.808s] copying src/layers/avoidance_layer.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers
+[3.809s] copying src/layers/docking_layer.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers
+[3.810s] copying src/layers/travel_layer.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers
+[3.811s] copying src/layers/turning_layer.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers
+[3.812s] creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication
+[3.813s] copying src/communication/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication
+[3.814s] copying src/communication/client.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication
+[3.815s] copying src/communication/music_player.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication
+[3.816s] creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control
+[3.816s] copying src/control/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control
+[3.817s] copying src/control/captain.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control
+[3.818s] copying src/control/action_translator.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control
+[3.819s] creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools
+[3.820s] copying src/tools/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools
+[3.821s] copying src/tools/csv_parser.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools
+[3.822s] copying src/tools/map.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools
+[3.822s] copying src/tools/nav_parser.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools
+[3.823s] creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tests
+[3.824s] copying src/tests/travel_analyzer.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tests
+[3.825s] creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/mail-delivery-robot
+[3.825s] copying mail-delivery-robot/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/mail-delivery-robot
+[3.827s] running install
+[3.829s] running install_lib
+[3.832s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src
+[3.833s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools
+[3.834s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools
+[3.835s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools/nav_parser.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools
+[3.835s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools/map.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools
+[3.836s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools/csv_parser.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools
+[3.837s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control
+[3.838s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control
+[3.839s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control/captain.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control
+[3.839s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control/action_translator.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control
+[3.840s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tests
+[3.841s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tests/travel_analyzer.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tests
+[3.842s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors
+[3.843s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/lidar_sensor.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors
+[3.844s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/navigation_unit.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors
+[3.844s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/battery_monitor.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors
+[3.845s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors
+[3.846s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/intersection_detection_unit.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors
+[3.847s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/beacon_sensor.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors
+[3.848s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/bumper_sensor.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors
+[3.849s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/camera_sensor.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors
+[3.850s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers
+[3.851s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers
+[3.852s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers/docking_layer.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers
+[3.853s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers/travel_layer.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers
+[3.854s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers/avoidance_layer.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers
+[3.855s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers/turning_layer.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers
+[3.856s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication
+[3.856s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication
+[3.857s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication/client.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication
+[3.858s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication/music_player.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication
+[3.859s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail-delivery-robot
+[3.860s] copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/mail-delivery-robot/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail-delivery-robot
+[3.862s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools/__init__.py to __init__.cpython-310.pyc
+[3.864s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools/nav_parser.py to nav_parser.cpython-310.pyc
+[3.866s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools/map.py to map.cpython-310.pyc
+[3.868s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools/csv_parser.py to csv_parser.cpython-310.pyc
+[3.870s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control/__init__.py to __init__.cpython-310.pyc
+[3.871s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control/captain.py to captain.cpython-310.pyc
+[3.875s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control/action_translator.py to action_translator.cpython-310.pyc
+[3.877s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tests/travel_analyzer.py to travel_analyzer.cpython-310.pyc
+[3.880s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/lidar_sensor.py to lidar_sensor.cpython-310.pyc
+[3.884s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/navigation_unit.py to navigation_unit.cpython-310.pyc
+[3.887s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/battery_monitor.py to battery_monitor.cpython-310.pyc
+[3.891s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/__init__.py to __init__.cpython-310.pyc
+[3.892s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/intersection_detection_unit.py to intersection_detection_unit.cpython-310.pyc
+[3.895s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/beacon_sensor.py to beacon_sensor.cpython-310.pyc
+[3.898s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/bumper_sensor.py to bumper_sensor.cpython-310.pyc
+[3.901s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/camera_sensor.py to camera_sensor.cpython-310.pyc
+[3.903s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers/__init__.py to __init__.cpython-310.pyc
+[3.905s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers/docking_layer.py to docking_layer.cpython-310.pyc
+[3.908s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers/travel_layer.py to travel_layer.cpython-310.pyc
+[3.912s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers/avoidance_layer.py to avoidance_layer.cpython-310.pyc
+[3.916s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers/turning_layer.py to turning_layer.cpython-310.pyc
+[3.919s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication/__init__.py to __init__.cpython-310.pyc
+[3.921s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication/client.py to client.cpython-310.pyc
+[3.922s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication/music_player.py to music_player.cpython-310.pyc
+[3.927s] byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail-delivery-robot/__init__.py to __init__.cpython-310.pyc
+[3.929s] running install_data
+[3.929s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/ament_index
+[3.930s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/ament_index/resource_index
+[3.930s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/ament_index/resource_index/packages
+[3.931s] copying resource/mail-delivery-robot -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/ament_index/resource_index/packages
+[3.931s] copying package.xml -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot
+[3.932s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[3.932s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[3.933s] copying src/config/config.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[3.933s] copying src/config/map.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[3.934s] copying src/config/battery_config.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[3.935s] copying src/config/beacons.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[3.935s] copying src/config/beacon_connections.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[3.936s] creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+[3.937s] copying launch/analysis.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+[3.937s] copying launch/fair_demo.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+[3.938s] copying launch/robot_with_music.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+[3.939s] copying launch/robot.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+[3.939s] running install_egg_info
+[3.946s] Copying ../build/mail-delivery-robot/mail_delivery_robot.egg-info to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail_delivery_robot-0.0.0-py3.10.egg-info
+[3.952s] running install_scripts
+[4.040s] Installing avoidance_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.040s] Installing battery_monitor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.041s] Installing beacon_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.042s] Installing bumper_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.043s] Installing camera_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.044s] Installing captain script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.045s] Installing client script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.045s] Installing docking_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.046s] Installing intersection_detection_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.047s] Installing lidar_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.047s] Installing music_player script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.051s] Installing navigation_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.051s] Installing travel_analyzer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.051s] Installing travel_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.052s] Installing turning_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[4.053s] writing list of installed files to '/home/capstone2526/cmdr_ws/build/mail-delivery-robot/install.log'
+[4.167s] Invoked command in '/home/capstone2526/cmdr_ws/mail-delivery-robot' returned '0': PYTHONPATH=/home/capstone2526/cmdr_ws/build/mail-delivery-robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages: /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/mail-delivery-robot build --build-base /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build install --record /home/capstone2526/cmdr_ws/build/mail-delivery-robot/install.log --single-version-externally-managed install_data

@@ -7,27 +7,8 @@ package_name = 'mail-delivery-robot'
 setup(
     name=package_name,
     version='0.0.0',
-    packages=find_packages(exclude=['test']),
-    py_modules=['src.sensors.camera_sensor',
-                'src.sensors.beacon_sensor',
-                'src.sensors.bumper_sensor',
-                'src.sensors.lidar_sensor',
-                'src.sensors.navigation_unit',
-                'src.sensors.intersection_detection_unit',
-                'src.sensors.battery_monitor',
-                'src.layers.avoidance_layer',
-                'src.layers.docking_layer',
-                'src.layers.travel_layer',
-                'src.layers.turning_layer',
-                'src.communication.client',
-                'src.communication.music_player',
-                'src.control.captain',
-                'src.control.action_translator',
-                'src.tools.csv_parser',
-                'src.tools.map',
-                'src.tools.nav_parser',
-                'src.tests.travel_analyzer'
-    ],
+    packages=find_packages(where='src', exclude=['test']),  # Include all packages inside src
+    package_dir={'': 'src'},  # Tell setuptools that the Python packages are under the src directory
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
         ('share/' + package_name, ['package.xml']),

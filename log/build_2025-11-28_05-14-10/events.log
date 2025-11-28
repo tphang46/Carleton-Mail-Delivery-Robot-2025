@@ -1,0 +1,93 @@
+[0.000000] (-) TimerEvent: {}
+[0.001432] (-) JobUnselected: {'identifier': 'sllidar_ros2'}
+[0.001693] (mail-delivery-robot) JobQueued: {'identifier': 'mail-delivery-robot', 'dependencies': OrderedDict()}
+[0.002037] (mail-delivery-robot) JobStarted: {'identifier': 'mail-delivery-robot'}
+[0.097825] (-) TimerEvent: {}
+[0.198647] (-) TimerEvent: {}
+[0.299539] (-) TimerEvent: {}
+[0.400253] (-) TimerEvent: {}
+[0.501042] (-) TimerEvent: {}
+[0.601752] (-) TimerEvent: {}
+[0.702432] (-) TimerEvent: {}
+[0.803183] (-) TimerEvent: {}
+[0.903922] (-) TimerEvent: {}
+[1.004624] (-) TimerEvent: {}
+[1.105368] (-) TimerEvent: {}
+[1.206204] (-) TimerEvent: {}
+[1.306972] (-) TimerEvent: {}
+[1.407787] (-) TimerEvent: {}
+[1.509064] (-) TimerEvent: {}
+[1.609895] (-) TimerEvent: {}
+[1.710659] (-) TimerEvent: {}
+[1.811352] (-) TimerEvent: {}
+[1.912155] (-) TimerEvent: {}
+[2.012971] (-) TimerEvent: {}
+[2.113704] (-) TimerEvent: {}
+[2.214425] (-) TimerEvent: {}
+[2.315160] (-) TimerEvent: {}
+[2.415816] (-) TimerEvent: {}
+[2.516574] (-) TimerEvent: {}
+[2.617264] (-) TimerEvent: {}
+[2.718000] (-) TimerEvent: {}
+[2.818724] (-) TimerEvent: {}
+[2.919505] (-) TimerEvent: {}
+[3.020356] (-) TimerEvent: {}
+[3.121131] (-) TimerEvent: {}
+[3.221900] (-) TimerEvent: {}
+[3.323075] (-) TimerEvent: {}
+[3.424308] (-) TimerEvent: {}
+[3.438999] (mail-delivery-robot) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../build/mail-delivery-robot', 'build', '--build-base', '/home/capstone2526/cmdr_ws/build/mail-delivery-robot/build', 'install', '--record', '/home/capstone2526/cmdr_ws/build/mail-delivery-robot/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/capstone2526/cmdr_ws/mail-delivery-robot', 'env': {'PYTHON_BASIC_REPL': '1', 'USER': 'capstone2526', 'SSH_CLIENT': '172.17.132.206 56304 22', 'XDG_SESSION_TYPE': 'tty', 'GIT_ASKPASS': '/home/capstone2526/.vscode-server/cli/servers/Stable-bf9252a2fb45be6893dd8870c0bf37e2e1766d61/server/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'LD_LIBRARY_PATH': '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/aarch64-linux-gnu:/opt/ros/humble/lib', 'BROWSER': '/home/capstone2526/.vscode-server/cli/servers/Stable-bf9252a2fb45be6893dd8870c0bf37e2e1766d61/server/bin/helpers/browser.sh', 'MOTD_SHOWN': 'pam', 'HOME': '/home/capstone2526', 'TERM_PROGRAM_VERSION': '1.106.3', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-1247b9f9-4bb8-420c-9c16-38b3562b1826.sock', 'ROS_PYTHON_VERSION': '3', 'VSCODE_GIT_ASKPASS_MAIN': '/home/capstone2526/.vscode-server/cli/servers/Stable-bf9252a2fb45be6893dd8870c0bf37e2e1766d61/server/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/capstone2526/.vscode-server/cli/servers/Stable-bf9252a2fb45be6893dd8870c0bf37e2e1766d61/server/node', 'SSL_CERT_FILE': '/usr/lib/ssl/certs/ca-certificates.crt', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'BUNDLED_DEBUGPY_PATH': '/home/capstone2526/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/libs/debugpy', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'COLCON_PREFIX_PATH': '/home/capstone2526/cmdr_ws/install', 'ROS_DISTRO': 'humble', 'LOGNAME': 'capstone2526', '_': '/usr/bin/colcon', 'ROS_VERSION': '2', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '4', 'ROS_LOCALHOST_ONLY': '0', 'PATH': '/opt/ros/humble/bin:/home/capstone2526/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/capstone2526/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/capstone2526/.vscode-server/cli/servers/Stable-bf9252a2fb45be6893dd8870c0bf37e2e1766d61/server/bin/remote-cli:/home/capstone2526/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/capstone2526/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/scripts/noConfigScripts', 'XDG_RUNTIME_DIR': '/run/user/1000', 'SSL_CERT_DIR': '/usr/lib/ssl/certs', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/capstone2526/.vscode-server/extensions/ms-python.debugpy-2025.16.0/.noConfigDebugAdapterEndpoints/endpoint-3c8d21f8e95386c0.txt', 'LANG': 'en_US.UTF-8', 'PYTHONSTARTUP': '/home/capstone2526/.vscode-server/data/User/workspaceStorage/336e78dcfc62218b9d0d469ad0912b0a/ms-python.python/pythonrc.py', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-7fd24fec51.sock', 'TERM_PROGRAM': 'vscode', 'AMENT_PREFIX_PATH': '/home/capstone2526/cmdr_ws/install/sllidar_ros2:/home/capstone2526/cmdr_ws/install/mail-delivery-robot:/opt/ros/humble', 'SHELL': '/bin/bash', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/home/capstone2526/cmdr_ws/build/mail-delivery-robot', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '172.17.132.206 56304 172.17.148.123 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'PYTHONPATH': '/home/capstone2526/cmdr_ws/build/mail-delivery-robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages:/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages', 'COLCON': '1', 'CMAKE_PREFIX_PATH': '/home/capstone2526/cmdr_ws/install/sllidar_ros2'}, 'shell': False}
+[3.524472] (-) TimerEvent: {}
+[3.625219] (-) TimerEvent: {}
+[3.725992] (-) TimerEvent: {}
+[3.826729] (-) TimerEvent: {}
+[3.927489] (-) TimerEvent: {}
+[4.028229] (-) TimerEvent: {}
+[4.128988] (-) TimerEvent: {}
+[4.229678] (-) TimerEvent: {}
+[4.330371] (-) TimerEvent: {}
+[4.431183] (-) TimerEvent: {}
+[4.531927] (-) TimerEvent: {}
+[4.632661] (-) TimerEvent: {}
+[4.733441] (-) TimerEvent: {}
+[4.790794] (mail-delivery-robot) StdoutLine: {'line': b'running egg_info\n'}
+[4.794118] (mail-delivery-robot) StdoutLine: {'line': b'writing ../build/mail-delivery-robot/mail_delivery_robot.egg-info/PKG-INFO\n'}
+[4.795371] (mail-delivery-robot) StdoutLine: {'line': b'writing dependency_links to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/dependency_links.txt\n'}
+[4.796752] (mail-delivery-robot) StdoutLine: {'line': b'writing entry points to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/entry_points.txt\n'}
+[4.797643] (mail-delivery-robot) StdoutLine: {'line': b'writing requirements to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/requires.txt\n'}
+[4.798286] (mail-delivery-robot) StdoutLine: {'line': b'writing top-level names to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/top_level.txt\n'}
+[4.811682] (mail-delivery-robot) StdoutLine: {'line': b"reading manifest file '../build/mail-delivery-robot/mail_delivery_robot.egg-info/SOURCES.txt'\n"}
+[4.814394] (mail-delivery-robot) StdoutLine: {'line': b"adding license file 'LICENSE'\n"}
+[4.819035] (mail-delivery-robot) StdoutLine: {'line': b"writing manifest file '../build/mail-delivery-robot/mail_delivery_robot.egg-info/SOURCES.txt'\n"}
+[4.819775] (mail-delivery-robot) StdoutLine: {'line': b'running build\n'}
+[4.820338] (mail-delivery-robot) StdoutLine: {'line': b'running build_py\n'}
+[4.833592] (-) TimerEvent: {}
+[4.834169] (mail-delivery-robot) StdoutLine: {'line': b'running install\n'}
+[4.835160] (mail-delivery-robot) StdoutLine: {'line': b'running install_lib\n'}
+[4.873405] (mail-delivery-robot) StdoutLine: {'line': b'running install_data\n'}
+[4.876040] (mail-delivery-robot) StdoutLine: {'line': b'running install_egg_info\n'}
+[4.883366] (mail-delivery-robot) StdoutLine: {'line': b"removing '/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail_delivery_robot-0.0.0-py3.10.egg-info' (and everything under it)\n"}
+[4.885438] (mail-delivery-robot) StdoutLine: {'line': b'Copying ../build/mail-delivery-robot/mail_delivery_robot.egg-info to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail_delivery_robot-0.0.0-py3.10.egg-info\n'}
+[4.891727] (mail-delivery-robot) StdoutLine: {'line': b'running install_scripts\n'}
+[4.933760] (-) TimerEvent: {}
+[4.979512] (mail-delivery-robot) StdoutLine: {'line': b'Installing avoidance_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.980521] (mail-delivery-robot) StdoutLine: {'line': b'Installing battery_monitor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.981462] (mail-delivery-robot) StdoutLine: {'line': b'Installing beacon_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.982321] (mail-delivery-robot) StdoutLine: {'line': b'Installing bumper_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.983267] (mail-delivery-robot) StdoutLine: {'line': b'Installing camera_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.984300] (mail-delivery-robot) StdoutLine: {'line': b'Installing captain script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.985488] (mail-delivery-robot) StdoutLine: {'line': b'Installing client script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.986535] (mail-delivery-robot) StdoutLine: {'line': b'Installing docking_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.987516] (mail-delivery-robot) StdoutLine: {'line': b'Installing intersection_detection_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.988452] (mail-delivery-robot) StdoutLine: {'line': b'Installing lidar_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.989412] (mail-delivery-robot) StdoutLine: {'line': b'Installing music_player script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.990406] (mail-delivery-robot) StdoutLine: {'line': b'Installing navigation_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.991312] (mail-delivery-robot) StdoutLine: {'line': b'Installing travel_analyzer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.992226] (mail-delivery-robot) StdoutLine: {'line': b'Installing travel_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.993123] (mail-delivery-robot) StdoutLine: {'line': b'Installing turning_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.998457] (mail-delivery-robot) StdoutLine: {'line': b"writing list of installed files to '/home/capstone2526/cmdr_ws/build/mail-delivery-robot/install.log'\n"}
+[5.034063] (-) TimerEvent: {}
+[5.116118] (mail-delivery-robot) CommandEnded: {'returncode': 0}
+[5.134160] (-) TimerEvent: {}
+[5.177572] (mail-delivery-robot) JobEnded: {'identifier': 'mail-delivery-robot', 'rc': 0}
+[5.180256] (-) EventReactorShutdown: {}

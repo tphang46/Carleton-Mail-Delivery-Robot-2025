@@ -1,0 +1,36 @@
+[3.814s] Invoking command in '/home/capstone2526/cmdr_ws/mail-delivery-robot': PYTHONPATH=/home/capstone2526/cmdr_ws/build/mail-delivery-robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/mail-delivery-robot build --build-base /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build install --record /home/capstone2526/cmdr_ws/build/mail-delivery-robot/install.log --single-version-externally-managed install_data
+[5.313s] running egg_info
+[5.316s] writing ../build/mail-delivery-robot/mail_delivery_robot.egg-info/PKG-INFO
+[5.318s] writing dependency_links to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/dependency_links.txt
+[5.319s] writing entry points to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/entry_points.txt
+[5.320s] writing requirements to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/requires.txt
+[5.321s] writing top-level names to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/top_level.txt
+[5.337s] reading manifest file '../build/mail-delivery-robot/mail_delivery_robot.egg-info/SOURCES.txt'
+[5.340s] adding license file 'LICENSE'
+[5.345s] writing manifest file '../build/mail-delivery-robot/mail_delivery_robot.egg-info/SOURCES.txt'
+[5.346s] running build
+[5.346s] running build_py
+[5.360s] running install
+[5.362s] running install_lib
+[5.401s] running install_data
+[5.404s] running install_egg_info
+[5.412s] removing '/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail_delivery_robot-0.0.0-py3.10.egg-info' (and everything under it)
+[5.414s] Copying ../build/mail-delivery-robot/mail_delivery_robot.egg-info to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail_delivery_robot-0.0.0-py3.10.egg-info
+[5.421s] running install_scripts
+[5.516s] Installing avoidance_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.517s] Installing battery_monitor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.518s] Installing beacon_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.522s] Installing bumper_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.523s] Installing camera_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.523s] Installing captain script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.525s] Installing client script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.528s] Installing docking_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.531s] Installing intersection_detection_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.532s] Installing lidar_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.533s] Installing music_player script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.533s] Installing navigation_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.534s] Installing travel_analyzer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.539s] Installing travel_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.539s] Installing turning_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[5.540s] writing list of installed files to '/home/capstone2526/cmdr_ws/build/mail-delivery-robot/install.log'
+[5.666s] Invoked command in '/home/capstone2526/cmdr_ws/mail-delivery-robot' returned '0': PYTHONPATH=/home/capstone2526/cmdr_ws/build/mail-delivery-robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py egg_info --egg-base ../build/mail-delivery-robot build --build-base /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build install --record /home/capstone2526/cmdr_ws/build/mail-delivery-robot/install.log --single-version-externally-managed install_data

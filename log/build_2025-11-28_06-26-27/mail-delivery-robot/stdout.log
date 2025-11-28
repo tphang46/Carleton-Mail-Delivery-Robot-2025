@@ -1,0 +1,40 @@
+running develop
+running egg_info
+writing src/mail_delivery_robot.egg-info/PKG-INFO
+writing dependency_links to src/mail_delivery_robot.egg-info/dependency_links.txt
+writing entry points to src/mail_delivery_robot.egg-info/entry_points.txt
+writing requirements to src/mail_delivery_robot.egg-info/requires.txt
+writing top-level names to src/mail_delivery_robot.egg-info/top_level.txt
+reading manifest file 'src/mail_delivery_robot.egg-info/SOURCES.txt'
+writing manifest file 'src/mail_delivery_robot.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail-delivery-robot.egg-link (link to src)
+Installing avoidance_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing battery_monitor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing beacon_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing bumper_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing camera_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing captain script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing client script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing docking_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing intersection_detection_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing lidar_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing music_player script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing navigation_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing travel_analyzer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing travel_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+Installing turning_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+
+Installed /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src
+running symlink_data
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/resource/mail-delivery-robot -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/ament_index/resource_index/packages
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/package.xml -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src/config/config.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src/config/map.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src/config/battery_config.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src/config/beacons.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src/config/beacon_connections.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/launch/analysis.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/launch/fair_demo.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/launch/robot_with_music.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/launch/robot.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch

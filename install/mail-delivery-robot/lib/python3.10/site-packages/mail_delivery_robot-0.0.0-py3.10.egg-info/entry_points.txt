@@ -1,0 +1,17 @@
+[console_scripts]
+avoidance_layer = src.layers.avoidance_layer:main
+battery_monitor = src.sensors.battery_monitor:main
+beacon_sensor = src.sensors.beacon_sensor:main
+bumper_sensor = src.sensors.bumper_sensor:main
+camera_sensor = src.sensors.camera_sensor:main
+captain = src.control.captain:main
+client = src.communication.client:main
+docking_layer = src.layers.docking_layer:main
+intersection_detection_unit = src.sensors.intersection_detection_unit:main
+lidar_sensor = src.sensors.lidar_sensor:main
+music_player = src.communication.music_player:main
+navigation_unit = src.sensors.navigation_unit:main
+travel_analyzer = src.tests.travel_analyzer:main
+travel_layer = src.layers.travel_layer:main
+turning_layer = src.layers.turning_layer:main
+

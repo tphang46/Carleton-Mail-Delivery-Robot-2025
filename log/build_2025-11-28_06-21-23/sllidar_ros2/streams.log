@@ -1,0 +1,74 @@
+[1.541s] Invoking command in '/home/capstone2526/cmdr_ws/build/sllidar_ros2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/capstone2526/cmdr_ws/install/mail-delivery-robot:/opt/ros/humble /usr/bin/cmake /home/capstone2526/cmdr_ws/sllidar_ros2 -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/capstone2526/cmdr_ws/install/sllidar_ros2
+[1.634s] -- Found ament_cmake: 1.3.12 (/opt/ros/humble/share/ament_cmake/cmake)
+[2.368s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[2.462s] -- Found rclcpp: 16.0.14 (/opt/ros/humble/share/rclcpp/cmake)
+[2.724s] -- Found rosidl_generator_c: 3.1.7 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[2.745s] -- Found rosidl_adapter: 3.1.7 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[2.789s] -- Found rosidl_generator_cpp: 3.1.7 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[2.861s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[2.953s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[3.198s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[3.215s] -- Found rmw_fastrtps_cpp: 6.2.8 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[4.666s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[4.997s] -- Found sensor_msgs: 4.9.0 (/opt/ros/humble/share/sensor_msgs/cmake)
+[5.188s] -- Found std_srvs: 4.9.0 (/opt/ros/humble/share/std_srvs/cmake)
+[5.666s] -- Configuring done
+[5.786s] -- Generating done
+[5.818s] -- Build files have been written to: /home/capstone2526/cmdr_ws/build/sllidar_ros2
+[5.859s] Invoked command in '/home/capstone2526/cmdr_ws/build/sllidar_ros2' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/capstone2526/cmdr_ws/install/mail-delivery-robot:/opt/ros/humble /usr/bin/cmake /home/capstone2526/cmdr_ws/sllidar_ros2 -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/capstone2526/cmdr_ws/install/sllidar_ros2
+[5.861s] Invoking command in '/home/capstone2526/cmdr_ws/build/sllidar_ros2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/capstone2526/cmdr_ws/install/mail-delivery-robot:/opt/ros/humble /usr/bin/cmake --build /home/capstone2526/cmdr_ws/build/sllidar_ros2 -- -j4 -l4
+[6.184s] [35m[1mConsolidate compiler generated dependencies of target sllidar_node[0m
+[6.228s] [35m[1mConsolidate compiler generated dependencies of target sllidar_client[0m
+[6.506s] [  5%] [32m[1mLinking CXX executable sllidar_client[0m
+[6.586s] [ 10%] [32m[1mLinking CXX executable sllidar_node[0m
+[9.570s] [ 95%] Built target sllidar_node
+[10.091s] [100%] Built target sllidar_client
+[10.237s] Invoked command in '/home/capstone2526/cmdr_ws/build/sllidar_ros2' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/capstone2526/cmdr_ws/install/mail-delivery-robot:/opt/ros/humble /usr/bin/cmake --build /home/capstone2526/cmdr_ws/build/sllidar_ros2 -- -j4 -l4
+[10.299s] Invoking command in '/home/capstone2526/cmdr_ws/build/sllidar_ros2': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/capstone2526/cmdr_ws/install/mail-delivery-robot:/opt/ros/humble /usr/bin/cmake --install /home/capstone2526/cmdr_ws/build/sllidar_ros2
+[10.342s] -- Install configuration: ""
+[10.350s] -- Execute custom install script
+[10.367s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_a1_launch.py
+[10.411s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_a2m12_launch .py
+[10.451s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_a2m7_launch.py
+[10.495s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_a2m8_launch.py
+[10.534s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_a3_launch.py
+[10.570s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_c1_launch.py
+[10.612s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_s1_launch.py
+[10.666s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_s1_tcp_launch.py
+[10.710s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_s2_launch.py
+[10.750s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_s2e_launch.py
+[10.788s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_s3_launch.py
+[10.827s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/sllidar_t1_launch.py
+[10.862s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_a1_launch.py
+[10.899s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_a2m12_launch.py
+[10.936s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_a2m7_launch.py
+[10.971s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_a2m8_launch.py
+[11.007s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_a3_launch.py
+[11.041s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_c1_launch.py
+[11.082s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_s1_launch.py
+[11.131s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_s1_tcp_launch.py
+[11.180s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_s2_launch.py
+[11.226s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_s2e_launch.py
+[11.263s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_s3_launch.py
+[11.299s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/launch/view_sllidar_t1_launch.py
+[11.337s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/rviz/sllidar_ros2.rviz
+[11.374s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/lib/sllidar_ros2/sllidar_node
+[11.411s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/lib/sllidar_ros2/sllidar_client
+[11.448s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/ament_index/resource_index/package_run_dependencies/sllidar_ros2
+[11.485s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/ament_index/resource_index/parent_prefix_path/sllidar_ros2
+[11.522s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/environment/ament_prefix_path.sh
+[11.562s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/environment/ament_prefix_path.dsv
+[11.609s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/environment/path.sh
+[11.647s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/environment/path.dsv
+[11.686s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/local_setup.bash
+[11.723s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/local_setup.sh
+[11.758s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/local_setup.zsh
+[11.795s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/local_setup.dsv
+[11.830s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/package.dsv
+[11.866s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/ament_index/resource_index/packages/sllidar_ros2
+[11.902s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/cmake/ament_cmake_export_dependencies-extras.cmake
+[11.939s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/cmake/ament_cmake_export_include_directories-extras.cmake
+[11.975s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/cmake/sllidar_ros2Config.cmake
+[12.011s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/cmake/sllidar_ros2Config-version.cmake
+[12.046s] -- Symlinking: /home/capstone2526/cmdr_ws/install/sllidar_ros2/share/sllidar_ros2/package.xml
+[12.097s] Invoked command in '/home/capstone2526/cmdr_ws/build/sllidar_ros2' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/home/capstone2526/cmdr_ws/install/mail-delivery-robot:/opt/ros/humble /usr/bin/cmake --install /home/capstone2526/cmdr_ws/build/sllidar_ros2

@@ -1,0 +1,196 @@
+[0.000000] (-) TimerEvent: {}
+[0.001226] (-) JobUnselected: {'identifier': 'sllidar_ros2'}
+[0.002444] (mail-delivery-robot) JobQueued: {'identifier': 'mail-delivery-robot', 'dependencies': OrderedDict()}
+[0.003351] (mail-delivery-robot) JobStarted: {'identifier': 'mail-delivery-robot'}
+[0.098257] (-) TimerEvent: {}
+[0.199924] (-) TimerEvent: {}
+[0.300886] (-) TimerEvent: {}
+[0.401560] (-) TimerEvent: {}
+[0.502310] (-) TimerEvent: {}
+[0.602948] (-) TimerEvent: {}
+[0.703590] (-) TimerEvent: {}
+[0.804215] (-) TimerEvent: {}
+[0.904919] (-) TimerEvent: {}
+[1.005584] (-) TimerEvent: {}
+[1.106420] (-) TimerEvent: {}
+[1.207305] (-) TimerEvent: {}
+[1.307982] (-) TimerEvent: {}
+[1.408664] (-) TimerEvent: {}
+[1.509344] (-) TimerEvent: {}
+[1.610032] (-) TimerEvent: {}
+[1.710677] (-) TimerEvent: {}
+[1.811328] (-) TimerEvent: {}
+[1.911962] (-) TimerEvent: {}
+[2.012649] (-) TimerEvent: {}
+[2.113306] (-) TimerEvent: {}
+[2.213936] (-) TimerEvent: {}
+[2.314605] (-) TimerEvent: {}
+[2.415262] (-) TimerEvent: {}
+[2.515954] (-) TimerEvent: {}
+[2.616800] (-) TimerEvent: {}
+[2.717930] (-) TimerEvent: {}
+[2.750702] (mail-delivery-robot) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'egg_info', '--egg-base', '../build/mail-delivery-robot', 'build', '--build-base', '/home/capstone2526/cmdr_ws/build/mail-delivery-robot/build', 'install', '--record', '/home/capstone2526/cmdr_ws/build/mail-delivery-robot/install.log', '--single-version-externally-managed', 'install_data'], 'cwd': '/home/capstone2526/cmdr_ws/mail-delivery-robot', 'env': {'PYTHON_BASIC_REPL': '1', 'USER': 'capstone2526', 'SSH_CLIENT': '172.17.132.206 56304 22', 'XDG_SESSION_TYPE': 'tty', 'GIT_ASKPASS': '/home/capstone2526/.vscode-server/cli/servers/Stable-bf9252a2fb45be6893dd8870c0bf37e2e1766d61/server/extensions/git/dist/askpass.sh', 'SHLVL': '1', 'BROWSER': '/home/capstone2526/.vscode-server/cli/servers/Stable-bf9252a2fb45be6893dd8870c0bf37e2e1766d61/server/bin/helpers/browser.sh', 'MOTD_SHOWN': 'pam', 'HOME': '/home/capstone2526', 'OLDPWD': '/home/capstone2526/cmdr_ws/src/sllidar_ros2', 'TERM_PROGRAM_VERSION': '1.106.3', 'VSCODE_IPC_HOOK_CLI': '/run/user/1000/vscode-ipc-1e4cb1da-7be0-4dae-928a-0b258c0119f2.sock', 'VSCODE_GIT_ASKPASS_MAIN': '/home/capstone2526/.vscode-server/cli/servers/Stable-bf9252a2fb45be6893dd8870c0bf37e2e1766d61/server/extensions/git/dist/askpass-main.js', 'VSCODE_GIT_ASKPASS_NODE': '/home/capstone2526/.vscode-server/cli/servers/Stable-bf9252a2fb45be6893dd8870c0bf37e2e1766d61/server/node', 'SSL_CERT_FILE': '/usr/lib/ssl/certs/ca-certificates.crt', 'PYDEVD_DISABLE_FILE_VALIDATION': '1', 'BUNDLED_DEBUGPY_PATH': '/home/capstone2526/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/libs/debugpy', 'VSCODE_PYTHON_AUTOACTIVATE_GUARD': '1', 'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/1000/bus', 'COLORTERM': 'truecolor', 'LOGNAME': 'capstone2526', '_': '/usr/bin/colcon', 'XDG_SESSION_CLASS': 'user', 'TERM': 'xterm-256color', 'XDG_SESSION_ID': '4', 'PATH': '/home/capstone2526/.vscode-server/data/User/globalStorage/github.copilot-chat/debugCommand:/home/capstone2526/.vscode-server/data/User/globalStorage/github.copilot-chat/copilotCli:/home/capstone2526/.vscode-server/cli/servers/Stable-bf9252a2fb45be6893dd8870c0bf37e2e1766d61/server/bin/remote-cli:/home/capstone2526/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/capstone2526/.vscode-server/extensions/ms-python.debugpy-2025.16.0/bundled/scripts/noConfigScripts', 'XDG_RUNTIME_DIR': '/run/user/1000', 'SSL_CERT_DIR': '/usr/lib/ssl/certs', 'VSCODE_DEBUGPY_ADAPTER_ENDPOINTS': '/home/capstone2526/.vscode-server/extensions/ms-python.debugpy-2025.16.0/.noConfigDebugAdapterEndpoints/endpoint-3c8d21f8e95386c0.txt', 'LANG': 'en_US.UTF-8', 'PYTHONSTARTUP': '/home/capstone2526/.vscode-server/data/User/workspaceStorage/336e78dcfc62218b9d0d469ad0912b0a/ms-python.python/pythonrc.py', 'VSCODE_GIT_IPC_HANDLE': '/run/user/1000/vscode-git-7fd24fec51.sock', 'TERM_PROGRAM': 'vscode', 'SHELL': '/bin/bash', 'VSCODE_GIT_ASKPASS_EXTRA_ARGS': '', 'PWD': '/home/capstone2526/cmdr_ws/build/mail-delivery-robot', 'LC_ALL': 'en_US.UTF-8', 'SSH_CONNECTION': '172.17.132.206 56304 172.17.148.123 22', 'XDG_DATA_DIRS': '/usr/local/share:/usr/share:/var/lib/snapd/desktop', 'COLCON': '1', 'PYTHONPATH': '/home/capstone2526/cmdr_ws/build/mail-delivery-robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages:'}, 'shell': False}
+[2.818084] (-) TimerEvent: {}
+[2.918733] (-) TimerEvent: {}
+[3.019393] (-) TimerEvent: {}
+[3.120054] (-) TimerEvent: {}
+[3.220733] (-) TimerEvent: {}
+[3.321372] (-) TimerEvent: {}
+[3.422062] (-) TimerEvent: {}
+[3.522682] (-) TimerEvent: {}
+[3.623358] (-) TimerEvent: {}
+[3.724013] (-) TimerEvent: {}
+[3.777411] (mail-delivery-robot) StdoutLine: {'line': b'running egg_info\n'}
+[3.780100] (mail-delivery-robot) StdoutLine: {'line': b'creating ../build/mail-delivery-robot/mail_delivery_robot.egg-info\n'}
+[3.780823] (mail-delivery-robot) StdoutLine: {'line': b'writing ../build/mail-delivery-robot/mail_delivery_robot.egg-info/PKG-INFO\n'}
+[3.782013] (mail-delivery-robot) StdoutLine: {'line': b'writing dependency_links to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/dependency_links.txt\n'}
+[3.783146] (mail-delivery-robot) StdoutLine: {'line': b'writing entry points to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/entry_points.txt\n'}
+[3.783829] (mail-delivery-robot) StdoutLine: {'line': b'writing requirements to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/requires.txt\n'}
+[3.784494] (mail-delivery-robot) StdoutLine: {'line': b'writing top-level names to ../build/mail-delivery-robot/mail_delivery_robot.egg-info/top_level.txt\n'}
+[3.785504] (mail-delivery-robot) StdoutLine: {'line': b"writing manifest file '../build/mail-delivery-robot/mail_delivery_robot.egg-info/SOURCES.txt'\n"}
+[3.791357] (mail-delivery-robot) StderrLine: {'line': b"package init file 'src/tests/__init__.py' not found (or not a regular file)\n"}
+[3.794432] (mail-delivery-robot) StdoutLine: {'line': b"reading manifest file '../build/mail-delivery-robot/mail_delivery_robot.egg-info/SOURCES.txt'\n"}
+[3.795615] (mail-delivery-robot) StdoutLine: {'line': b"adding license file 'LICENSE'\n"}
+[3.799605] (mail-delivery-robot) StdoutLine: {'line': b"writing manifest file '../build/mail-delivery-robot/mail_delivery_robot.egg-info/SOURCES.txt'\n"}
+[3.800467] (mail-delivery-robot) StdoutLine: {'line': b'running build\n'}
+[3.801080] (mail-delivery-robot) StdoutLine: {'line': b'running build_py\n'}
+[3.801669] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build\n'}
+[3.802638] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib\n'}
+[3.803445] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src\n'}
+[3.803931] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors\n'}
+[3.804571] (mail-delivery-robot) StdoutLine: {'line': b'copying src/sensors/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors\n'}
+[3.805218] (mail-delivery-robot) StdoutLine: {'line': b'copying src/sensors/camera_sensor.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors\n'}
+[3.805671] (mail-delivery-robot) StdoutLine: {'line': b'copying src/sensors/beacon_sensor.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors\n'}
+[3.806390] (mail-delivery-robot) StdoutLine: {'line': b'copying src/sensors/bumper_sensor.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors\n'}
+[3.807032] (mail-delivery-robot) StdoutLine: {'line': b'copying src/sensors/lidar_sensor.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors\n'}
+[3.807919] (mail-delivery-robot) StdoutLine: {'line': b'copying src/sensors/navigation_unit.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors\n'}
+[3.808892] (mail-delivery-robot) StdoutLine: {'line': b'copying src/sensors/intersection_detection_unit.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors\n'}
+[3.809925] (mail-delivery-robot) StdoutLine: {'line': b'copying src/sensors/battery_monitor.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors\n'}
+[3.810858] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers\n'}
+[3.811572] (mail-delivery-robot) StdoutLine: {'line': b'copying src/layers/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers\n'}
+[3.812219] (mail-delivery-robot) StdoutLine: {'line': b'copying src/layers/avoidance_layer.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers\n'}
+[3.813288] (mail-delivery-robot) StdoutLine: {'line': b'copying src/layers/docking_layer.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers\n'}
+[3.814426] (mail-delivery-robot) StdoutLine: {'line': b'copying src/layers/travel_layer.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers\n'}
+[3.815432] (mail-delivery-robot) StdoutLine: {'line': b'copying src/layers/turning_layer.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers\n'}
+[3.816281] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication\n'}
+[3.817085] (mail-delivery-robot) StdoutLine: {'line': b'copying src/communication/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication\n'}
+[3.817892] (mail-delivery-robot) StdoutLine: {'line': b'copying src/communication/client.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication\n'}
+[3.818740] (mail-delivery-robot) StdoutLine: {'line': b'copying src/communication/music_player.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication\n'}
+[3.819752] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control\n'}
+[3.820520] (mail-delivery-robot) StdoutLine: {'line': b'copying src/control/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control\n'}
+[3.821174] (mail-delivery-robot) StdoutLine: {'line': b'copying src/control/captain.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control\n'}
+[3.822180] (mail-delivery-robot) StdoutLine: {'line': b'copying src/control/action_translator.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control\n'}
+[3.823090] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools\n'}
+[3.823829] (mail-delivery-robot) StdoutLine: {'line': b'copying src/tools/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools\n'}
+[3.824399] (-) TimerEvent: {}
+[3.824928] (mail-delivery-robot) StdoutLine: {'line': b'copying src/tools/csv_parser.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools\n'}
+[3.825537] (mail-delivery-robot) StdoutLine: {'line': b'copying src/tools/map.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools\n'}
+[3.826583] (mail-delivery-robot) StdoutLine: {'line': b'copying src/tools/nav_parser.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools\n'}
+[3.827403] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tests\n'}
+[3.827931] (mail-delivery-robot) StdoutLine: {'line': b'copying src/tests/travel_analyzer.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tests\n'}
+[3.828945] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/mail-delivery-robot\n'}
+[3.829505] (mail-delivery-robot) StdoutLine: {'line': b'copying mail-delivery-robot/__init__.py -> /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/mail-delivery-robot\n'}
+[3.831604] (mail-delivery-robot) StdoutLine: {'line': b'running install\n'}
+[3.833152] (mail-delivery-robot) StdoutLine: {'line': b'running install_lib\n'}
+[3.836412] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src\n'}
+[3.837507] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools\n'}
+[3.838177] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools\n'}
+[3.838962] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools/nav_parser.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools\n'}
+[3.839759] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools/map.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools\n'}
+[3.840557] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tools/csv_parser.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools\n'}
+[3.841572] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control\n'}
+[3.842223] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control\n'}
+[3.842885] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control/captain.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control\n'}
+[3.843745] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/control/action_translator.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control\n'}
+[3.844747] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tests\n'}
+[3.845281] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/tests/travel_analyzer.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tests\n'}
+[3.846432] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors\n'}
+[3.846996] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/lidar_sensor.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors\n'}
+[3.847798] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/navigation_unit.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors\n'}
+[3.848672] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/battery_monitor.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors\n'}
+[3.849495] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors\n'}
+[3.850319] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/intersection_detection_unit.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors\n'}
+[3.851374] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/beacon_sensor.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors\n'}
+[3.852361] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/bumper_sensor.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors\n'}
+[3.853326] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/sensors/camera_sensor.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors\n'}
+[3.854681] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers\n'}
+[3.855230] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers\n'}
+[3.855956] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers/docking_layer.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers\n'}
+[3.856804] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers/travel_layer.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers\n'}
+[3.857944] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers/avoidance_layer.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers\n'}
+[3.858938] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/layers/turning_layer.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers\n'}
+[3.860105] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication\n'}
+[3.860717] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication\n'}
+[3.861479] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication/client.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication\n'}
+[3.862353] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/src/communication/music_player.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication\n'}
+[3.863448] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail-delivery-robot\n'}
+[3.863985] (mail-delivery-robot) StdoutLine: {'line': b'copying /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build/lib/mail-delivery-robot/__init__.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail-delivery-robot\n'}
+[3.866551] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools/__init__.py to __init__.cpython-310.pyc\n'}
+[3.867964] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools/nav_parser.py to nav_parser.cpython-310.pyc\n'}
+[3.870216] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools/map.py to map.cpython-310.pyc\n'}
+[3.871990] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tools/csv_parser.py to csv_parser.cpython-310.pyc\n'}
+[3.874024] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control/__init__.py to __init__.cpython-310.pyc\n'}
+[3.875292] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control/captain.py to captain.cpython-310.pyc\n'}
+[3.878933] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/control/action_translator.py to action_translator.cpython-310.pyc\n'}
+[3.881075] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/tests/travel_analyzer.py to travel_analyzer.cpython-310.pyc\n'}
+[3.884433] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/lidar_sensor.py to lidar_sensor.cpython-310.pyc\n'}
+[3.888222] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/navigation_unit.py to navigation_unit.cpython-310.pyc\n'}
+[3.891549] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/battery_monitor.py to battery_monitor.cpython-310.pyc\n'}
+[3.894743] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/__init__.py to __init__.cpython-310.pyc\n'}
+[3.896009] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/intersection_detection_unit.py to intersection_detection_unit.cpython-310.pyc\n'}
+[3.899330] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/beacon_sensor.py to beacon_sensor.cpython-310.pyc\n'}
+[3.902371] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/bumper_sensor.py to bumper_sensor.cpython-310.pyc\n'}
+[3.904922] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/sensors/camera_sensor.py to camera_sensor.cpython-310.pyc\n'}
+[3.907531] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers/__init__.py to __init__.cpython-310.pyc\n'}
+[3.908861] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers/docking_layer.py to docking_layer.cpython-310.pyc\n'}
+[3.911894] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers/travel_layer.py to travel_layer.cpython-310.pyc\n'}
+[3.916581] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers/avoidance_layer.py to avoidance_layer.cpython-310.pyc\n'}
+[3.920212] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/layers/turning_layer.py to turning_layer.cpython-310.pyc\n'}
+[3.923354] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication/__init__.py to __init__.cpython-310.pyc\n'}
+[3.924527] (-) TimerEvent: {}
+[3.925036] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication/client.py to client.cpython-310.pyc\n'}
+[3.926269] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/src/communication/music_player.py to music_player.cpython-310.pyc\n'}
+[3.931519] (mail-delivery-robot) StdoutLine: {'line': b'byte-compiling /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail-delivery-robot/__init__.py to __init__.cpython-310.pyc\n'}
+[3.932900] (mail-delivery-robot) StdoutLine: {'line': b'running install_data\n'}
+[3.933480] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/ament_index\n'}
+[3.934106] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/ament_index/resource_index\n'}
+[3.934628] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/ament_index/resource_index/packages\n'}
+[3.935052] (mail-delivery-robot) StdoutLine: {'line': b'copying resource/mail-delivery-robot -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/ament_index/resource_index/packages\n'}
+[3.935538] (mail-delivery-robot) StdoutLine: {'line': b'copying package.xml -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot\n'}
+[3.936048] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[3.936595] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config\n'}
+[3.937148] (mail-delivery-robot) StdoutLine: {'line': b'copying src/config/config.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config\n'}
+[3.937648] (mail-delivery-robot) StdoutLine: {'line': b'copying src/config/map.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config\n'}
+[3.938261] (mail-delivery-robot) StdoutLine: {'line': b'copying src/config/battery_config.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config\n'}
+[3.938992] (mail-delivery-robot) StdoutLine: {'line': b'copying src/config/beacons.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config\n'}
+[3.939678] (mail-delivery-robot) StdoutLine: {'line': b'copying src/config/beacon_connections.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config\n'}
+[3.940416] (mail-delivery-robot) StdoutLine: {'line': b'creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch\n'}
+[3.940895] (mail-delivery-robot) StdoutLine: {'line': b'copying launch/analysis.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch\n'}
+[3.941559] (mail-delivery-robot) StdoutLine: {'line': b'copying launch/fair_demo.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch\n'}
+[3.942319] (mail-delivery-robot) StdoutLine: {'line': b'copying launch/robot_with_music.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch\n'}
+[3.943035] (mail-delivery-robot) StdoutLine: {'line': b'copying launch/robot.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch\n'}
+[3.943573] (mail-delivery-robot) StdoutLine: {'line': b'running install_egg_info\n'}
+[3.950538] (mail-delivery-robot) StdoutLine: {'line': b'Copying ../build/mail-delivery-robot/mail_delivery_robot.egg-info to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail_delivery_robot-0.0.0-py3.10.egg-info\n'}
+[3.956688] (mail-delivery-robot) StdoutLine: {'line': b'running install_scripts\n'}
+[4.024723] (-) TimerEvent: {}
+[4.043766] (mail-delivery-robot) StdoutLine: {'line': b'Installing avoidance_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.044489] (mail-delivery-robot) StdoutLine: {'line': b'Installing battery_monitor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.045296] (mail-delivery-robot) StdoutLine: {'line': b'Installing beacon_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.046053] (mail-delivery-robot) StdoutLine: {'line': b'Installing bumper_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.047121] (mail-delivery-robot) StdoutLine: {'line': b'Installing camera_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.047743] (mail-delivery-robot) StdoutLine: {'line': b'Installing captain script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.048834] (mail-delivery-robot) StdoutLine: {'line': b'Installing client script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.049528] (mail-delivery-robot) StdoutLine: {'line': b'Installing docking_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.050165] (mail-delivery-robot) StdoutLine: {'line': b'Installing intersection_detection_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.050767] (mail-delivery-robot) StdoutLine: {'line': b'Installing lidar_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.051675] (mail-delivery-robot) StdoutLine: {'line': b'Installing music_player script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.054857] (mail-delivery-robot) StdoutLine: {'line': b'Installing navigation_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.055393] (mail-delivery-robot) StdoutLine: {'line': b'Installing travel_analyzer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.055763] (mail-delivery-robot) StdoutLine: {'line': b'Installing travel_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.056097] (mail-delivery-robot) StdoutLine: {'line': b'Installing turning_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot\n'}
+[4.057014] (mail-delivery-robot) StdoutLine: {'line': b"writing list of installed files to '/home/capstone2526/cmdr_ws/build/mail-delivery-robot/install.log'\n"}
+[4.125093] (-) TimerEvent: {}
+[4.170614] (mail-delivery-robot) CommandEnded: {'returncode': 0}
+[4.225216] (-) TimerEvent: {}
+[4.227929] (mail-delivery-robot) JobEnded: {'identifier': 'mail-delivery-robot', 'rc': 0}
+[4.230841] (-) EventReactorShutdown: {}

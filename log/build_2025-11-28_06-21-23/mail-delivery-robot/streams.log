@@ -1,0 +1,44 @@
+[3.869s] Invoking command in '/home/capstone2526/cmdr_ws/build/mail-delivery-robot': PYTHONPATH=/home/capstone2526/cmdr_ws/build/mail-delivery-robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build --no-deps symlink_data --force
+[5.469s] running develop
+[7.112s] running egg_info
+[7.114s] creating src/mail_delivery_robot.egg-info
+[7.116s] writing src/mail_delivery_robot.egg-info/PKG-INFO
+[7.119s] writing dependency_links to src/mail_delivery_robot.egg-info/dependency_links.txt
+[7.122s] writing entry points to src/mail_delivery_robot.egg-info/entry_points.txt
+[7.124s] writing requirements to src/mail_delivery_robot.egg-info/requires.txt
+[7.126s] writing top-level names to src/mail_delivery_robot.egg-info/top_level.txt
+[7.129s] writing manifest file 'src/mail_delivery_robot.egg-info/SOURCES.txt'
+[7.145s] reading manifest file 'src/mail_delivery_robot.egg-info/SOURCES.txt'
+[7.151s] writing manifest file 'src/mail_delivery_robot.egg-info/SOURCES.txt'
+[7.163s] running build_ext
+[7.165s] Creating /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages/mail-delivery-robot.egg-link (link to src)
+[7.172s] Installing avoidance_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.175s] Installing battery_monitor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.178s] Installing beacon_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.181s] Installing bumper_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.183s] Installing camera_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.186s] Installing captain script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.191s] Installing client script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.193s] Installing docking_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.196s] Installing intersection_detection_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.198s] Installing lidar_sensor script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.201s] Installing music_player script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.203s] Installing navigation_unit script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.206s] Installing travel_analyzer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.209s] Installing travel_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.211s] Installing turning_layer script to /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot
+[7.215s] 
+[7.216s] Installed /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src
+[7.217s] running symlink_data
+[7.221s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/resource/mail-delivery-robot -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/ament_index/resource_index/packages
+[7.224s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/package.xml -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot
+[7.228s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src/config/config.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[7.231s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src/config/map.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[7.234s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src/config/battery_config.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[7.237s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src/config/beacons.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[7.241s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/src/config/beacon_connections.csv -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/mail-delivery-robot/config
+[7.244s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/launch/analysis.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+[7.247s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/launch/fair_demo.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+[7.250s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/launch/robot_with_music.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+[7.272s] symbolically linking /home/capstone2526/cmdr_ws/build/mail-delivery-robot/launch/robot.launch.py -> /home/capstone2526/cmdr_ws/install/mail-delivery-robot/share/mail-delivery-robot/launch
+[7.700s] Invoked command in '/home/capstone2526/cmdr_ws/build/mail-delivery-robot' returned '0': PYTHONPATH=/home/capstone2526/cmdr_ws/build/mail-delivery-robot/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/capstone2526/cmdr_ws/install/mail-delivery-robot/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/capstone2526/cmdr_ws/build/mail-delivery-robot/build --no-deps symlink_data --force
