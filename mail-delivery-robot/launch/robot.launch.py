@@ -1,26 +1,30 @@
+
 from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    return LaunchDescription([
+   return LaunchDescription([
         Node(
             package='sllidar_ros2',
             executable='sllidar_node',
             name='sllidar_node',
-            parameters=[{
-                'channel_type': 'serial',
-                'serial_port': '/dev/ttyUSB0',
-                'serial_baudrate': 115200,
-                'frame_id': 'laser',
-                'inverted': False,
-                'angle_compensate': True
-            }],
+            parameters=[{'channel_type': 'serial',
+                         'serial_port': '/dev/ttyUSB0',
+                         'serial_baudrate': 115200,
+                         'frame_id': 'laser',
+                         'inverted': False,
+                         'angle_compensate': True}],
             output='screen'
         ),
         Node(
             package='mail-delivery-robot',
             executable='captain',
             name='captain'
+        ),
+        Node(
+            package='mail-delivery-robot',
+            executable='camera_sensor',
+            name='camera_sensor'
         ),
         Node(
             package='mail-delivery-robot',
@@ -72,9 +76,9 @@ def generate_launch_description():
             executable='travel_layer',
             name='travel_layer'
         ),
-        Node(
-            package='mail-delivery-robot',
-            executable='logger',
-            name='logger'
-        )
-    ])
+       Node(
+           package='mail-delivery-robot',
+           executable='logger',
+           name='logger'
+       )
+   ])

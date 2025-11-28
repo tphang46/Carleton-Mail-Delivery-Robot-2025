@@ -5,12 +5,14 @@ from enum import Enum
 from irobot_create_msgs.msg import DockStatus
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 
+
 class DockingLayerStates(Enum):
     '''
     An enum for the internal states of the docking layer.
     '''
     NO_DEST = 'NO_DEST'
     HAS_DEST = 'HAS_DEST'
+
 
 class DockingLayer(Node):
     '''
@@ -23,6 +25,7 @@ class DockingLayer(Node):
     @Publishers:
     - Publishes actions to /actions
     '''
+
     def __init__(self):
         '''
         The constructor for the node.
@@ -35,13 +38,13 @@ class DockingLayer(Node):
         self.dock_visible = False
         self.is_docked = False
 
-
         self.navigation_sub = self.create_subscription(String, 'navigation', self.navigation_callback, 10)
-        self.dock_status_sub = self.create_subscription(DockStatus, 'dock_status', self.dock_status_callback, qos_profile=QoSProfile(
-            reliability=QoSReliabilityPolicy.BEST_EFFORT,
-            depth=10
-        ))
-        
+        self.dock_status_sub = self.create_subscription(DockStatus, 'dock_status', self.dock_status_callback,
+                                                        qos_profile=QoSProfile(
+                                                            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+                                                            depth=10
+                                                        ))
+
         self.action_publisher = self.create_publisher(String, 'actions', 10)
 
         self.no_msg = String()
@@ -88,12 +91,13 @@ class DockingLayer(Node):
                 self.action_publisher.publish(self.no_msg)
         else:
             self.action_publisher.publish(self.no_msg)
-        
+
 
 def main():
     rclpy.init()
     docking_layer = DockingLayer()
     rclpy.spin(docking_layer)
+
 
 if __name__ == '__main__':
     main()

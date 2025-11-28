@@ -4,6 +4,7 @@ from std_msgs.msg import String
 from enum import Enum
 from tools.csv_parser import loadConfig
 
+
 class TurningLayer(Node):
     '''
     The subsumption layer responsible for moving the robot through intersections.
@@ -15,6 +16,7 @@ class TurningLayer(Node):
     @Publishers:
     - Publishes actions to /actions
     '''
+
     def __init__(self):
         '''
         The constructor for the node.
@@ -38,15 +40,15 @@ class TurningLayer(Node):
         self.go_msg = String(data="2:GO")
 
         self.navigation_sub = self.create_subscription(String, 'navigation', self.navigation_callback, 10)
-        self.intersection_detection_sub = self.create_subscription(String, 'intersection_detection', self.intersection_detection_callback, 10)
-        
+        self.intersection_detection_sub = self.create_subscription(String, 'intersection_detection',
+                                                                   self.intersection_detection_callback, 10)
+
         self.action_publisher = self.create_publisher(String, 'actions', 10)
         self.turn_cycles = self.config["TURN_CYCLES"]
         self.u_turn_cycles = self.config["U_TURN_CYCLES"]
         self.go_cycles = self.config["TURNING_GO_CYCLES"]
 
         self.timer = self.create_timer(0.2, self.update_actions)
-
 
     def navigation_callback(self, data):
         '''
@@ -61,7 +63,7 @@ class TurningLayer(Node):
         The callback for /intersection_detection.
         Reads information about whether the robot is currently in an intersection.
         '''
-        self.in_intersection = data.data.upper() == "TRUE"  
+        self.in_intersection = data.data.upper() == "TRUE"
 
     def update_actions(self):
         '''
@@ -77,11 +79,11 @@ class TurningLayer(Node):
                 self.action_publisher.publish(self.no_msg)
                 self.nav_message_handled = True
                 self.u_turn_cycles = self.config["U_TURN_CYCLES"]
-                return  
+                return
 
         if not self.in_intersection:
-           self.action_publisher.publish(self.no_msg)
-           return  
+            self.action_publisher.publish(self.no_msg)
+            return
 
         if self.last_nav_msg is not None and not self.nav_message_handled:
             if self.turn_cycles > 0:
@@ -94,14 +96,16 @@ class TurningLayer(Node):
                     self.go_cycles -= 1
                 else:
                     self.action_publisher.publish(self.no_msg)
-                    self.nav_message_handled = True  
+                    self.nav_message_handled = True
                     self.turn_cycles = self.config["TURN_CYCLES"]
                     self.go_cycles = self.config["TURNING_GO_CYCLES"]
+
 
 def main():
     rclpy.init()
     turning_layer = TurningLayer()
     rclpy.spin(turning_layer)
+
 
 if __name__ == '__main__':
     main()
