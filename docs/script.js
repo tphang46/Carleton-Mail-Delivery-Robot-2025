@@ -1,21 +1,25 @@
 const OWNER = "tphang46";
-const REPO = "Mail-Delivery-Robot";
+const REPO = "Carleton-Mail-Delivery-Robot-2025";
+const BRANCH = "main";
 
-// Fetch list of run log files from the repo
+// Fetch all run log files from the repository
 async function fetchRunFiles() {
-    const apiUrl = `https://api.github.com/repos/${OWNER}/${REPO}/contents/src/tools/logs/runs`;
+    const apiUrl = `https://api.github.com/repos/${OWNER}/${REPO}/contents/src/tools/logs/runs?ref=${BRANCH}`;
+    console.log("Fetching run files from:", apiUrl);
     const res = await fetch(apiUrl);
+    console.log("Response status:", res.status);
     const files = await res.json();
+    console.log("Fetched files:", files);
     return files.filter(f => f.name.endsWith(".txt"));
 }
 
-// Fetch the text content of a run file
+// Fetch content of a single run file
 async function fetchRunFileContent(url) {
     const res = await fetch(url);
     return await res.text();
 }
 
-// Convert raw run log text into key/value pairs
+// Parse raw run file text into key/value pairs
 function parseRunData(text) {
     const data = {};
     text.split("\n").forEach(line => {
@@ -27,12 +31,12 @@ function parseRunData(text) {
     return data;
 }
 
-// Extract the date portion from a run filename
+// Extract date string from run filename
 function extractRunDate(filename) {
     return filename.split("_")[1];
 }
 
-// Group run files by date
+// Group run files by their date
 function groupByDate(files) {
     const groups = {};
     files.forEach(f => {
@@ -43,7 +47,7 @@ function groupByDate(files) {
     return groups;
 }
 
-// Fetch all commits that occurred on a specific date
+// Fetch commits for a specific date
 async function fetchCommitsByDate(date) {
     const since = `${date}T00:00:00Z`;
     const until = `${date}T23:59:59Z`;
@@ -52,7 +56,7 @@ async function fetchCommitsByDate(date) {
     return await res.json();
 }
 
-// Fetch all pull requests merged on a specific date
+// Fetch PRs merged on a specific date
 async function fetchPRsByDate(date) {
     const url = `https://api.github.com/search/issues?q=repo:${OWNER}/${REPO}+type:pr+merged:${date}`;
     const res = await fetch(url);
@@ -60,40 +64,29 @@ async function fetchPRsByDate(date) {
     return data.items || [];
 }
 
-// Display run, commit, and PR info for a selected date
+// Display run data, commits, and PRs for a day
 function showDailySummary(date, runDataList, commits, prs) {
     const details = {
         date,
         runs: runDataList,
-        commits: commits.map(c => ({
-            sha: c.sha,
-            message: c.commit.message
-        })),
-        prs: prs.map(p => ({
-            title: p.title,
-            number: p.number
-        }))
+        commits: commits.map(c => ({ sha: c.sha, message: c.commit.message })),
+        prs: prs.map(p => ({ title: p.title, number: p.number }))
     };
-
     document.getElementById("run-details").textContent =
         JSON.stringify(details, null, 2);
-
     drawDailyBatteryGraph(runDataList);
 }
 
-// Draw a Plotly chart of battery start/end levels for the day
+// Draw battery levels for all runs of the day
 function drawDailyBatteryGraph(allRuns) {
     const x = [];
     const y = [];
-
     allRuns.forEach(run => {
         x.push(`${run.filename} (start)`);
         y.push(parseFloat(run.battery_start));
-
         x.push(`${run.filename} (end)`);
         y.push(parseFloat(run.battery_end));
     });
-
     const trace = {
         x,
         y,
@@ -101,31 +94,30 @@ function drawDailyBatteryGraph(allRuns) {
         mode: "lines+markers",
         marker: { size: 8 }
     };
-
     Plotly.newPlot("battery_plot", [trace], {
         title: "Battery Levels for the Entire Day"
     });
 }
 
-// Build the list of dates and attach click handlers to load details
+// Build clickable list of run dates and attach handlers
 async function buildRunList() {
     const div = document.getElementById("run-list");
     div.innerHTML = "<p>Loading...</p>";
-
     const files = await fetchRunFiles();
+    if (!files.length) {
+        div.innerHTML = "<p>No runs found.</p>";
+        return;
+    }
     const groups = groupByDate(files);
-
+    console.log("Grouped runs by date:", groups);
     div.innerHTML = "<h3>Runs by Day</h3>";
-
     Object.keys(groups).forEach(date => {
         const btn = document.createElement("button");
         btn.textContent = `${date} (${groups[date].length} runs)`;
         btn.style.display = "block";
         btn.style.margin = "5px 0";
-
         btn.onclick = async () => {
             const runFiles = groups[date];
-
             const runDataList = [];
             for (const f of runFiles) {
                 const raw = await fetchRunFileContent(f.download_url);
@@ -133,15 +125,12 @@ async function buildRunList() {
                 parsed.filename = f.name;
                 runDataList.push(parsed);
             }
-
             const [commits, prs] = await Promise.all([
                 fetchCommitsByDate(date),
                 fetchPRsByDate(date)
             ]);
-
             showDailySummary(date, runDataList, commits, prs);
         };
-
         div.appendChild(btn);
     });
 }
