@@ -14,6 +14,9 @@
         #graphs { display: flex; flex-direction: column; gap: 20px; }
         .graph { width: 100%; height: 300px; }
         pre { background: #1f1f1f; padding: 10px; border-radius: 4px; color: #fff; overflow-x: auto; }
+
+        #commits-prs a {color: #ffffff; text-decoration: underline;}
+        #commits-prs a:hover {color: #bbbbbb;}
     </style>
 </head>
 <body>
@@ -33,7 +36,7 @@
 </div>
 
 <h3>Commits & PRs</h3>
-<pre id="commits-prs"></pre>
+<div id="commits-prs"></div>
 
 <h2>Graphs</h2>
 <div id="graphs"></div>
@@ -125,12 +128,45 @@ function displayCards(metrics){
 
 // Display commits & PRs
 function displayCommitsAndPRs(commits, prs){
-    const pre = document.getElementById("commits-prs");
-    const details = {
-        commits: commits.map(c=>({sha:c.sha,message:c.commit.message})),
-        prs: prs.map(p=>({number:p.number,title:p.title}))
-    };
-    pre.textContent = JSON.stringify(details,null,2);
+    const container = document.getElementById("commits-prs");
+    container.innerHTML = "";
+
+    // Commits section
+    const commitsTitle = document.createElement("h4");
+    commitsTitle.textContent = "Commits:";
+    container.appendChild(commitsTitle);
+
+    const commitsList = document.createElement("ul");
+    commits.forEach(c => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = `https://github.com/${OWNER}/${REPO}/commit/${c.sha}`;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        const message = c.commit && c.commit.message ? c.commit.message : "(no message)";
+        a.textContent = message.length > 100 ? message.substring(0, 100) + "..." : message;
+        li.appendChild(a);
+        commitsList.appendChild(li);
+    });
+    container.appendChild(commitsList);
+
+    // PRs section
+    const prsTitle = document.createElement("h4");
+    prsTitle.textContent = "Pull Requests:";
+    container.appendChild(prsTitle);
+
+    const prsList = document.createElement("ul");
+    prs.forEach(p => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = `https://github.com/${OWNER}/${REPO}/pull/${p.number}`;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = `#${p.number}: ${p.title}`;
+        li.appendChild(a);
+        prsList.appendChild(li);
+    });
+    container.appendChild(prsList);
 }
 
 // Display graphs for runs
