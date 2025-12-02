@@ -70,7 +70,7 @@ function parseRunText(text) {
     const data = {};
     lines.forEach(line => {
         if (line.includes("=")) {
-            const [key,value] = line.split("=");
+            const [key, value] = line.split("=");
             const k = key.trim();
             const v = value.trim();
             data[k] = isNaN(v) || v === "" ? v : parseFloat(v);
@@ -79,7 +79,7 @@ function parseRunText(text) {
     return data;
 }
 
-// Extract date from filename
+// Extract date from filename (fallback)
 function extractRunDate(filename) {
     return filename.split("_")[1];
 }
@@ -89,7 +89,7 @@ function groupByDate(files) {
     const groups = {};
     files.forEach(f => {
         const date = extractRunDate(f.name);
-        if(!groups[date]) groups[date]=[];
+        if (!groups[date]) groups[date] = [];
         groups[date].push(f);
     });
     return groups;
@@ -117,7 +117,7 @@ function displayCards(metrics){
     const cardsDiv = document.getElementById("cards");
     cardsDiv.innerHTML="";
     for(const key in metrics){
-        if(key==="run") continue;
+        if(key==="run" || key==="trip_date" || key==="trip_datetime") continue;
         const card = document.createElement("div");
         card.className="card";
         card.innerHTML = `<strong>${key}</strong>: ${metrics[key]}`;
@@ -131,7 +131,6 @@ function displayCommitsAndPRs(commits, prs){
     const container = document.getElementById("commits-prs");
     container.innerHTML = "";
 
-    // Commits section
     const commitsTitle = document.createElement("h4");
     commitsTitle.textContent = "Commits:";
     container.appendChild(commitsTitle);
@@ -150,7 +149,6 @@ function displayCommitsAndPRs(commits, prs){
     });
     container.appendChild(commitsList);
 
-    // PRs section
     const prsTitle = document.createElement("h4");
     prsTitle.textContent = "Pull Requests:";
     container.appendChild(prsTitle);
@@ -169,43 +167,57 @@ function displayCommitsAndPRs(commits, prs){
     container.appendChild(prsList);
 }
 
-// Display graphs for runs
+// Display graphs using trip_datetime
 function displayGraphs(runs){
     const graphsDiv = document.getElementById("graphs");
     graphsDiv.innerHTML="";
-    function fixTimestamp(ts){ if(!ts) return null; return ts.replace(" ","T").split(".")[0]; }
 
-    runs.sort((a, b) => {
-      const dateA = new Date(fixTimestamp(a.trip_start_time));
-      const dateB = new Date(fixTimestamp(b.trip_start_time));
-      return dateA - dateB;
-    });
+    runs = runs.filter(r => r.trip_datetime);
 
-    metricsKeys.forEach((metric,index)=>{
+    // Sort by datetime
+    runs.sort((a, b) => new Date(a.trip_datetime) - new Date(b.trip_datetime));
+
+    metricsKeys.forEach((metric, index) => {
         const div = document.createElement("div");
         div.className="graph";
         graphsDiv.appendChild(div);
 
-        const xData = runs.map(d=>new Date(fixTimestamp(d.trip_start_time)));
-        const yData = runs.map(d=>d[metric]);
+        const xData = runs.map(d => new Date(d.trip_datetime));
+        const yData = runs.map(d => d[metric]);
 
         const trace = {
-            x:xData, y:yData, type:'scatter', mode:'lines+markers', name:metric,
-            line:{color:colors[index%colors.length], width:3},
-            marker:{size:6},
-            text:runs.map(d=>`${metric}: ${d[metric]}<br>Time: ${d.trip_start_time}`),
-            hoverinfo:'x+text'
+            x: xData,
+            y: yData,
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: metric,
+            line: { color: colors[index % colors.length], width: 3 },
+            marker: { size: 6 },
+            text: runs.map(d =>
+                `${metric}: ${d[metric]}<br>Time: ${d.trip_datetime}<br>Run: ${d.run}`
+            ),
+            hoverinfo: 'x+text'
         };
 
         const layout = {
-            paper_bgcolor:'#121212', plot_bgcolor:'#121212', font:{color:'#fff'},
-            title:{text:metric, x:0.5, xanchor:'center'},
-            xaxis:{title:'Trip Start Time', type:'date', tickangle:-45, automargin:true, gridcolor:'#ffffff33', zerolinecolor:'#fff', linecolor:'#fff', tickcolor:'#fff'},
-            yaxis:{title:metric, automargin:true, gridcolor:'#ffffff33', zerolinecolor:'#fff', linecolor:'#fff', tickcolor:'#fff'},
-            margin:{t:70,l:80,r:40,b:80}, autosize:true
+            paper_bgcolor:'#121212',
+            plot_bgcolor:'#121212',
+            font:{color:'#fff'},
+            title:{text: metric, x:0.5},
+            xaxis:{
+                title:'Trip Time',
+                type:'date',
+                tickangle:-45,
+                gridcolor:'#ffffff33'
+            },
+            yaxis:{
+                title: metric,
+                gridcolor:'#ffffff33'
+            },
+            margin:{t:60,l:60,r:40,b:70}
         };
 
-        Plotly.newPlot(div,[trace],layout,{responsive:true});
+        Plotly.newPlot(div, [trace], layout, { responsive: true });
     });
 }
 
@@ -230,11 +242,26 @@ async function buildRunList(){
             for(const f of runFiles){
                 const text = await fetchRunFileContent(f.download_url);
                 const metrics = parseRunText(text);
-                metrics.run=f.name;
+
+                // Extract trip_datetime for graphs
+                if (metrics.trip_start_time) {
+                    metrics.trip_datetime = metrics.trip_start_time.replace(" ","T");
+                    metrics.trip_date = metrics.trip_start_time.split(" ")[0];
+                } else if (metrics.trip_end_time) {
+                    metrics.trip_datetime = metrics.trip_end_time.replace(" ","T");
+                    metrics.trip_date = metrics.trip_end_time.split(" ")[0];
+                } else {
+                    metrics.trip_datetime = null;
+                    metrics.trip_date = extractRunDate(f.name);
+                }
+
+                metrics.run = f.name;
                 allRunsData.push(metrics);
             }
 
-            metricsKeys = Object.keys(allRunsData[0]).filter(k=>!["run","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k));
+            metricsKeys = Object.keys(allRunsData[0]).filter(k =>
+                !["run","trip_date","trip_datetime","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k)
+            );
 
             const [commits, prs] = await Promise.all([
                 fetchCommitsByDate(date),
@@ -249,24 +276,37 @@ async function buildRunList(){
         div.appendChild(btn);
     });
 
-    // Home button click shows all runs
+    // Home button
     document.getElementById("home-btn").onclick = async ()=>{
         allRunsData=[];
         for(const f of files){
             const text = await fetchRunFileContent(f.download_url);
             const metrics = parseRunText(text);
+
+            if (metrics.trip_start_time) {
+                metrics.trip_datetime = metrics.trip_start_time.replace(" ","T");
+                metrics.trip_date = metrics.trip_start_time.split(" ")[0];
+            } else if (metrics.trip_end_time) {
+                metrics.trip_datetime = metrics.trip_end_time.replace(" ","T");
+                metrics.trip_date = metrics.trip_end_time.split(" ")[0];
+            } else {
+                metrics.trip_datetime = null;
+                metrics.trip_date = extractRunDate(f.name);
+            }
+
             metrics.run=f.name;
             allRunsData.push(metrics);
         }
 
-        metricsKeys = Object.keys(allRunsData[0]).filter(k=>!["run","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k));
+        metricsKeys = Object.keys(allRunsData[0]).filter(k =>
+            !["run","trip_date","trip_datetime","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k)
+        );
 
         displayGraphs(allRunsData);
         document.getElementById("run-details").style.display="none";
         document.getElementById("commits-prs").textContent="";
     };
 
-    // Load Home by default
     document.getElementById("home-btn").click();
 }
 
