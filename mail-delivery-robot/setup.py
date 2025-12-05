@@ -26,7 +26,8 @@ setup(
                 'src.tools.csv_parser',
                 'src.tools.map',
                 'src.tools.nav_parser',
-                'src.tests.travel_analyzer'
+                'src.tools.logger',
+                'src.tests.travel_analyzer',
     ],
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
