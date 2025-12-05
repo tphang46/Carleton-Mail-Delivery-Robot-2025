@@ -7,6 +7,7 @@ from rclpy.action import ActionClient
 from irobot_create_msgs.action import Dock, Undock
 from irobot_create_msgs.msg import DockStatus
 import subprocess
+from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 
 class Captain(Node):
     '''
@@ -24,6 +25,7 @@ class Captain(Node):
         The constructor for the node.
         Defines the necessary publishers and subscribers.
         '''
+        
         super().__init__('captain')
 
         self.current_actions = {
@@ -35,7 +37,12 @@ class Captain(Node):
         self.action_translator = ActionTranslator()
 
         self.actions_sub = self.create_subscription(String, 'actions', self.parse_action, 10)
-        self.create_subscription(DockStatus, '/dock_status', self.dock_status_callback, 10)
+        dock_qos = QoSProfile(
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            depth=10
+        )
+        self.create_subscription(DockStatus, '/dock_status', self.dock_status_callback, dock_qos)
+
         self.command_publisher = self.create_publisher(Twist, 'cmd_vel', 10)
 
         self.docking_client = ActionClient(self, Dock, 'dock')

@@ -15,38 +15,40 @@ class GeneralLogger(Node):
     def __init__(self):
         super().__init__('general_logger')
 
-        # --- Log directory ---
+        # Log directory 
         self.declare_parameter('log_dir', './tools/logs')
         self.log_dir = os.path.abspath(self.get_parameter('log_dir').value)
         os.makedirs(self.log_dir, exist_ok=True)
         self.get_logger().info(f"Logs will be saved to: {self.log_dir}")
 
-        # --- Run directory inside logs ---
+        # Run directory inside logs 
         self.runs_dir = os.path.join(self.log_dir, "runs")
         os.makedirs(self.runs_dir, exist_ok=True)
         self.get_logger().info(f"Run files will be stored in: {self.runs_dir}")
 
-        # --- Wall-following log path ---
+        # Wall-following log path 
         self.wall_log_path = os.path.join(self.log_dir, "robot_log_wallFollowing.txt")
         self.wall_log_file = open(self.wall_log_path, "a")
 
         # Write startup log
         self.write_log("SYSTEM", f"Logging all data to {self.wall_log_path}")
 
-        # --- Trip timing ---
+        # Trip timing 
         self.trip_start_time = time.perf_counter()
         self.trip_start_timestamp = datetime.now()
 
-        # --- Battery info ---
+        # Battery info 
         self.battery = {'level': 0.0, 'voltage': 0.0, 'temperature': 0.0}
         self.battery_start = None
         self.battery_end = None
         self.battery_used = None
 
-        # --- Subscriptions ---
-        qos = QoSProfile(reliability=QoSReliabilityPolicy.BEST_EFFORT, depth=10)
-        self.create_subscription(BatteryState, '/battery_state', self.battery_callback, qos)
-        self.create_subscription(DockStatus, '/dock_status', self.dock_status_callback, 10)
+        # Subscriptions 
+        dock_qos = QoSProfile(
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            depth=10
+        )
+        self.create_subscription(DockStatus, '/dock_status', self.dock_status_callback, dock_qos)
 
         self.get_logger().info("GeneralLogger started. Waiting for first battery data...")
 
