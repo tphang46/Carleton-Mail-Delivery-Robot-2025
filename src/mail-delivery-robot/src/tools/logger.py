@@ -96,19 +96,30 @@ class GeneralLogger(Node):
         delivery_time_str = str(timedelta(seconds=int(delivery_time_sec)))
 
         self.battery_end = self.battery['level']
-        self.battery_used = self.battery_start - self.battery_end
+
+        if self.battery_start is not None:
+            self.battery_used = self.battery_start - self.battery_end
+            battery_start_str = f"{self.battery_start:.2f}%"
+            battery_used_str = f"{self.battery_used:.2f}%"
+        else:
+            self.battery_used = None
+            battery_start_str = "Unknown"
+            battery_used_str = "Unknown"
 
         self.get_logger().info(
-            f"Battery Start: {self.battery_start:.2f}% | "
+            f"Battery Start: {battery_start_str} | "
             f"End: {self.battery_end:.2f}% | "
-            f"Used: {self.battery_used:.2f}%"
+            f"Used: {battery_used_str}"
         )
 
         wall_time = self.get_wall_follow_time()
         self.write_run_file(self.battery, wall_time, delivery_time_sec)
+
+        # Clear the wall-follow log file
         open(self.wall_log_path, 'w').close()
         self.get_logger().info("Trip logging complete.")
         self.wall_log_file.close()
+
 
     def write_run_file(self, battery, wall_time, delivery_time):
         timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")

@@ -1,3 +1,5 @@
 [19:48:03] [SYSTEM] Logging all data to /home/capstone2526/cmdr_ws/tools/logs/robot_log_wallFollowing.txt
 [19:49:16] [SYSTEM] Logging all data to /home/capstone2526/cmdr_ws/tools/logs/robot_log_wallFollowing.txt
 [19:52:06] [SYSTEM] Logging all data to /home/capstone2526/cmdr_ws/tools/logs/robot_log_wallFollowing.txt
+[19:54:52] [SYSTEM] Logging all data to /home/capstone2526/cmdr_ws/tools/logs/robot_log_wallFollowing.txt
+[19:58:04] [SYSTEM] Logging all data to /home/capstone2526/cmdr_ws/tools/logs/robot_log_wallFollowing.txt
