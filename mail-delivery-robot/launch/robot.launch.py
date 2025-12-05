@@ -23,11 +23,6 @@ def generate_launch_description():
         ),
         Node(
             package='mail-delivery-robot',
-            executable='camera_sensor',
-            name='camera_sensor'
-        ),
-        Node(
-            package='mail-delivery-robot',
             executable='lidar_sensor',
             name='lidar_sensor'
         ),

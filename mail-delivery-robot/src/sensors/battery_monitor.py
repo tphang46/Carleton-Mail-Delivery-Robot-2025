@@ -33,13 +33,18 @@ class BatteryMonitor(Node):
         self.current_destination = None
         self.saved_destination = None
 
-        self.battery_sub = self.create_subscription(BatteryState, 'battery_state', self.battery_callback, qos_profile=QoSProfile(
-            reliability=QoSReliabilityPolicy.BEST_EFFORT,
-            depth=10
-        ))
+        # Subscriptions
+        self.battery_sub = self.create_subscription(
+            BatteryState, 'battery_state', self.battery_callback,
+            qos_profile=QoSProfile(
+                reliability=QoSReliabilityPolicy.BEST_EFFORT,
+                depth=10
+            )
+        )
         self.beacon_sub = self.create_subscription(String, 'beacon_data', self.beacon_callback, 10)
         self.destination_sub = self.create_subscription(String, 'destinations', self.destination_callback, 10)
 
+        # Publisher
         self.destination_pub = self.create_publisher(String, 'destinations', 10)
 
     def beacon_callback(self, msg):
@@ -48,7 +53,7 @@ class BatteryMonitor(Node):
 
     def destination_callback(self, msg):
         try:
-            self.current_destination = msg.data.split(":")[1] # Again fixed to match format of source:destination 
+            self.current_destination = msg.data.split(":")[1] # Fixed to match format of source:destination
         except IndexError:
             self.current_destination = None
 
@@ -60,17 +65,21 @@ class BatteryMonitor(Node):
         self.current_battery = data.percentage * 100
         #self.get_logger().info(f"Battery level: {self.current_battery:.2f}%")
 
-        if self.current_battery <= self.LOW_BATTERY_THRESHOLD and not self.low_battery_triggered:
-            self.low_battery_triggered = True
-            self.saved_destination = self.current_destination
-
+        # Continuously reroute to dock if battery is low
+        if self.current_battery <= self.LOW_BATTERY_THRESHOLD:
             dock = self.closest_dock()
             if dock:
                 self.publish_destination(dock)
                 self.get_logger().info(f"Battery low, rerouting to: {dock}")
             else:
-                self.get_logger().warn("No valid beacon, cannot find nearest dock.")
+                self.get_logger().warn("Cannot reroute, no valid dock found.")
 
+            # Trigger low battery state once
+            if not self.low_battery_triggered:
+                self.low_battery_triggered = True
+                self.saved_destination = self.current_destination
+
+        # Restore original destination after battery recharge
         elif self.low_battery_triggered and self.current_battery >= self.HIGH_BATTERY_THRESHOLD:
             if self.saved_destination:
                 self.publish_destination(self.saved_destination)
@@ -79,11 +88,19 @@ class BatteryMonitor(Node):
             self.low_battery_triggered = False
 
     def closest_dock(self):
-        return self.beacon_to_dock[self.last_beacon]
+        # Handle missing beacon safely
+        if self.last_beacon is None:
+            self.get_logger().warn("No beacon received yet.")
+            return None
+        dock = self.beacon_to_dock.get(self.last_beacon)
+        if dock is None:
+            self.get_logger().warn(f"No dock mapped for beacon: {self.last_beacon}")
+        return dock
 
     def publish_destination(self, destination):
         msg = String()
-        msg.data = f"{self.last_beacon}:{destination}"  # source:destination format
+        # source:destination format
+        msg.data = f"{self.last_beacon}:{destination}"  
         self.destination_pub.publish(msg)
 
 def main():
