@@ -1,7 +1,6 @@
 from geometry_msgs.msg import Twist
 from tools.csv_parser import loadConfig
 
-
 class ActionTranslator():
     def __init__(self):
         self.msg = Twist()
@@ -12,7 +11,7 @@ class ActionTranslator():
         Translates an action message into a Twist command.
         This translator performs no computation; it simply maps the provided
         movement orders to the appropriate Twist fields.
-
+        
         Expected action formats:
         - "GO"         : Standard forward motion.
         - "WAIT"       : Stop moving.
@@ -20,7 +19,7 @@ class ActionTranslator():
         - "LEFT_TURN"  : Turn left.
         - "RIGHT_TURN" : Turn right.
         - "WALL_FOLLOW:<linear_speed>:<angular_speed>" : Use the provided speeds.
-
+        
         Returns:
         A Twist message with the movement order.
         '''
@@ -50,3 +49,4 @@ class ActionTranslator():
                     self.msg.linear.x = 0.0
                     self.msg.angular.z = 0.0
         return self.msg
+

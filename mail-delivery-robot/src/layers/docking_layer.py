@@ -5,14 +5,12 @@ from enum import Enum
 from irobot_create_msgs.msg import DockStatus
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 
-
 class DockingLayerStates(Enum):
     '''
     An enum for the internal states of the docking layer.
     '''
     NO_DEST = 'NO_DEST'
     HAS_DEST = 'HAS_DEST'
-
 
 class DockingLayer(Node):
     '''
@@ -25,7 +23,6 @@ class DockingLayer(Node):
     @Publishers:
     - Publishes actions to /actions
     '''
-
     def __init__(self):
         '''
         The constructor for the node.
@@ -38,14 +35,14 @@ class DockingLayer(Node):
         self.dock_visible = False
         self.is_docked = False
 
-        self.navigation_sub = self.create_subscription(String, 'navigation', self.navigation_callback, 10)
-        self.dock_status_sub = self.create_subscription(DockStatus, 'dock_status', self.dock_status_callback,
-                                                        qos_profile=QoSProfile(
-                                                            reliability=QoSReliabilityPolicy.BEST_EFFORT,
-                                                            depth=10
-                                                        ))
 
-        self.action_publisher = self.create_publisher(String, 'actions', 10)
+        self.navigation_sub = self.create_subscription(String, 'navigation', self.navigation_callback, 10)
+        self.dock_status_sub = self.create_subscription(DockStatus, 'dock_status', self.dock_status_callback, qos_profile=QoSProfile(
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            depth=10
+        ))
+        
+        self.action_publisher = self.create_publisher(String, 'actions', 10,)
 
         self.no_msg = String()
         self.no_msg.data = '1:NONE'
@@ -54,7 +51,7 @@ class DockingLayer(Node):
         self.undock_msg = String()
         self.undock_msg.data = '1:UNDOCK'
 
-        self.timer = self.create_timer(0.2, self.update_actions)
+        self.timer = self.create_timer(0.1, self.update_actions)
 
         self.action_publisher.publish(self.no_msg)
 
@@ -78,26 +75,28 @@ class DockingLayer(Node):
         The timer callback. Updates the internal state of this node and sends
         updates to /actions when necessary
         '''
-        if self.state == DockingLayerStates.NO_DEST and self.last_navigation_message == 'UNDOCK':
+        #this is to test if the layer is working
+        #self.get_logger().info(f"Docking Layer State: {self.state}, Last Nav Msg: {self.last_navigation_message}, Dock Visible: {self.dock_visible}, Is Docked: {self.is_docked}")
+        if self.state == DockingLayerStates.NO_DEST and self.last_navigation_message != 'NONE':
             self.state = DockingLayerStates.HAS_DEST
             if self.is_docked:
                 self.action_publisher.publish(self.undock_msg)
         elif self.state == DockingLayerStates.HAS_DEST and self.last_navigation_message == 'DOCK':
             if self.dock_visible:
                 self.action_publisher.publish(self.dock_msg)
+                
             elif self.is_docked:
                 self.state = DockingLayerStates.NO_DEST
             else:
                 self.action_publisher.publish(self.no_msg)
         else:
             self.action_publisher.publish(self.no_msg)
-
+        
 
 def main():
     rclpy.init()
     docking_layer = DockingLayer()
     rclpy.spin(docking_layer)
-
 
 if __name__ == '__main__':
     main()
