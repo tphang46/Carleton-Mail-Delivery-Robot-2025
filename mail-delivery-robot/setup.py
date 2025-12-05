@@ -26,7 +26,8 @@ setup(
                 'src.tools.csv_parser',
                 'src.tools.map',
                 'src.tools.nav_parser',
-                'src.tests.travel_analyzer'
+                'src.tools.logger',
+                'src.tests.travel_analyzer',
     ],
     data_files=[
         ('share/ament_index/resource_index/packages', ['resource/' + package_name]),
@@ -43,7 +44,6 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'camera_sensor = src.sensors.camera_sensor:main',
             'beacon_sensor = src.sensors.beacon_sensor:main',
             'bumper_sensor = src.sensors.bumper_sensor:main',
             'lidar_sensor = src.sensors.lidar_sensor:main',
@@ -58,7 +58,11 @@ setup(
             'navigation_unit = src.sensors.navigation_unit:main',
             'intersection_detection_unit = src.sensors.intersection_detection_unit:main',
             'battery_monitor = src.sensors.battery_monitor:main',
-            'logger = tools.logger:main'
+            'logger = tools.logger:main',
+            'navigation_unit_AI = src.sensors.navigation_unit_AI:main',
+            'csv_parser = tools.csv_parser:main',
+            'map = tools.map:main',
+            'nav_parser = tools.nav_parser:main',
         ],
     },
 )

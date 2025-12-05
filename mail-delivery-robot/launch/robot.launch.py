@@ -80,5 +80,10 @@ def generate_launch_description():
            package='mail-delivery-robot',
            executable='logger',
            name='logger'
+       ) ,
+       Node(
+           package='mail-delivery-robot',
+           executable = 'navigation_unit_AI',
+           name='navigation_unit_AI'
        )
    ])
