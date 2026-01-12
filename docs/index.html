@@ -26,7 +26,7 @@
 <h1>Robot Dashboard</h1>
 
 <button id="home-btn">Home</button>
-<button id="graphs-btn">Graphs For Each of Our Metrics</button>
+<button id="graphs-btn">Graph For Each of Our Metrics</button>
 <button id="back-btn" style="display:none;">Back</button>
 
 <div id="home-page" class="page">
@@ -62,7 +62,7 @@ const OWNER = "tphang46";
 const REPO = "Carleton-Mail-Delivery-Robot-2025";
 const BRANCH = "main";
 const EXEMPT_KEYS = ["temperature_level", "voltage_level"];
-const metricRules = { "delivery_time": "lower", "speed": "higher", "accuracy": "higher" };
+const metricRules = { "delivery_time": "lower", "battery_used": "lower"};
 let allRunsData = [], metricsKeys = [], dayRunsData = [];
 const colors = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd'];
 
