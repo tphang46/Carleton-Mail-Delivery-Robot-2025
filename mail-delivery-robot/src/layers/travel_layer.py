@@ -7,14 +7,12 @@ from irobot_create_msgs.msg import DockStatus
 from rclpy.qos import QoSProfile, QoSReliabilityPolicy
 from tools.csv_parser import loadConfig
 
-
 class TravelLayerStates(Enum):
     '''
     An enum for the internal states of the travel layer.
     '''
     NO_DEST = 'NO_DEST'
     HAS_DEST = 'HAS_DEST'
-
 
 class TravelLayer(Node):
     '''
@@ -29,7 +27,6 @@ class TravelLayer(Node):
     @Publishers:
     - Publishes action messages to /actions.
     '''
-
     def __init__(self):
         '''
         The constructor for the node.
@@ -46,11 +43,12 @@ class TravelLayer(Node):
         # Subscribe to lidar data (from the lidar sensor node).
         self.lidar_data_sub = self.create_subscription(String, 'lidar_data', self.lidar_data_callback, 10)
         self.destinations_sub = self.create_subscription(String, 'destinations', self.destinations_callback, 10)
-        self.dock_status_sub = self.create_subscription(DockStatus, 'dock_status', self.dock_status_callback,
-                                                        qos_profile=QoSProfile(
-                                                            reliability=QoSReliabilityPolicy.BEST_EFFORT,
-                                                            depth=10
-                                                        ))
+        self.navigation_sub = self.create_subscription(String, 'navigation', self.navigation_callback, 10)
+
+        self.dock_status_sub = self.create_subscription(DockStatus, 'dock_status', self.dock_status_callback, qos_profile=QoSProfile(
+            reliability=QoSReliabilityPolicy.BEST_EFFORT,
+            depth=10
+        ))
 
         # Publisher for sending action messages.
         self.action_publisher = self.create_publisher(String, 'actions', 10)
@@ -76,7 +74,7 @@ class TravelLayer(Node):
         Expected format from lidar sensor: "feedback:angle:right:left:front"
         '''
         try:
-            parts = data.data.split(":")
+            parts = data.data.split(":")            
             if len(parts) != 5:
                 self.get_logger().warning("Lidar data format incorrect")
                 return
@@ -100,6 +98,7 @@ class TravelLayer(Node):
         try:
             # Assume destination is the part after the colon.
             self.current_destination = data.data.split(":")[1]
+            self.get_logger().info(f"Updated destination to: {self.current_destination}")
         except Exception as e:
             self.get_logger().error(f"Error parsing destination: {e}")
             self.current_destination = 'NONE'
@@ -112,17 +111,23 @@ class TravelLayer(Node):
         self.was_docked = self.is_docked
         self.is_docked = data.is_docked
 
+    def navigation_callback(self, msg: String):
+        if msg.data == 'DOCK':
+            dock_msg = String()
+            dock_msg.data = '3:DOCK'  
+            self.action_publisher.publish(dock_msg)
+
     def compute_wall_follow(self):
         '''
         Computes the linear and angular speeds needed to follow a wall based
         on the most recent lidar data.
-
+        
         Uses configuration parameters:
           - WALL_FOLLOW_SET_POINT: Desired distance from wall.
           - WALL_FOLLOW_AIM_ANGLE: Base aiming angle (degrees).
           - WALL_FOLLOW_SPEED: Base speed value.
           - WALL_FOLLOW_ANGLE_CHANGE_THRESHOLD: Threshold to adjust linear speed.
-
+        
         Returns:
           Tuple (linear_speed, angular_speed) if computation is possible,
           otherwise None.
@@ -188,12 +193,10 @@ class TravelLayer(Node):
         if self.is_docked and not self.was_docked:
             self.action_publisher.publish(self.no_msg)
 
-
 def main():
     rclpy.init()
     travel_layer = TravelLayer()
     rclpy.spin(travel_layer)
-
 
 if __name__ == '__main__':
     main()

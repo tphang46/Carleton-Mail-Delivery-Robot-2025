@@ -3,8 +3,9 @@ from rclpy.node import Node
 from std_msgs.msg import String
 from tools.nav_parser import loadConnections
 from tools.map import Map
+from tools.ai_decision_graph import build_nav_graph
 
-class NavigationUnit(Node):
+class NavigationUnit_AI(Node):
     '''
     The Node in charge of navigation.
 
@@ -99,10 +100,26 @@ class NavigationUnit(Node):
         '''
         #wait for things to be initialized
         #this is broken
-        #self.get_logger().info(f"Current Direction: {self.direction}, Can Send: {self.can_send_direction}")
+        self.get_logger().info(f"Current Direction: {self.direction}, Can Send: {self.can_send_direction}")
         if self.direction is not None and self.can_send_direction:
             #don't send the message more than once
             self.can_send_direction = False
+
+            try:
+
+                ai_decision = self.query_ollama(self.current_beacon, self.current_destination)
+                self.get_logger().info(f"AI Decision: {ai_decision}")
+
+                if ai_decision in ['NAV_LEFT', 'NAV_RIGHT', 'NAV_PASS', 'NAV_U-TURN', 'NAV_DOCK']:
+                    self.direction = ai_decision
+                    #return
+
+                else:
+                    self.get_logger().info("Ollama returned invalid direction, falling back to map-based navigation.")
+
+            except Exception as e:
+                self.get_logger().warn(f"Ollama query failed: {e}. Falling back to map-based navigation.")
+
             #translate from old to new naming convention
             match self.direction:
                 case 'NAV_LEFT':
@@ -119,12 +136,19 @@ class NavigationUnit(Node):
                     #error
                     self.navigation_publisher.publish(self.no_msg)
                     
-
-            
+    def query_ollama(self, current_beacon: str, destination: str):
+        graph = build_nav_graph(self)
+        result = graph.invoke({
+            "current_beacon": current_beacon,
+            "destination": destination
+        })
+        decision = result["direction"]
+        self.get_logger().info(f"Ollama decision: {decision}")
+        return decision
 
 def main():
     rclpy.init()
-    navigation_unit = NavigationUnit()
+    navigation_unit = NavigationUnit_AI()
     rclpy.spin(navigation_unit)
 
 if __name__ == '__main__':
