@@ -8,7 +8,7 @@
         h1, h2, h3 { margin-bottom: 15px; }
         button { margin: 5px; padding: 6px 12px; border-radius: 4px; border: 1px solid #888; background-color: #1f1f1f; color: #fff; cursor: pointer; }
         button:hover { background-color: #333; }
-        #cards, #average-cards, #latest-cards, #day-cards { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        #average-cards, #latest-cards, #day-cards { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
         .card { border: 1px solid #444; border-radius: 8px; padding: 10px; width: 170px; background-color: #1f1f1f; }
         .good { color: #00e676; }
         .bad { color: #ff5252; }
@@ -23,7 +23,8 @@
 </head>
 <body>
 
-<h1>Robot Dashboard</h1>
+<h1 id="dashboard-title">Robot Dashboard</h1>
+<div id="branch-info"></div>
 
 <button id="home-btn">Home</button>
 <button id="graphs-btn">Graph For Each of Our Metrics</button>
@@ -60,96 +61,152 @@
 <script>
 const OWNER = "tphang46";
 const REPO = "Carleton-Mail-Delivery-Robot-2025";
-const BRANCH = "main";
+const COMMITS_OWNER = "ConnorYelle";
+const COMMITS_REPO = "Carleton-Mail-Delivery-Robot";
 const EXEMPT_KEYS = ["temperature_level", "voltage_level"];
-const metricRules = { "delivery_time": "lower", "battery_used": "lower"};
+const metricRules = { "delivery_time": "lower", "battery_used": "lower" };
+let BRANCH;
 let allRunsData = [], metricsKeys = [], dayRunsData = [];
 const colors = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd'];
 
+function getBranchFromURL() {
+    const p = new URLSearchParams(window.location.search);
+    return p.get("branch");
+}
+
+async function fetchRepoInfo() {
+    return await (await fetch(`https://api.github.com/repos/${COMMITS_OWNER}/${COMMITS_REPO}`)).json();
+}
+
+async function fetchLatestCommit(branch) {
+    const c = await (await fetch(
+        `https://api.github.com/repos/${COMMITS_OWNER}/${COMMITS_REPO}/commits?sha=${branch}&per_page=1`
+    )).json();
+    return c[0];
+}
+
+async function fetchLatestPR(branch) {
+    const r = await (await fetch(
+        `https://api.github.com/search/issues?q=repo:${COMMITS_OWNER}/${COMMITS_REPO}+type:pr+is:merged+base:${branch}&sort=updated&order=desc&per_page=1`
+    )).json();
+    return r.items?.[0];
+}
+
 async function fetchRunFiles() {
-    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/src/tools/logs/runs?ref=${BRANCH}`);
+    const res = await fetch(
+        `https://api.github.com/repos/${OWNER}/${REPO}/contents/src/tools/logs/runs?ref=${BRANCH}`
+    );
     const files = await res.json();
     return files.filter(f => f.name.endsWith(".txt"));
 }
 
 async function fetchRunFileContent(url) { return (await fetch(url)).text(); }
-function parseRunText(text) { const d={}; text.split("\n").forEach(l=>{if(l.includes("=")){const [k,v]=l.split("=");d[k.trim()]=isNaN(v)?v.trim():parseFloat(v);}}); return d; }
+
+function parseRunText(text) {
+    const d = {};
+    text.split("\n").forEach(l => {
+        if (l.includes("=")) {
+            const [k, v] = l.split("=");
+            d[k.trim()] = isNaN(v) ? v.trim() : parseFloat(v);
+        }
+    });
+    return d;
+}
+
 function extractRunDate(filename) { return filename.split("_")[1]; }
 
 function calculateAverages(runs, keys) {
     const avg = {};
-    keys.forEach(k=>{let s=0,c=0;runs.forEach(r=>typeof r[k]==="number"&&(s+=r[k],c++));if(c)avg[k]=s/c;});
+    keys.forEach(k => {
+        let s = 0, c = 0;
+        runs.forEach(r => typeof r[k] === "number" && (s += r[k], c++));
+        if (c) avg[k] = s / c;
+    });
     return avg;
 }
 
-function displayAverageCards(avg){const d=document.getElementById("average-cards");d.innerHTML="";Object.keys(avg).forEach(k=>d.innerHTML+=`<div class="card"><strong>${k}</strong><br>${avg[k].toFixed(2)}</div>`);}
-
-async function fetchCommitsByDate(date){return await (await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/commits?since=${date}T00:00:00Z&until=${date}T23:59:59Z`)).json();}
-async function fetchPRsByDate(date){return (await (await fetch(`https://api.github.com/search/issues?q=repo:${OWNER}/${REPO}+type:pr+merged:${date}`)).json()).items||[];}
-
-function getMetricClass(metric,value,avgValue){if(EXEMPT_KEYS.includes(metric)) return ""; const r=metricRules[metric]||"higher"; if(r==="higher") return value>avgValue?"good":value<avgValue?"bad":""; if(r==="lower") return value<avgValue?"good":value>avgValue?"bad":""; return "";}
-
-function displayLatest(latestRun,avg,commits,prs,date){
-    document.getElementById("latest-info").innerHTML=
-        `<strong>Date:</strong> ${date}<br><br>`+
-        commits.map(c=>`<a target="_blank" href="https://github.com/${OWNER}/${REPO}/commit/${c.sha}">${c.commit.message}</a>`).join("<br>")+
-        `<br><br>`+
-        prs.map(p=>`<a target="_blank" href="https://github.com/${OWNER}/${REPO}/pull/${p.number}">#${p.number} ${p.title}</a>`).join("<br>");
-    const cards=document.getElementById("latest-cards");
-    cards.innerHTML="";
-    metricsKeys.forEach(k=>{if(typeof latestRun[k]!=="number") return; const cls=getMetricClass(k,latestRun[k],avg[k]); cards.innerHTML+=`<div class="card ${cls}"><strong>${k}</strong><br>${latestRun[k].toFixed(2)}</div>`;});
+function getMetricClass(metric, value, avgValue) {
+    if (EXEMPT_KEYS.includes(metric)) return "";
+    const r = metricRules[metric] || "higher";
+    if (r === "higher") return value > avgValue ? "good" : value < avgValue ? "bad" : "";
+    if (r === "lower") return value < avgValue ? "good" : value > avgValue ? "bad" : "";
+    return "";
 }
 
-function displayGraphs(runs){
-    const g=document.getElementById("graphs"); g.innerHTML=""; function fix(t){return t?.replace(" ","T").split(".")[0];}
-    runs.sort((a,b)=>new Date(fix(a.trip_start_time))-new Date(fix(b.trip_start_time)));
-    metricsKeys.forEach((m,i)=>{const d=document.createElement("div"); d.className="graph"; g.appendChild(d);
-        Plotly.newPlot(d,[{x:runs.map(r=>new Date(fix(r.trip_start_time))),y:runs.map(r=>r[m]),type:'scatter',mode:'lines+markers',line:{color:colors[i%colors.length]}}],{paper_bgcolor:'#121212',plot_bgcolor:'#121212',font:{color:'#fff'},title:{text:m,x:0.5}},{responsive:true});});
-}
+async function buildRunList() {
+    const repoInfo = await fetchRepoInfo();
+    BRANCH = getBranchFromURL() || repoInfo.default_branch;
 
-function displayDayRuns(runs, day, commits, prs){
-    document.getElementById("day-title").textContent = `Runs for ${day}`;
-    const cards=document.getElementById("day-cards"); cards.innerHTML="";
-    runs.forEach(run=>{const c=document.createElement("div"); c.className="card"; let html=`<strong>${run.run}</strong><br>`; Object.keys(run).forEach(k=>{if(!["run","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k)) html+=`${k}: ${run[k]}<br>`;}); c.innerHTML=html; cards.appendChild(c);});
-    const container=document.getElementById("day-commits-prs"); container.innerHTML="";
-    container.innerHTML += `<h4>Commits:</h4>` + commits.map(c=>`<a target="_blank" href="https://github.com/${OWNER}/${REPO}/commit/${c.sha}">${c.commit.message}</a>`).join("<br>");
-    container.innerHTML += `<h4>PRs:</h4>` + prs.map(p=>`<a target="_blank" href="https://github.com/${OWNER}/${REPO}/pull/${p.number}">#${p.number} ${p.title}</a>`).join("<br>");
-}
+    document.getElementById("dashboard-title").textContent = `Dashboard for ${BRANCH}`;
 
-async function buildRunList(){
-    const files=await fetchRunFiles();
-    const byDate={}; files.forEach(f=>{const d=extractRunDate(f.name); byDate[d]??=[]; byDate[d].push(f);});
-    const list=document.getElementById("run-list");
-    Object.keys(byDate).forEach(d=>{const b=document.createElement("button"); b.textContent=`${d} (${byDate[d].length} runs)`; b.onclick=async()=>{
-        dayRunsData=[]; for(const f of byDate[d]){const t=await fetchRunFileContent(f.download_url); const m=parseRunText(t); m.run=f.name; dayRunsData.push(m);}
-        metricsKeys=Object.keys(dayRunsData[0]).filter(k=>!["run","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k));
-        const [commits,prs]=await Promise.all([fetchCommitsByDate(d),fetchPRsByDate(d)]);
-        document.getElementById("home-page").style.display="none"; document.getElementById("graphs-page").style.display="none";
-        document.getElementById("day-page").style.display="block"; document.getElementById("back-btn").style.display="inline";
-        displayDayRuns(dayRunsData,d,commits,prs);
-    }; list.appendChild(b);});
+    const latestCommit = await fetchLatestCommit(BRANCH);
+    const latestPR = await fetchLatestPR(BRANCH);
 
-    async function loadHome(){
-        document.getElementById("home-page").style.display="block"; document.getElementById("graphs-page").style.display="none";
-        document.getElementById("day-page").style.display="none"; document.getElementById("back-btn").style.display="none";
-        allRunsData=[]; for(const f of files){const t=await fetchRunFileContent(f.download_url); const m=parseRunText(t); m.run=f.name; allRunsData.push(m);}
-        metricsKeys=Object.keys(allRunsData[0]).filter(k=>!["run","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k));
-        const avg=calculateAverages(allRunsData,metricsKeys); displayAverageCards(avg);
-        const latestFile=files.sort((a,b)=>b.name.localeCompare(a.name))[0];
-        const latestText=await fetchRunFileContent(latestFile.download_url); const latestRun=parseRunText(latestText);
-        const date=extractRunDate(latestFile.name);
-        const [commits,prs]=await Promise.all([fetchCommitsByDate(date),fetchPRsByDate(date)]);
-        displayLatest(latestRun,avg,commits,prs,date);
-    }
+    document.getElementById("branch-info").innerHTML =
+        `<strong>Latest Commit:</strong><br>
+         <a target="_blank" href="${latestCommit.html_url}">${latestCommit.commit.message}</a><br><br>
+         <strong>Latest Merged PR:</strong><br>` +
+        (latestPR
+            ? `<a target="_blank" href="https://github.com/${COMMITS_OWNER}/${COMMITS_REPO}/pull/${latestPR.number}">#${latestPR.number} ${latestPR.title}</a>`
+            : `None`);
 
-    async function loadGraphs(){document.getElementById("home-page").style.display="none"; document.getElementById("graphs-page").style.display="block";
-        document.getElementById("day-page").style.display="none"; document.getElementById("back-btn").style.display="inline"; displayGraphs(allRunsData);}
+    const files = await fetchRunFiles();
+    const byDate = {};
+    files.forEach(f => {
+        const d = extractRunDate(f.name);
+        byDate[d] ??= [];
+        byDate[d].push(f);
+    });
 
-    document.getElementById("home-btn").onclick=loadHome;
-    document.getElementById("graphs-btn").onclick=loadGraphs;
-    document.getElementById("back-btn").onclick=loadHome;
+    const list = document.getElementById("run-list");
+    list.innerHTML = "";
 
-    loadHome();
+    Object.keys(byDate).forEach(d => {
+        const b = document.createElement("button");
+        b.textContent = `${d} (${byDate[d].length} runs)`;
+        b.onclick = async () => {
+            dayRunsData = [];
+            for (const f of byDate[d]) {
+                const t = await fetchRunFileContent(f.download_url);
+                const m = parseRunText(t);
+                m.run = f.name;
+                dayRunsData.push(m);
+            }
+            metricsKeys = Object.keys(dayRunsData[0]).filter(k => !["run","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k));
+            const [commits, prs] = await Promise.all([
+                fetchLatestCommit(BRANCH),
+                fetchLatestPR(BRANCH)
+            ]);
+            document.getElementById("home-page").style.display = "none";
+            document.getElementById("graphs-page").style.display = "none";
+            document.getElementById("day-page").style.display = "block";
+            document.getElementById("back-btn").style.display = "inline";
+            document.getElementById("day-commits-prs").innerHTML =
+                `<strong>Latest Commit:</strong><br>
+                 <a target="_blank" href="${commits.html_url}">${commits.commit.message}</a><br><br>
+                 <strong>Latest PR:</strong><br>` +
+                (prs
+                    ? `<a target="_blank" href="https://github.com/${COMMITS_OWNER}/${COMMITS_REPO}/pull/${prs.number}">#${prs.number} ${prs.title}</a>`
+                    : `None`);
+            document.getElementById("day-title").textContent = `Runs for ${d}`;
+            const cards = document.getElementById("day-cards");
+            cards.innerHTML = "";
+            dayRunsData.forEach(run => {
+                const c = document.createElement("div");
+                c.className = "card";
+                let html = `<strong>${run.run}</strong><br>`;
+                Object.keys(run).forEach(k => {
+                    if (!["run","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k))
+                        html += `${k}: ${run[k]}<br>`;
+                });
+                c.innerHTML = html;
+                cards.appendChild(c);
+            });
+        };
+        list.appendChild(b);
+    });
+
+    document.getElementById("home-btn").onclick = () => location.reload();
 }
 
 buildRunList();
