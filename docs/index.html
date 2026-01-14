@@ -10,8 +10,8 @@
         button:hover { background-color: #333; }
         #average-cards, #latest-cards, #day-cards, #lidar-cards { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
         .card { border: 1px solid #444; border-radius: 8px; padding: 12px; width: 280px; background-color: #1f1f1f; line-height: 1.4; }
-        .good { color: #00e676; }
-        .bad { color: #ff5252; }
+        .good { color: #00e676; font-weight: bold; }
+        .bad { color: #ff5252; font-weight: bold; }
         #graphs, #lidar-graphs { display: flex; flex-direction: column; gap: 20px; }
         .graph { width: 100%; height: 300px; }
         a { color: #ffffff; text-decoration: underline; }
@@ -19,6 +19,7 @@
         hr { border: 0; border-top: 1px solid #444; margin: 8px 0; }
         .metric-row { display: flex; justify-content: space-between; font-size: 0.82em; border-bottom: 1px solid #2a2a2a; padding: 2px 0; }
         .na { color: #666; font-style: italic; }
+        .comparison-sub { font-size: 0.75em; color: #888; display: block; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -33,9 +34,11 @@
 <div id="home-page" class="page">
     <h3>Average Performance Metrics</h3>
     <div id="average-cards"></div>
-    <h3>Latest Iteration</h3>
-    <div id="latest-info"></div>
+
+    <h3>Latest Iteration Comparison</h3>
+    <div id="latest-info" style="font-weight: bold; margin-bottom: 5px;"></div>
     <div id="latest-cards"></div>
+
     <h3>Runs Grouped By Day</h3>
     <div id="run-list"></div>
 </div>
@@ -46,7 +49,7 @@
 </div>
 
 <div id="lidar-page" class="page">
-    <h2>Lidar & Wall Sensor Data</h2>
+    <h2>Lidar Sensor Data</h2>
     <h3>Averages</h3>
     <div id="lidar-cards"></div>
     <h3>Sensor Trends</h3>
@@ -99,7 +102,6 @@ function updateGlobalKeys(runs) {
     const lKeys = new Set();
     const fKeys = new Set();
     const blacklist = ["run", "date", ...IGNORE_KEYS];
-
     runs.forEach(r => {
         Object.keys(r).forEach(k => {
             if (blacklist.includes(k)) return;
@@ -130,6 +132,34 @@ function displayCards(runs, keys, containerId){
     });
 }
 
+function displayLatestComparison(allRuns, keys) {
+    const info = document.getElementById("latest-info");
+    const container = document.getElementById("latest-cards");
+    if (allRuns.length === 0) return;
+    const sorted = [...allRuns].sort((a, b) => b.run.localeCompare(a.run));
+    const latest = sorted[0];
+    info.textContent = `Latest Run: ${latest.run}`;
+    container.innerHTML = "";
+    keys.forEach(k => {
+        const val = latest[k];
+        if (typeof val !== "number") return;
+        const allVals = allRuns.map(r => r[k]).filter(v => typeof v === "number");
+        const avg = allVals.reduce((a, b) => a + b, 0) / allVals.length;
+        const rule = metricRules[k] || "higher";
+        let statusClass = "";
+        if (val !== avg) {
+            if (rule === "lower") statusClass = val < avg ? "good" : "bad";
+            else statusClass = val > avg ? "good" : "bad";
+        }
+        container.innerHTML += `
+            <div class="card">
+                <strong>${k}</strong><br>
+                <span class="${statusClass}">${val.toFixed(2)}</span>
+                <span class="comparison-sub">Avg: ${avg.toFixed(2)}</span>
+            </div>`;
+    });
+}
+
 function displayDayRuns(runs, day, commits, prs){
     document.getElementById("day-title").textContent = `Runs for ${day}`;
     const cards = document.getElementById("day-cards");
@@ -147,7 +177,7 @@ function displayDayRuns(runs, day, commits, prs){
         cards.appendChild(c);
     });
     const container = document.getElementById("day-commits-prs");
-    container.innerHTML = `<h4>Commits:</h4>${commits.map(c=>`<a target="_blank" href="https://github.com/${OWNER}/${REPO}/commit/${c.sha}">${c.commit.message}</a>`).join("<br>") || "None"}`;
+    container.innerHTML = `<h4>Commits:</h4>${Array.isArray(commits) && commits.length > 0 ? commits.map(c=>`<a target="_blank" href="https://github.com/${OWNER}/${REPO}/commit/${c.sha}">${c.commit.message}</a>`).join("<br>") : "None"}`;
 }
 
 function drawPlots(keys, containerId) {
@@ -171,38 +201,34 @@ async function init() {
         const t = await fetchRunFileContent(f.download_url);
         const m = parseRunText(t);
         m.run = f.name;
-        m.date = f.name.split("_")[1];
+        const dateMatch = f.name.match(/\d{4}-\d{2}-\d{2}/);
+        m.date = dateMatch ? dateMatch[0] : "unknown";
         return m;
     });
-
     allRunsData = await Promise.all(filePromises);
     updateGlobalKeys(allRunsData);
-
     const byDate = {};
     allRunsData.forEach(r => { byDate[r.date] = byDate[r.date] || []; byDate[r.date].push(r); });
-
     const list = document.getElementById("run-list");
+    list.innerHTML = "";
     Object.keys(byDate).sort().reverse().forEach(d => {
         const b = document.createElement("button");
         b.textContent = `${d} (${byDate[d].length} runs)`;
         b.onclick = async () => {
-            const res = await Promise.all([
-                fetch(`https://api.github.com/repos/${OWNER}/${REPO}/commits?since=${d}T00:00:00Z&until=${d}T23:59:59Z`).then(r=>r.json()),
-                fetch(`https://api.github.com/search/issues?q=repo:${OWNER}/${REPO}+type:pr+merged:${d}`).then(r=>r.json())
-            ]);
+            const commitRes = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/commits?since=${d}T00:00:00Z&until=${d}T23:59:59Z`).then(r=>r.json());
+            const prRes = await fetch(`https://api.github.com/search/issues?q=repo:${OWNER}/${REPO}+type:pr+merged:${d}`).then(r=>r.json());
             showPage("day-page");
-            displayDayRuns(byDate[d], d, Array.isArray(res[0])?res[0]:[], res[1].items || []);
+            displayDayRuns(byDate[d], d, Array.isArray(commitRes)?commitRes:[], prRes.items || []);
         };
         list.appendChild(b);
     });
-
     document.getElementById("home-btn").onclick = () => showPage("home-page");
     document.getElementById("graphs-btn").onclick = () => { showPage("graphs-page"); drawPlots(metricsKeys, "graphs"); };
     document.getElementById("lidar-btn").onclick = () => { showPage("lidar-page"); displayCards(allRunsData, lidarKeys, "lidar-cards"); drawPlots(lidarKeys, "lidar-graphs"); };
     document.getElementById("back-btn").onclick = () => showPage("home-page");
-
     showPage("home-page");
     displayCards(allRunsData, metricsKeys, "average-cards");
+    displayLatestComparison(allRunsData, metricsKeys);
 }
 
 function showPage(id) {
