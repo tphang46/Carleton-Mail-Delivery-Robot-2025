@@ -7,6 +7,10 @@ from rclpy.node import Node
 from rclpy.qos import QoSProfile
 from sensor_msgs.msg import BatteryState
 from irobot_create_msgs.msg import DockStatus
+import math
+from statistics import stdev, mean
+from sensor_msgs.msg import LaserScan
+from tools.csv_parser import loadConfig
 
 # Base Metric Class
 class Metric:
@@ -149,6 +153,8 @@ class MetricsManager:
 class FileLogger:
     def __init__(self, log_dir):
         self.log_dir = os.path.abspath(log_dir)
+        self.declare_parameter('log_dir', './tools/logs')
+        self.log_dir = os.path.abspath(self.get_parameter('log_dir').value)
         os.makedirs(self.log_dir, exist_ok=True)
         self.runs_dir = os.path.join(self.log_dir, "runs")
         os.makedirs(self.runs_dir, exist_ok=True)
@@ -171,6 +177,93 @@ class FileLogger:
         self.wall_log_file.close()
         open(self.wall_log_path, 'w').close()
 
+# Lidar distance class
+class LidarDistanceMetric(Metric):
+    topic_name = "/scan"
+    topic_type = LaserScan
+    listen_qos = 10
+
+    def __init__(self):
+        self.config = loadConfig()
+
+        self.left_distances = []
+        self.right_distances = []
+        self.front_distances = []
+
+        self.wall_distances = []
+        self.wall_angles = []
+
+    def update(self, scan: LaserScan):
+        result = self.calculate(scan)
+        if result is None:
+            return
+
+        wall_dist, wall_angle, right, left, front = result
+
+        if right != -1:
+            self.right_distances.append(right)
+        if left != -1:
+            self.left_distances.append(left)
+        if front != -1:
+            self.front_distances.append(front)
+        if wall_dist != -1:
+            self.wall_distances.append(wall_dist)
+            self.wall_angles.append(wall_angle)
+
+    def calculate(self, scan):
+        count = len(scan.ranges)
+        angle = 0
+
+        min_left = self.config["LARGE_DEFAULT_DISTANCE"]
+        min_right = self.config["LARGE_DEFAULT_DISTANCE"]
+        min_front = self.config["LARGE_DEFAULT_DISTANCE"]
+        min_distance = self.config["LARGE_DEFAULT_DISTANCE"]
+
+        for i in range(count):
+            degree = math.degrees(scan.angle_min + scan.angle_increment * i)
+            cur = scan.ranges[i]
+
+            if cur == math.inf or cur <= 0.0:
+                continue
+
+            if (self.config["WALL_FOLLOW_MIN_ANGLE"] <= degree <= self.config["WALL_FOLLOW_MAX_ANGLE"]
+                    and cur < min_distance):
+                min_distance = cur
+                angle = degree
+
+            if (degree <= self.config["FRONT_MIN_ANGLE"] or degree >= self.config["FRONT_MAX_ANGLE"]) and cur < min_front:
+                min_front = cur
+            elif self.config["RIGHT_MIN_ANGLE"] <= degree < self.config["RIGHT_MAX_ANGLE"] and cur < min_right:
+                min_right = cur
+            elif self.config["LEFT_MIN_ANGLE"] < degree <= self.config["LEFT_MAX_ANGLE"] and cur < min_left:
+                min_left = cur
+
+        return min_distance, angle - 90, min_right, min_left, min_front
+
+    def end(self):
+        pass
+
+    def serialize(self):
+        def safe_avg(data):
+            return round(mean(data), 2) if data else None
+
+        def safe_min(data):
+            return round(min(data), 2) if data else None
+
+        return {
+            "lidar_front_avg": safe_avg(self.front_distances),
+            "lidar_front_min": safe_min(self.front_distances),
+
+            "lidar_left_avg": safe_avg(self.left_distances),
+            "lidar_left_min": safe_min(self.left_distances),
+
+            "lidar_right_avg": safe_avg(self.right_distances),
+            "lidar_right_min": safe_min(self.right_distances),
+
+            "wall_distance_avg": safe_avg(self.wall_distances),
+            "wall_angle_avg": safe_avg(self.wall_angles),
+        }
+
 # Main Node
 class RobotGeneralLogger(Node):
     def __init__(self):
@@ -187,6 +280,7 @@ class RobotGeneralLogger(Node):
         self.battery_metric = self.metrics_manager.register_metric(BatteryMetric())
         self.wall_metric = self.metrics_manager.register_metric(WallFollowMetric(self.logger.wall_log_path))
         self.delivery_metric = self.metrics_manager.register_metric(DeliveryTimeMetric())
+        self.lidar_metric = self.metrics_manager.register_metric(LidarDistanceMetric())
         self.dock_metric = self.metrics_manager.register_metric(Dock())
 
         self.metrics_manager.start_all()
