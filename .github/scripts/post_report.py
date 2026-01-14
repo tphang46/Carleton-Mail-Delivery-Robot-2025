@@ -8,8 +8,21 @@ GITHUB_EVENT_PATH = os.environ.get("GITHUB_EVENT_PATH")
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 
 LOG_DIR = "src/tools/logs/runs"
-EXEMPT_KEYS = ["temperature_level", "voltage_level"]
-METRIC_RULES = { "delivery_time": "lower", "battery_used": "lower" }
+
+EXEMPT_KEYS = [
+    "temperature_level",
+    "voltage_level",
+    "lidar_front_avg",
+    "lidar_front_min",
+    "lidar_left_avg",
+    "lidar_left_min",
+    "lidar_right_avg",
+    "lidar_right_min",
+    "wall_distance_avg",
+    "wall_angle_avg"
+]
+
+METRIC_RULES = {"delivery_time": "lower", "battery_used": "lower"}
 
 runs = []
 for file in sorted(os.listdir(LOG_DIR)):
@@ -19,7 +32,10 @@ for file in sorted(os.listdir(LOG_DIR)):
             for line in f:
                 if "=" in line:
                     k, v = line.strip().split("=")
-                    data[k.strip()] = float(v) if v.strip().replace(".","",1).isdigit() else v.strip()
+                    try:
+                        data[k.strip()] = float(v.strip())
+                    except ValueError:
+                        data[k.strip()] = v.strip()
             data["run"] = file
             parts = file.split("_")
             data["date"] = parts[1] if len(parts) > 1 else "unknown"
@@ -29,7 +45,9 @@ if not runs:
     exit(0)
 
 df = pd.DataFrame(runs)
-metrics = [c for c in df.columns if c not in EXEMPT_KEYS + ["run", "trip_start_time", "trip_end_time", "battery_start", "battery_end", "date"]]
+
+metrics = [c for c in df.columns if
+           c not in EXEMPT_KEYS + ["run", "trip_start_time", "trip_end_time", "battery_start", "battery_end", "date"]]
 
 with open(GITHUB_EVENT_PATH) as f:
     event = json.load(f)
@@ -49,27 +67,32 @@ else:
 
 avg = df[metrics].mean()
 
-md = f"## Robot Metrics Report - Run Date: {report_date}\n\n"
-
+md_body = f"## Robot Metrics Report - Run Date: {report_date}\n\n"
 summary_counts = {"Improved": 0, "Worse": 0, "Same": 0}
 
 for _, run in day_runs.iterrows():
-    md += f"### Run: {run['run']}\n"
-    md += "| Metric | Value | Average | Status |\n"
-    md += "|--------|-------|--------|--------|\n"
+    md_body += f"### Run: {run['run']}\n"
+    md_body += "| Metric | Value | Average | Status |\n"
+    md_body += "|--------|-------|--------|--------|\n"
     for m in metrics:
         val = run[m]
         avg_val = avg[m]
+
+        if not isinstance(val, (int, float)):
+            continue
+
         rule = METRIC_RULES.get(m, "higher")
         if rule == "higher":
             status = "Improved" if val > avg_val else "Worse" if val < avg_val else "Same"
         else:
             status = "Improved" if val < avg_val else "Worse" if val > avg_val else "Same"
-        summary_counts[status] += 1
-        md += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
-    md += "\n"
 
-md = f"**Summary for {report_date}:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same\n\n" + md
+        summary_counts[status] += 1
+        md_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
+    md_body += "\n"
+
+md_header = f"**Summary for {report_date}:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same\n\n"
+full_md = md_header + md_body
 
 g = Github(GITHUB_TOKEN)
 repo = g.get_repo(GITHUB_REPOSITORY)
@@ -84,14 +107,14 @@ elif "ref" in event and event["ref"].startswith("refs/heads/"):
 
 if pr_number:
     pr = repo.get_pull(pr_number)
-    marker = "<!-- ROBOT_METRICS_COMMENT -->"
+    marker = ""
     existing_comments = pr.get_issue_comments()
     metrics_comment = None
     for c in existing_comments:
         if marker in c.body:
             metrics_comment = c
             break
-    md_with_marker = f"{marker}\n\n{md}"
+    md_with_marker = f"{marker}\n\n{full_md}"
     if metrics_comment:
         metrics_comment.edit(md_with_marker)
     else:
