@@ -28,4 +28,4 @@ jobs:
       - name: Post Metrics Comment
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python .github/scripts/post_pr_metrics.py
+        run: python .github/scripts/post_report.py
