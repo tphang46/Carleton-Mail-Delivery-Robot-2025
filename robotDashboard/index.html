@@ -22,21 +22,19 @@
     </style>
 </head>
 <body>
-
 <h1>Robot Dashboard Report</h1>
-
 <p>
 <strong>Repository:</strong> tphang46/Carleton-Mail-Delivery-Robot-2025<br>
 <strong>Branch:</strong> robotDashboard<br>
 <strong>Commit:</strong>
-<a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/0d4a6d4800e644cebe1aa621537b6d6cbc8e8e07" target="_blank">0d4a6d4800e644cebe1aa621537b6d6cbc8e8e07</a><br>
+<a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/c3172274fed2c6dc0b368a3f8bb3f07e7db5c8ad" target="_blank">c3172274fed2c6dc0b368a3f8bb3f07e7db5c8ad</a><br>
 <strong>Triggered by:</strong> tphang46<br>
-<strong>Generated:</strong> 2026-01-14T00:29:09.029Z
+<strong>Generated:</strong> 2026-01-14T00:36:03.875Z
 </p>
 
 <div id="home-page" class="page">
     <h3>Average of Each Metric</h3>
-    <div id="average-cards"></div>
+    <div id="average-cards">{{AVG_METRICS}}</div>
 
     <h3>Latest Iteration Information</h3>
     <div class="legend">
@@ -45,12 +43,11 @@
     </div>
     <div id="latest-info">
       <strong>Latest commits:</strong><br>
-      <a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/0d4a6d4800e644cebe1aa621537b6d6cbc8e8e07" target="_blank">updated dashboard</a><br><a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/95e72d59e19a2830d07813e5645edaa9360ebc53" target="_blank">updated dashboard</a><br><a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/cf7e8dc51a3b009e44760fbb1b8679b5e6ba325c" target="_blank">updated dashboard</a><br><a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/960acac59738a4de663b559bdc9d29e0d78063a1" target="_blank">updated dashboard</a><br><a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/501b0c9a2104e73631a79dd7872417a07fe2efbd" target="_blank">Merge branch 'main' into robotDashboard</a>
-      <br><br>
+      <a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/c3172274fed2c6dc0b368a3f8bb3f07e7db5c8ad" target="_blank">updated dashboard</a><br><a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/0d4a6d4800e644cebe1aa621537b6d6cbc8e8e07" target="_blank">updated dashboard</a><br><a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/95e72d59e19a2830d07813e5645edaa9360ebc53" target="_blank">updated dashboard</a><br><a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/cf7e8dc51a3b009e44760fbb1b8679b5e6ba325c" target="_blank">updated dashboard</a><br><a href="https://github.com/tphang46/Carleton-Mail-Delivery-Robot-2025/commit/960acac59738a4de663b559bdc9d29e0d78063a1" target="_blank">updated dashboard</a><br><br>
       <strong>Latest PRs:</strong><br>
       No PRs found
     </div>
-    <div id="latest-cards"></div>
+    <div id="latest-cards">{{LATEST_METRICS}}</div>
 
     <h3>Data On Our Runs Grouped By Day</h3>
     <div id="run-list"></div>
@@ -58,7 +55,7 @@
 
 <div id="graphs-page" class="page">
     <h2>Graphs</h2>
-    <div id="graphs"></div>
+    <div id="graphs">{{GRAPHS}}</div>
 </div>
 
 <div id="day-page" class="page">
@@ -77,7 +74,6 @@ const EXEMPT_KEYS = ["temperature_level", "voltage_level"];
 const metricRules = { "delivery_time": "lower", "battery_used": "lower" };
 let BRANCH;
 let allRunsData = [], metricsKeys = [], dayRunsData = [];
-const colors = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd'];
 
 function getBranchFromURL() {
     const p = new URLSearchParams(window.location.search);
@@ -89,23 +85,17 @@ async function fetchRepoInfo() {
 }
 
 async function fetchLatestCommit(branch) {
-    const c = await (await fetch(
-        `https://api.github.com/repos/${COMMITS_OWNER}/${COMMITS_REPO}/commits?sha=${branch}&per_page=1`
-    )).json();
+    const c = await (await fetch(`https://api.github.com/repos/${COMMITS_OWNER}/${COMMITS_REPO}/commits?sha=${branch}&per_page=1`)).json();
     return c[0];
 }
 
 async function fetchLatestPR(branch) {
-    const r = await (await fetch(
-        `https://api.github.com/search/issues?q=repo:${COMMITS_OWNER}/${COMMITS_REPO}+type:pr+is:merged+base:${branch}&sort=updated&order=desc&per_page=1`
-    )).json();
+    const r = await (await fetch(`https://api.github.com/search/issues?q=repo:${COMMITS_OWNER}/${COMMITS_REPO}+type:pr+is:merged+base:${branch}&sort=updated&order=desc&per_page=1`)).json();
     return r.items?.[0];
 }
 
 async function fetchRunFiles() {
-    const res = await fetch(
-        `https://api.github.com/repos/${OWNER}/${REPO}/contents/src/tools/logs/runs?ref=${BRANCH}`
-    );
+    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/src/tools/logs/runs?ref=${BRANCH}`);
     const files = await res.json();
     return files.filter(f => f.name.endsWith(".txt"));
 }
@@ -146,19 +136,8 @@ function getMetricClass(metric, value, avgValue) {
 async function buildRunList() {
     const repoInfo = await fetchRepoInfo();
     BRANCH = getBranchFromURL() || repoInfo.default_branch;
-
-    document.getElementById("dashboard-title").textContent = `Dashboard for ${BRANCH}`;
-
     const latestCommit = await fetchLatestCommit(BRANCH);
     const latestPR = await fetchLatestPR(BRANCH);
-
-    document.getElementById("branch-info").innerHTML =
-        `<strong>Latest Commit:</strong><br>
-         <a target="_blank" href="${latestCommit.html_url}">${latestCommit.commit.message}</a><br><br>
-         <strong>Latest Merged PR:</strong><br>` +
-        (latestPR
-            ? `<a target="_blank" href="https://github.com/${COMMITS_OWNER}/${COMMITS_REPO}/pull/${latestPR.number}">#${latestPR.number} ${latestPR.title}</a>`
-            : `None`);
 
     const files = await fetchRunFiles();
     const byDate = {};
@@ -183,21 +162,15 @@ async function buildRunList() {
                 dayRunsData.push(m);
             }
             metricsKeys = Object.keys(dayRunsData[0]).filter(k => !["run","trip_start_time","trip_end_time","battery_start","battery_end"].includes(k));
-            const [commits, prs] = await Promise.all([
-                fetchLatestCommit(BRANCH),
-                fetchLatestPR(BRANCH)
-            ]);
+            const [commits, prs] = await Promise.all([fetchLatestCommit(BRANCH), fetchLatestPR(BRANCH)]);
             document.getElementById("home-page").style.display = "none";
             document.getElementById("graphs-page").style.display = "none";
             document.getElementById("day-page").style.display = "block";
-            document.getElementById("back-btn").style.display = "inline";
             document.getElementById("day-commits-prs").innerHTML =
                 `<strong>Latest Commit:</strong><br>
                  <a target="_blank" href="${commits.html_url}">${commits.commit.message}</a><br><br>
                  <strong>Latest PR:</strong><br>` +
-                (prs
-                    ? `<a target="_blank" href="https://github.com/${COMMITS_OWNER}/${COMMITS_REPO}/pull/${prs.number}">#${prs.number} ${prs.title}</a>`
-                    : `None`);
+                (prs ? `<a target="_blank" href="https://github.com/${COMMITS_OWNER}/${COMMITS_REPO}/pull/${prs.number}">#${prs.number} ${prs.title}</a>` : `None`);
             document.getElementById("day-title").textContent = `Runs for ${d}`;
             const cards = document.getElementById("day-cards");
             cards.innerHTML = "";
@@ -215,8 +188,6 @@ async function buildRunList() {
         };
         list.appendChild(b);
     });
-
-    document.getElementById("home-btn").onclick = () => location.reload();
 }
 
 buildRunList();
