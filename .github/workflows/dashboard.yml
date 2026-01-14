@@ -1,30 +1,50 @@
-name: Generate Branch Reports
+name: Generate Dashboard Report
 
 on:
   push:
-    branches: ["**"]
-  pull_request:
-
-permissions:
-  contents: write
+    branches:
+      - "**"
+  workflow_dispatch:
 
 jobs:
-  build-dashboard:
+  build:
     runs-on: ubuntu-latest
-
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Generate branch-specific dashboard
-        run: node dashboard/build.js
+      - name: Install dependencies
+        run: npm install
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+      - name: Generate dashboard
+        run: node dashboard/build.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REF_NAME: ${{ github.ref_name }}
+
+      - name: Update README with branch-specific dashboard link
+        run: |
+          BRANCH="${GITHUB_REF_NAME}"
+          DASHBOARD_URL="https://${{ github.repository_owner }}.github.io/${GITHUB_REPOSITORY##*/}/dist/$BRANCH/"
+          if grep -q "Dashboard link" README.md; then
+            sed -i "s|.*Dashboard link.*|[View Dashboard for $BRANCH]($DASHBOARD_URL)|" README.md
+          else
+            echo -e "\n\n## Dashboard link\n[View Dashboard for $BRANCH]($DASHBOARD_URL)" >> README.md
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dist README.md
+          git commit -m "Update dashboard for branch $GITHUB_REF_NAME [skip ci]" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
