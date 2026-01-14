@@ -87,7 +87,18 @@ function displayAverageCards(avg){const d=document.getElementById("average-cards
 async function fetchCommitsByDate(date){return await (await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/commits?since=${date}T00:00:00Z&until=${date}T23:59:59Z`)).json();}
 async function fetchPRsByDate(date){return (await (await fetch(`https://api.github.com/search/issues?q=repo:${OWNER}/${REPO}+type:pr+merged:${date}`)).json()).items||[];}
 
-function getMetricClass(metric,value,avgValue){if(EXEMPT_KEYS.includes(metric)) return ""; const r=metricRules[metric]||"higher"; if(r==="higher") return value>avgValue?"good":value<avgValue?"bad":""; if(r==="lower") return value<avgValue?"good":value>avgValue?"bad":""; return "";}
+function getMetricClass(metric, value, avgValue) {
+    if (metric.startsWith("lidar_") || metric.startsWith("wall_")) {
+        return "";
+    }
+
+    if (EXEMPT_KEYS.includes(metric)) return "";
+
+    const rule = metricRules[metric] || "higher";
+    if (rule === "higher") return value > avgValue ? "good" : value < avgValue ? "bad" : "";
+    if (rule === "lower") return value < avgValue ? "good" : value > avgValue ? "bad" : "";
+    return "";
+}
 
 function displayLatest(latestRun,avg,commits,prs,date){
     document.getElementById("latest-info").innerHTML=
