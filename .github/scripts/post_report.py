@@ -41,35 +41,35 @@ elif "commits" in event:
     target_date = event["commits"][-1]["timestamp"][:10].replace("-", "")
 
 if target_date in df["date"].values:
-    latest = df[df["date"] == target_date].iloc[-1]
+    day_runs = df[df["date"] == target_date].copy()
     report_date = target_date
 else:
-    latest = df.iloc[-1]
-    report_date = latest["date"]
+    day_runs = pd.DataFrame([df.iloc[-1]])
+    report_date = day_runs.iloc[0]["date"]
 
 avg = df[metrics].mean()
 
-comparison = []
-for m in metrics:
-    val = latest[m]
-    avg_val = avg[m]
-    rule = METRIC_RULES.get(m, "higher")
-    if rule == "higher":
-        status = "Improved" if val > avg_val else "Worse" if val < avg_val else "Same"
-    else:
-        status = "Improved" if val < avg_val else "Worse" if val > avg_val else "Same"
-    comparison.append({"metric": m, "value": val, "avg": avg_val, "status": status})
-
 md = f"## Robot Metrics Report - Run Date: {report_date}\n\n"
-md += "| Metric | Latest Value | Average | Status |\n"
-md += "|--------|-------------|---------|--------|\n"
-for c in comparison:
-    md += f"| {c['metric']} | {c['value']:.2f} | {c['avg']:.2f} | {c['status']} |\n"
 
-improved_count = sum(1 for c in comparison if c['status'] == 'Improved')
-worse_count = sum(1 for c in comparison if c['status'] == 'Worse')
-same_count = sum(1 for c in comparison if c['status'] == 'Same')
-md = f"**Summary:** {improved_count} improved, {worse_count} worse, {same_count} same\n\n" + md
+summary_counts = {"Improved": 0, "Worse": 0, "Same": 0}
+
+for _, run in day_runs.iterrows():
+    md += f"### Run: {run['run']}\n"
+    md += "| Metric | Value | Average | Status |\n"
+    md += "|--------|-------|--------|--------|\n"
+    for m in metrics:
+        val = run[m]
+        avg_val = avg[m]
+        rule = METRIC_RULES.get(m, "higher")
+        if rule == "higher":
+            status = "Improved" if val > avg_val else "Worse" if val < avg_val else "Same"
+        else:
+            status = "Improved" if val < avg_val else "Worse" if val > avg_val else "Same"
+        summary_counts[status] += 1
+        md += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
+    md += "\n"
+
+md = f"**Summary for {report_date}:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same\n\n" + md
 
 g = Github(GITHUB_TOKEN)
 repo = g.get_repo(GITHUB_REPOSITORY)
