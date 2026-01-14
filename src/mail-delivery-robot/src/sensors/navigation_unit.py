@@ -66,8 +66,8 @@ class NavigationUnit(Node):
         Reads information about nearby beacons.
         '''
         # No trip was defined
-        #self.get_logger().info(f"Beacon Data Received: {data.data}")
-        #self.get_logger().info(f"Current Destination: {self.current_destination}, Previous Beacon: {self.prev_beacon}")
+        self.get_logger().info(f"Beacon Data Received: {data.data}")
+        self.get_logger().info(f"Current Destination: {self.current_destination}, Previous Beacon: {self.prev_beacon}")
         if self.current_destination is None or self.prev_beacon is None:
             return
         
@@ -87,7 +87,7 @@ class NavigationUnit(Node):
                     if self.map.exists(self.current_beacon + str(i)):
                         beacon_orientation = str(i)
                         break
-            #self.get_logger().info(f"Current Beacon: {self.current_beacon}, Prev Beacon: {self.prev_beacon}, Destination: {self.current_destination}, Beacon Orientation: {beacon_orientation}")
+            self.get_logger().info(f"Current Beacon: {self.current_beacon}, Prev Beacon: {self.prev_beacon}, Destination: {self.current_destination}, Beacon Orientation: {beacon_orientation}")
             self.direction = self.map.getDirection(self.current_beacon + beacon_orientation, self.current_destination)
             self.get_logger().info(f"Determined Direction: {self.direction}")
             self.can_send_direction = True

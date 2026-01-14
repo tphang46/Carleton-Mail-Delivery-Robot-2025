@@ -60,30 +60,37 @@ class Captain(Node):
         self.current_actions[prio] = action
 
     def send_command(self):
-        for action in self.current_actions.values():
-            if action != 'NONE' and action != 'DOCK' and action != 'UNDOCK':
+        for prio in sorted(self.current_actions.keys()):
+            action = self.current_actions[prio]
+            if action not in ('NONE', 'WAIT', 'DOCK', 'UNDOCK'):
                 command = self.action_translator.translate_action(action)
                 self.command_publisher.publish(command)
+
+                self.get_logger().info(
+                    f"Action: {action}, Command sent to /cmd_vel: {command}"
+                )
+                if action in ('RIGHT_TURN', 'LEFT_TURN'):
+                    self.current_actions[prio] = 'NONE'
+
                 break
             elif action == 'DOCK':
-
                 if self.current_dock_state:
                     self.can_send_goal = True
                     break
-
                 if self.can_send_goal:
                     self.get_logger().info("Sending dock goal")
                     self.can_send_goal = False
-                    self.dock_goal_future = self.docking_client.send_goal_async(
+                    self.docking_client.send_goal_async(
                         self.dock_msg,
                         feedback_callback=self.feedback_callback
                     )
-                    self.dock_goal_future.add_done_callback(self.dock_goal_callback)
-                    break
+                break
             elif action == 'UNDOCK':
                 self.undocking_client.send_goal_async(self.undock_msg)
                 break
-        self.get_logger().info(str(self.current_actions))
+
+        self.get_logger().info(f"Current actions: {self.current_actions}")
+
 
     def dock_goal_callback(self, future):
         self.get_logger().info("got here")

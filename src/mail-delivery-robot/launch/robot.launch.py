@@ -11,6 +11,7 @@ def generate_launch_description():
             parameters=[{'channel_type': 'serial',
                          'serial_port': '/dev/ttyUSB0',
                          'serial_baudrate': 115200,
+                         'lidar_model': 'a1',
                          'frame_id': 'laser',
                          'inverted': False,
                          'angle_compensate': True}],
@@ -76,9 +77,4 @@ def generate_launch_description():
            executable='logger',
            name='logger'
        ) ,
-       Node(
-           package='mail-delivery-robot',
-           executable = 'navigation_unit_AI',
-           name='navigation_unit_AI'
-       )
    ])

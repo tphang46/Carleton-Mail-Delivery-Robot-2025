@@ -1,0 +1,9 @@
+battery_start=None
+battery_end=0.0
+battery_used=None
+delivery_time=0.39
+wall_follow_time=N/A
+voltage_level=0.0
+temperature_level=0.0
+trip_start_time=2025-12-05 20:35:09.242088
+trip_end_time=2025-12-05 20:35:09.627768

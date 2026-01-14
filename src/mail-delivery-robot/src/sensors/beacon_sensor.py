@@ -62,7 +62,7 @@ class BeaconSensor(Node):
 
         # Perform scan
         devices = self.scanner.scan(self.config["BEACON_SCAN_DURATION"])
-        self.get_logger().info(f"Devices found this scan: {len(devices)}")
+        #self.get_logger().info(f"Devices found this scan: {len(devices)}")
 
         beaconData = String()
         self.scan_counter += 1
@@ -77,9 +77,9 @@ class BeaconSensor(Node):
                 if beacon_mac == dev.addr:
 
                     beacon_name = self.beacons[beacon_mac]
-                    self.get_logger().info(
-                        f"[MATCH] Beacon detected: {beacon_name} ({beacon_mac}), RSSI={dev.rssi}"
-                    )
+                    #self.get_logger().info(
+                        #f"[MATCH] Beacon detected: {beacon_name} ({beacon_mac}), RSSI={dev.rssi}"
+                    #)
 
                     beacon_rssi = abs(int(dev.rssi))
 
