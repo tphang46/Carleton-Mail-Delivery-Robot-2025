@@ -10,16 +10,9 @@ GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 LOG_DIR = "src/tools/logs/runs"
 
 EXEMPT_KEYS = [
-    "temperature_level",
-    "voltage_level",
-    "lidar_front_avg",
-    "lidar_front_min",
-    "lidar_left_avg",
-    "lidar_left_min",
-    "lidar_right_avg",
-    "lidar_right_min",
-    "wall_distance_avg",
-    "wall_angle_avg"
+    "temperature_level", "voltage_level", "lidar_front_avg", "lidar_front_min",
+    "lidar_left_avg", "lidar_left_min", "lidar_right_avg", "lidar_right_min",
+    "wall_distance_avg", "wall_angle_avg"
 ]
 
 METRIC_RULES = {"delivery_time": "lower", "battery_used": "lower"}
@@ -45,7 +38,6 @@ if not runs:
     exit(0)
 
 df = pd.DataFrame(runs)
-
 metrics = [c for c in df.columns if
            c not in EXEMPT_KEYS + ["run", "trip_start_time", "trip_end_time", "battery_start", "battery_end", "date"]]
 
@@ -58,16 +50,21 @@ if "pull_request" in event:
 elif "commits" in event:
     target_date = event["commits"][-1]["timestamp"][:10].replace("-", "")
 
+is_fallback = False
 if target_date in df["date"].values:
     day_runs = df[df["date"] == target_date].copy()
     report_date = target_date
 else:
     day_runs = pd.DataFrame([df.iloc[-1]])
     report_date = day_runs.iloc[0]["date"]
+    is_fallback = True
 
 avg = df[metrics].mean()
 
 md_body = f"## Robot Metrics Report - Run Date: {report_date}\n\n"
+if is_fallback:
+    md_body += "**No test runs were run today, displaying most recent run.**\n\n"
+
 summary_counts = {"Improved": 0, "Worse": 0, "Same": 0}
 
 for _, run in day_runs.iterrows():
@@ -77,9 +74,7 @@ for _, run in day_runs.iterrows():
     for m in metrics:
         val = run[m]
         avg_val = avg[m]
-
-        if not isinstance(val, (int, float)):
-            continue
+        if not isinstance(val, (int, float)): continue
 
         rule = METRIC_RULES.get(m, "higher")
         if rule == "higher":
@@ -109,11 +104,8 @@ if pr_number:
     pr = repo.get_pull(pr_number)
     marker = ""
     existing_comments = pr.get_issue_comments()
-    metrics_comment = None
-    for c in existing_comments:
-        if marker in c.body:
-            metrics_comment = c
-            break
+    metrics_comment = next((c for c in existing_comments if marker in c.body), None)
+
     md_with_marker = f"{marker}\n\n{full_md}"
     if metrics_comment:
         metrics_comment.edit(md_with_marker)
