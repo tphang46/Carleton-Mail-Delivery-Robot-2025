@@ -1,5 +1,5 @@
 # Carleton Mail Delivery Robot
-
+dashboard link: https://tphang46.github.io/Carleton-Mail-Delivery-Robot-2025/
 This is an engineering capstone project for the 2024-2025 year at Carleton University.
 
 The objective of this project is to create a fully autonomous robot which is capable of delivering mail between buildings on the Carleton University campus by traveling through the tunnels. The robot relies on Bluetooth beacons placed at the intersections of the tunnel system for navigation, while it relies on data from a LiDAR sensor and a camera to maneuvre through intersections, around obstacles, and to perform wall following while traveling towards its destination.
