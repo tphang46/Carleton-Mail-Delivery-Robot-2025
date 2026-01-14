@@ -61,16 +61,17 @@ else:
 
 avg = df[metrics].mean()
 
-md_body = f"## Robot Metrics Report - Run Date: {report_date}\n\n"
+md_header = ""
 if is_fallback:
-    md_body += "**No test runs were run today, displaying most recent run.**\n\n"
+    md_header += "**NO TEST RUNS WERE RUN TODAY. DISPLAYING MOST RECENT DATA BELOW.**\n\n---\n\n"
 
 summary_counts = {"Improved": 0, "Worse": 0, "Same": 0}
+temp_body = f"## Robot Metrics Report - Run Date: {report_date}\n\n"
 
 for _, run in day_runs.iterrows():
-    md_body += f"### Run: {run['run']}\n"
-    md_body += "| Metric | Value | Average | Status |\n"
-    md_body += "|--------|-------|--------|--------|\n"
+    temp_body += f"### Run: {run['run']}\n"
+    temp_body += "| Metric | Value | Average | Status |\n"
+    temp_body += "|--------|-------|--------|--------|\n"
     for m in metrics:
         val = run[m]
         avg_val = avg[m]
@@ -83,11 +84,11 @@ for _, run in day_runs.iterrows():
             status = "Improved" if val < avg_val else "Worse" if val > avg_val else "Same"
 
         summary_counts[status] += 1
-        md_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
-    md_body += "\n"
+        temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
+    temp_body += "\n"
 
-md_header = f"**Summary for {report_date}:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same\n\n"
-full_md = md_header + md_body
+summary_line = f"**Summary for {report_date}:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same\n\n"
+full_md = md_header + summary_line + temp_body
 
 g = Github(GITHUB_TOKEN)
 repo = g.get_repo(GITHUB_REPOSITORY)
