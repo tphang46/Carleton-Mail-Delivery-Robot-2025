@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const fetch = require("node-fetch");
 
 const template = fs.readFileSync("dashboard/template.html", "utf8");
 
@@ -13,7 +12,8 @@ if (process.env.GITHUB_TOKEN) {
 
 async function fetchBranches() {
   const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/branches`, { headers });
-  return (await res.json()).map(b => b.name);
+  const data = await res.json();
+  return data.map(b => b.name);
 }
 
 async function fetchLatestCommit(branch) {
