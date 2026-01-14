@@ -1,7 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const fetch = require("node-fetch");
-
 const template = fs.readFileSync("dashboard/template.html", "utf8");
 
 const OWNER = process.env.GITHUB_REPOSITORY.split("/")[0];
