@@ -74,7 +74,7 @@ def generate_launch_description():
         ),
        Node(
            package='mail-delivery-robot',
-           executable='logger',
-           name='logger'
+           executable='dashboard_logger',
+           name='dashboard_logger'
        ) ,
    ])
