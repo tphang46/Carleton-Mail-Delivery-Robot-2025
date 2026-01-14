@@ -1,4 +1,4 @@
-name: Generate Dashboard Report
+name: Generate Dashboard
 
 on:
   push:
@@ -19,9 +19,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-
-      - name: Install dependencies
-        run: npm install
 
       - name: Generate dashboard
         run: node dashboard/build.js
