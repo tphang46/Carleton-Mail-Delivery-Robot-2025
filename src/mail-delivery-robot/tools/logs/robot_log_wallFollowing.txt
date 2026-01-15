@@ -1,0 +1,1 @@
+[18:10:16] [SYSTEM] Logging all data to /home/capstone2526/cmdr_ws/mail-delivery-robot/tools/logs/robot_log_wallFollowing.txt

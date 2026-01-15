@@ -11,6 +11,7 @@ def generate_launch_description():
             parameters=[{'channel_type': 'serial',
                          'serial_port': '/dev/ttyUSB0',
                          'serial_baudrate': 115200,
+                         'lidar_model': 'a1',
                          'frame_id': 'laser',
                          'inverted': False,
                          'angle_compensate': True}],
@@ -20,11 +21,6 @@ def generate_launch_description():
             package='mail-delivery-robot',
             executable='captain',
             name='captain'
-        ),
-        Node(
-            package='mail-delivery-robot',
-            executable='camera_sensor',
-            name='camera_sensor'
         ),
         Node(
             package='mail-delivery-robot',
@@ -81,9 +77,4 @@ def generate_launch_description():
            executable='dashboard_logger',
            name='dashboard_logger'
        ) ,
-       Node(
-           package='mail-delivery-robot',
-           executable = 'navigation_unit_AI',
-           name='navigation_unit_AI'
-       )
    ])
