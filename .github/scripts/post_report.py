@@ -5,7 +5,7 @@ import re
 from github import Github
 
 GITHUB_REPOSITORY = os.environ["GITHUB_REPOSITORY"]
-GITHUB_EVENT_PATH = os.environ.get("GITHUB_EVENT_PATH")
+GITHUB_EVENT_PATH = os.environ.get(GITHUB_EVENT_PATH)
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 LOG_DIR = "tools/logs/runs"
 METADATA_KEYS = ["run", "date", "trip_start_time", "trip_end_time", "docked"]
@@ -79,13 +79,18 @@ temp_body = f"## Robot Metrics Report: {report_date}\n\n"
 
 for _, run in day_runs.iterrows():
     temp_body += f"### Run: {run['run']}\n"
-    temp_body += "| Metric | Value | Average | Status | Comparing to 'commit code' |\n"
-    temp_body += "|--------|-------|--------|--------|----------------------------|\n"
-    if run["run"] == last_run_filename:
-        compare_run = None
+    if last_run_filename:
+        temp_body += "| Metric | Value | Average | Status | Comparing to 'commit code' |\n"
+        temp_body += "|--------|-------|--------|--------|----------------------------|\n"
     else:
+        temp_body += "| Metric | Value | Average | Status |\n"
+        temp_body += "|--------|-------|--------|--------|\n"
+
+    compare_run = None
+    if last_run_filename and run["run"] != last_run_filename:
         previous_runs = df[df["run"] != run["run"]].sort_values("date", ascending=False)
         compare_run = previous_runs.iloc[0] if not previous_runs.empty else None
+
     for m in metrics:
         val = run[m]
         if pd.isna(val):
@@ -107,29 +112,33 @@ for _, run in day_runs.iterrows():
             else:
                 status = "Worse"
         summary_counts[status] = summary_counts.get(status, 0) + 1
-        if compare_run is None or pd.isna(compare_run.get(m)):
-            comparison = "No run"
-        else:
-            prev_val = compare_run[m]
-            if pd.isna(prev_val):
+
+        if last_run_filename:
+            if compare_run is None or pd.isna(compare_run.get(m)):
                 comparison = "No run"
             else:
-                if m in IN_DE_METRICS:
-                    if abs(val-prev_val) < 0.001:
-                        comparison = "Same"
-                    elif val > prev_val:
-                        comparison = "Increased"
-                    else:
-                        comparison = "Decreased"
+                prev_val = compare_run[m]
+                if pd.isna(prev_val):
+                    comparison = "No run"
                 else:
-                    rule = METRIC_RULES.get(m, "higher")
-                    if abs(val - prev_val) < 0.001:
-                        comparison = "Same"
-                    elif (rule == "lower" and val < prev_val) or (rule == "higher" and val > prev_val):
-                        comparison = "Improved"
+                    if m in IN_DE_METRICS:
+                        if abs(val-prev_val) < 0.001:
+                            comparison = "Same"
+                        elif val > prev_val:
+                            comparison = "Increased"
+                        else:
+                            comparison = "Decreased"
                     else:
-                        comparison = "Worse"
-        temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} | {comparison} |\n"
+                        rule = METRIC_RULES.get(m, "higher")
+                        if abs(val - prev_val) < 0.001:
+                            comparison = "Same"
+                        elif (rule == "lower" and val < prev_val) or (rule == "higher" and val > prev_val):
+                            comparison = "Improved"
+                        else:
+                            comparison = "Worse"
+            temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} | {comparison} |\n"
+        else:
+            temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
     temp_body += "\n"
 
 summary_line = f"**Summary:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same, {summary_counts['Increased']} Increased, {summary_counts['Decreased']} Decreased\n\n"
