@@ -21,14 +21,10 @@ for file in sorted(os.listdir(LOG_DIR)):
             for line in f:
                 if "=" in line:
                     k, v = line.strip().split("=", 1)
-                    k_s, v_s = k.strip(), v.strip()
                     try:
-                        if v_s.lower() == "none" or v_s == "N/A":
-                            data[k_s] = None
-                        else:
-                            data[k_s] = float(v_s)
+                        data[k.strip()] = float(v.strip())
                     except ValueError:
-                        data[k_s] = v_s
+                        data[k.strip()] = v.strip() if v.strip().lower() not in ["none", "n/a"] else None
             data["run"] = file
             match = re.search(r"\d{4}-\d{2}-\d{2}", file)
             data["date"] = match.group(0).replace("-", "") if match else "unknown"
@@ -62,6 +58,18 @@ else:
     report_date = day_runs.iloc[0]["date"]
     is_fallback = True
 
+last_run_filename = None
+repo = Github(GITHUB_TOKEN).get_repo(GITHUB_REPOSITORY)
+pr_number = event.get("pull_request", {}).get("number")
+if pr_number:
+    pr = repo.get_pull(pr_number)
+    comments = pr.get_issue_comments()
+    for c in reversed(comments):
+        m = re.search(r"### Run: (\S+\.txt)", c.body)
+        if m:
+            last_run_filename = m.group(1)
+            break
+
 md_header = f"**Commit:** `{commit_hash}`\n\n"
 if is_fallback:
     md_header += "**NO TEST RUNS TODAY. SHOWING LATEST DATA.**\n\n"
@@ -71,8 +79,13 @@ temp_body = f"## Robot Metrics Report: {report_date}\n\n"
 
 for _, run in day_runs.iterrows():
     temp_body += f"### Run: {run['run']}\n"
-    temp_body += "| Metric | Value | Average | Status |\n"
-    temp_body += "|--------|-------|--------|--------|\n"
+    temp_body += "| Metric | Value | Average | Status | Comparing to 'commit code' |\n"
+    temp_body += "|--------|-------|--------|--------|----------------------------|\n"
+    if run["run"] == last_run_filename:
+        compare_run = None
+    else:
+        previous_runs = df[df["run"] != run["run"]].sort_values("date", ascending=False)
+        compare_run = previous_runs.iloc[0] if not previous_runs.empty else None
     for m in metrics:
         val = run[m]
         if pd.isna(val):
@@ -94,23 +107,33 @@ for _, run in day_runs.iterrows():
             else:
                 status = "Worse"
         summary_counts[status] = summary_counts.get(status, 0) + 1
-        temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
+        if compare_run is None or pd.isna(compare_run.get(m)):
+            comparison = "No run"
+        else:
+            prev_val = compare_run[m]
+            if pd.isna(prev_val):
+                comparison = "No run"
+            else:
+                if m in IN_DE_METRICS:
+                    if abs(val-prev_val) < 0.001:
+                        comparison = "Same"
+                    elif val > prev_val:
+                        comparison = "Increased"
+                    else:
+                        comparison = "Decreased"
+                else:
+                    rule = METRIC_RULES.get(m, "higher")
+                    if abs(val - prev_val) < 0.001:
+                        comparison = "Same"
+                    elif (rule == "lower" and val < prev_val) or (rule == "higher" and val > prev_val):
+                        comparison = "Improved"
+                    else:
+                        comparison = "Worse"
+        temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} | {comparison} |\n"
     temp_body += "\n"
 
 summary_line = f"**Summary:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same, {summary_counts['Increased']} Increased, {summary_counts['Decreased']} Decreased\n\n"
 full_md = md_header + summary_line + temp_body
 
-g = Github(GITHUB_TOKEN)
-repo = g.get_repo(GITHUB_REPOSITORY)
-pr_number = None
-
-if "pull_request" in event:
-    pr_number = event["pull_request"]["number"]
-elif "ref" in event and event["ref"].startswith("refs/heads/"):
-    branch = event["ref"].split("/")[-1]
-    prs = repo.get_pulls(state="open", head=f"{repo.owner.login}:{branch}")
-    pr_number = prs[0].number if prs.totalCount > 0 else None
-
 if pr_number:
-    pr = repo.get_pull(pr_number)
     pr.create_issue_comment(full_md)
