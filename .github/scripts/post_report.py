@@ -7,12 +7,10 @@ GITHUB_REPOSITORY = os.environ["GITHUB_REPOSITORY"]
 GITHUB_EVENT_PATH = os.environ.get("GITHUB_EVENT_PATH")
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 
-LOG_DIR = "src/tools/logs/runs"
+LOG_DIR = "tools/logs/runs"
 
 EXEMPT_KEYS = [
-    "temperature_level", "voltage_level", "lidar_front_avg", "lidar_front_min",
-    "lidar_left_avg", "lidar_left_min", "lidar_right_avg", "lidar_right_min",
-    "wall_distance_avg", "wall_angle_avg"
+    "temperature_level", "voltage_level", "lidar_front_avg","wall_distance_avg"
 ]
 
 METRIC_RULES = {"delivery_time": "lower", "battery_used": "lower"}
