@@ -58,6 +58,9 @@ else:
     report_date = day_runs.iloc[0]["date"]
     is_fallback = True
 
+# Only take the most recent run
+most_recent_run = day_runs.sort_values("run", ascending=False).iloc[0]
+
 last_run_filename = None
 repo = Github(GITHUB_TOKEN).get_repo(GITHUB_REPOSITORY)
 pr_number = event.get("pull_request", {}).get("number")
@@ -76,70 +79,68 @@ if is_fallback:
 
 summary_counts = {"Improved": 0, "Worse": 0, "Same": 0, "Increased": 0, "Decreased": 0}
 temp_body = f"## Robot Metrics Report: {report_date}\n\n"
+temp_body += f"### Run: {most_recent_run['run']}\n"
 
-for _, run in day_runs.iterrows():
-    temp_body += f"### Run: {run['run']}\n"
-    if last_run_filename:
-        temp_body += "| Metric | Value | Average | Status | Comparing to 'commit code' |\n"
-        temp_body += "|--------|-------|--------|--------|----------------------------|\n"
-    else:
-        temp_body += "| Metric | Value | Average | Status |\n"
-        temp_body += "|--------|-------|--------|--------|\n"
+if last_run_filename:
+    temp_body += "| Metric | Value | Average | Status | Comparison To Previous Commit Run |\n"
+    temp_body += "|--------|-------|--------|--------|----------------------------|\n"
+else:
+    temp_body += "| Metric | Value | Average | Status |\n"
+    temp_body += "|--------|-------|--------|--------|\n"
 
-    compare_run = None
-    if last_run_filename and run["run"] != last_run_filename:
-        previous_runs = df[df["run"] != run["run"]].sort_values("date", ascending=False)
-        compare_run = previous_runs.iloc[0] if not previous_runs.empty else None
+compare_run = None
+if last_run_filename and most_recent_run["run"] != last_run_filename:
+    previous_runs = df[df["run"] != most_recent_run["run"]].sort_values("date", ascending=False)
+    compare_run = previous_runs.iloc[0] if not previous_runs.empty else None
 
-    for m in metrics:
-        val = run[m]
-        if pd.isna(val):
-            continue
-        avg_val = avg[m]
-        if m in IN_DE_METRICS:
-            if abs(val-avg_val) < 0.001:
-                status = "Same"
-            elif val > avg_val:
-                status = "Increased"
-            else:
-                status = "Decreased"
+for m in metrics:
+    val = most_recent_run[m]
+    if pd.isna(val):
+        continue
+    avg_val = avg[m]
+    if m in IN_DE_METRICS:
+        if abs(val-avg_val) < 0.001:
+            status = "Same"
+        elif val > avg_val:
+            status = "Increased"
         else:
-            rule = METRIC_RULES.get(m, "higher")
-            if abs(val - avg_val) < 0.001:
-                status = "Same"
-            elif (rule == "lower" and val < avg_val) or (rule == "higher" and val > avg_val):
-                status = "Improved"
-            else:
-                status = "Worse"
-        summary_counts[status] = summary_counts.get(status, 0) + 1
+            status = "Decreased"
+    else:
+        rule = METRIC_RULES.get(m, "higher")
+        if abs(val - avg_val) < 0.001:
+            status = "Same"
+        elif (rule == "lower" and val < avg_val) or (rule == "higher" and val > avg_val):
+            status = "Improved"
+        else:
+            status = "Worse"
+    summary_counts[status] = summary_counts.get(status, 0) + 1
 
-        if last_run_filename:
-            if compare_run is None or pd.isna(compare_run.get(m)):
+    if last_run_filename:
+        if compare_run is None or pd.isna(compare_run.get(m)):
+            comparison = "No run"
+        else:
+            prev_val = compare_run[m]
+            if pd.isna(prev_val):
                 comparison = "No run"
             else:
-                prev_val = compare_run[m]
-                if pd.isna(prev_val):
-                    comparison = "No run"
-                else:
-                    if m in IN_DE_METRICS:
-                        if abs(val-prev_val) < 0.001:
-                            comparison = "Same"
-                        elif val > prev_val:
-                            comparison = "Increased"
-                        else:
-                            comparison = "Decreased"
+                if m in IN_DE_METRICS:
+                    if abs(val-prev_val) < 0.001:
+                        comparison = "Same"
+                    elif val > prev_val:
+                        comparison = "Increased"
                     else:
-                        rule = METRIC_RULES.get(m, "higher")
-                        if abs(val - prev_val) < 0.001:
-                            comparison = "Same"
-                        elif (rule == "lower" and val < prev_val) or (rule == "higher" and val > prev_val):
-                            comparison = "Improved"
-                        else:
-                            comparison = "Worse"
-            temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} | {comparison} |\n"
-        else:
-            temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
-    temp_body += "\n"
+                        comparison = "Decreased"
+                else:
+                    rule = METRIC_RULES.get(m, "higher")
+                    if abs(val - prev_val) < 0.001:
+                        comparison = "Same"
+                    elif (rule == "lower" and val < prev_val) or (rule == "higher" and val > prev_val):
+                        comparison = "Improved"
+                    else:
+                        comparison = "Worse"
+        temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} | {comparison} |\n"
+    else:
+        temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
 
 summary_line = f"**Summary:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same, {summary_counts['Increased']} Increased, {summary_counts['Decreased']} Decreased\n\n"
 full_md = md_header + summary_line + temp_body
