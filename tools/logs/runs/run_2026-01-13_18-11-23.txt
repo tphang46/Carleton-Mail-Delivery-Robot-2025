@@ -1,9 +1,0 @@
-battery_start=None
-battery_end=0.0
-battery_used=None
-delivery_time=1.01
-wall_follow_time=N/A
-voltage_level=0.0
-temperature_level=0.0
-trip_start_time=2026-01-13 18:11:22.972543
-trip_end_time=2026-01-13 18:11:23.987192

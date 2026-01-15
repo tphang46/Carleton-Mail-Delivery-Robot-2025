@@ -48,7 +48,7 @@ setup(
             'action_translator = control.action_translator:main',
 
             # Tools / Utilities
-            'logger = tools.logger:main',
+            'dashboard_logger = tools.dashboard_logger:main',
             'csv_parser = tools.csv_parser:main',
             'nav_parser = tools.nav_parser:main',
             'map = tools.map:main',
