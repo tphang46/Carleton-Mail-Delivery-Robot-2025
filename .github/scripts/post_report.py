@@ -6,13 +6,8 @@ from github import Github
 GITHUB_REPOSITORY = os.environ["GITHUB_REPOSITORY"]
 GITHUB_EVENT_PATH = os.environ.get("GITHUB_EVENT_PATH")
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
-
 LOG_DIR = "tools/logs/runs"
-
-EXEMPT_KEYS = [
-    "temperature_level", "voltage_level", "lidar_front_avg","wall_distance_avg"
-]
-
+EXEMPT_KEYS = ["temperature_level", "voltage_level", "lidar_front_avg","wall_distance_avg"]
 METRIC_RULES = {"delivery_time": "lower", "battery_used": "lower"}
 
 runs = []
@@ -36,8 +31,8 @@ if not runs:
     exit(0)
 
 df = pd.DataFrame(runs)
-metrics = [c for c in df.columns if
-           c not in EXEMPT_KEYS + ["run", "trip_start_time", "trip_end_time", "battery_start", "battery_end", "date"]]
+metrics = [c for c in df.columns if c not in EXEMPT_KEYS + ["run", "trip_start_time", "trip_end_time", "battery_start", "battery_end", "date"]]
+avg = df[metrics].mean(numeric_only=True)
 
 with open(GITHUB_EVENT_PATH) as f:
     event = json.load(f)
@@ -57,8 +52,6 @@ else:
     report_date = day_runs.iloc[0]["date"]
     is_fallback = True
 
-avg = df[metrics].mean()
-
 md_header = ""
 if is_fallback:
     md_header += "**NO TEST RUNS WERE RUN TODAY. DISPLAYING MOST RECENT DATA BELOW.**\n\n---\n\n"
@@ -74,20 +67,17 @@ for _, run in day_runs.iterrows():
         val = run[m]
         avg_val = avg[m]
         if not isinstance(val, (int, float)): continue
-
         rule = METRIC_RULES.get(m, "higher")
         if rule == "higher":
             status = "Improved" if val > avg_val else "Worse" if val < avg_val else "Same"
         else:
             status = "Improved" if val < avg_val else "Worse" if val > avg_val else "Same"
-
         summary_counts[status] += 1
         temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
     temp_body += "\n"
 
 summary_line = f"**Summary for {report_date}:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same\n\n"
 full_md = md_header + summary_line + temp_body
-
 g = Github(GITHUB_TOKEN)
 repo = g.get_repo(GITHUB_REPOSITORY)
 
@@ -104,7 +94,6 @@ if pr_number:
     marker = ""
     existing_comments = pr.get_issue_comments()
     metrics_comment = next((c for c in existing_comments if marker in c.body), None)
-
     md_with_marker = f"{marker}\n\n{full_md}"
     if metrics_comment:
         metrics_comment.edit(md_with_marker)
