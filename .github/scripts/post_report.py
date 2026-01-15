@@ -7,8 +7,8 @@ GITHUB_REPOSITORY = os.environ["GITHUB_REPOSITORY"]
 GITHUB_EVENT_PATH = os.environ.get("GITHUB_EVENT_PATH")
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 LOG_DIR = "tools/logs/runs"
-EXEMPT_KEYS = ["temperature_level", "voltage_level", "lidar_front_avg","wall_distance_avg"]
-METRIC_RULES = {"delivery_time": "lower", "battery_used": "lower"}
+METADATA_KEYS = ["run", "date", "trip_start_time", "trip_end_time", "docked"]
+METRIC_RULES = {"delivery_time": "lower", "battery_used": "lower", "wall_follow_time": "lower"}
 
 runs = []
 for file in sorted(os.listdir(LOG_DIR)):
@@ -17,11 +17,15 @@ for file in sorted(os.listdir(LOG_DIR)):
             data = {}
             for line in f:
                 if "=" in line:
-                    k, v = line.strip().split("=")
+                    k, v = line.strip().split("=", 1)
+                    k_s, v_s = k.strip(), v.strip()
                     try:
-                        data[k.strip()] = float(v.strip())
+                        if v_s.lower() == "none" or v_s == "N/A":
+                            data[k_s] = None
+                        else:
+                            data[k_s] = float(v_s)
                     except ValueError:
-                        data[k.strip()] = v.strip()
+                        data[k_s] = v_s
             data["run"] = file
             parts = file.split("_")
             data["date"] = parts[1] if len(parts) > 1 else "unknown"
@@ -31,8 +35,9 @@ if not runs:
     exit(0)
 
 df = pd.DataFrame(runs)
-metrics = [c for c in df.columns if c not in EXEMPT_KEYS + ["run", "trip_start_time", "trip_end_time", "battery_start", "battery_end", "date"]]
-avg = df[metrics].mean(numeric_only=True)
+numeric_cols = df.select_dtypes(include=['number']).columns
+metrics = [c for c in numeric_cols if c not in METADATA_KEYS]
+avg = df[metrics].mean()
 
 with open(GITHUB_EVENT_PATH) as f:
     event = json.load(f)
@@ -43,21 +48,18 @@ if "pull_request" in event:
 elif "commits" in event:
     target_date = event["commits"][-1]["timestamp"][:10].replace("-", "")
 
-is_fallback = False
 if target_date in df["date"].values:
     day_runs = df[df["date"] == target_date].copy()
     report_date = target_date
+    is_fallback = False
 else:
     day_runs = pd.DataFrame([df.iloc[-1]])
     report_date = day_runs.iloc[0]["date"]
     is_fallback = True
 
-md_header = ""
-if is_fallback:
-    md_header += "**NO TEST RUNS WERE RUN TODAY. DISPLAYING MOST RECENT DATA BELOW.**\n\n---\n\n"
-
+md_header = "**NO TEST RUNS TODAY. SHOWING LATEST DATA.**\n\n" if is_fallback else ""
 summary_counts = {"Improved": 0, "Worse": 0, "Same": 0}
-temp_body = f"## Robot Metrics Report - Run Date: {report_date}\n\n"
+temp_body = f"## Robot Metrics Report: {report_date}\n\n"
 
 for _, run in day_runs.iterrows():
     temp_body += f"### Run: {run['run']}\n"
@@ -65,22 +67,23 @@ for _, run in day_runs.iterrows():
     temp_body += "|--------|-------|--------|--------|\n"
     for m in metrics:
         val = run[m]
+        if pd.isna(val): continue
         avg_val = avg[m]
-        if not isinstance(val, (int, float)): continue
         rule = METRIC_RULES.get(m, "higher")
-        if rule == "higher":
-            status = "Improved" if val > avg_val else "Worse" if val < avg_val else "Same"
+        if abs(val - avg_val) < 0.001:
+            status = "Same"
+        elif (rule == "lower" and val < avg_val) or (rule == "higher" and val > avg_val):
+            status = "Improved"
         else:
-            status = "Improved" if val < avg_val else "Worse" if val > avg_val else "Same"
+            status = "Worse"
         summary_counts[status] += 1
         temp_body += f"| {m} | {val:.2f} | {avg_val:.2f} | {status} |\n"
     temp_body += "\n"
 
-summary_line = f"**Summary for {report_date}:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same\n\n"
+summary_line = f"**Summary:** {summary_counts['Improved']} Improved, {summary_counts['Worse']} Worse, {summary_counts['Same']} Same\n\n"
 full_md = md_header + summary_line + temp_body
 g = Github(GITHUB_TOKEN)
 repo = g.get_repo(GITHUB_REPOSITORY)
-
 pr_number = None
 if "pull_request" in event:
     pr_number = event["pull_request"]["number"]
@@ -94,8 +97,7 @@ if pr_number:
     marker = ""
     existing_comments = pr.get_issue_comments()
     metrics_comment = next((c for c in existing_comments if marker in c.body), None)
-    md_with_marker = f"{marker}\n\n{full_md}"
     if metrics_comment:
-        metrics_comment.edit(md_with_marker)
+        metrics_comment.edit(f"{marker}\n{full_md}")
     else:
-        pr.create_issue_comment(md_with_marker)
+        pr.create_issue_comment(f"{marker}\n{full_md}")
