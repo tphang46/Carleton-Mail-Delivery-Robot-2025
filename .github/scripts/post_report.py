@@ -81,7 +81,7 @@ temp_body = f"## Robot Metrics Report: {report_date}\n\n"
 temp_body += f"### Run: {most_recent_run['run']}\n"
 
 if last_run_filename:
-    temp_body += "| Metric | Value | Average | Status | Comparison To Previous Commit Run |\n"
+    temp_body += "| Metric | Value | Average | Overall Status | Comparison To Previous Commit Run |\n"
     temp_body += "|--------|-------|--------|--------|----------------------------|\n"
 else:
     temp_body += "| Metric | Value | Average | Status |\n"
