@@ -45,7 +45,7 @@ class BatteryMetric(Metric):
         return {
             "battery_start": round(self.start_level, 2) if self.start_level else 0.0,
             "battery_end": round(self.end_level, 2) if self.end_level else 0.0,
-            "battery_used": round(self.used, 2) if self.used else 0.0,
+            "battery_used": round(self.used, 2) if self.used is not None else 0.0,
             "voltage_level": round(self.voltage, 2) if self.voltage else 0.0,
             "temperature_level": round(self.temperature, 2) if self.temperature else 0.0
         }
