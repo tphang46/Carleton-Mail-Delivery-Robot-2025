@@ -81,14 +81,14 @@ temp_body = f"## Robot Metrics Report: {report_date}\n\n"
 temp_body += f"### Run: {most_recent_run['run']}\n"
 
 if last_run_filename:
-    temp_body += "| Metric | Value | Average | Overall Status | Comparison To Previous Commit Run |\n"
+    temp_body += "| Metric | Value | Average | Status | Comparison To Previous Commit Run |\n"
     temp_body += "|--------|-------|--------|--------|----------------------------|\n"
 else:
     temp_body += "| Metric | Value | Average | Status |\n"
     temp_body += "|--------|-------|--------|--------|\n"
 
 compare_run = None
-if last_run_filename and last_run_filename in df["run"].values:
+if last_run_filename and last_run_filename in df["run"].values and most_recent_run["run"] != last_run_filename:
     compare_run = df[df["run"] == last_run_filename].iloc[0]
 
 for m in metrics:
