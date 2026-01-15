@@ -5,7 +5,7 @@ import re
 from github import Github
 
 GITHUB_REPOSITORY = os.environ["GITHUB_REPOSITORY"]
-GITHUB_EVENT_PATH = os.environ.get(GITHUB_EVENT_PATH)
+GITHUB_EVENT_PATH = os.environ.get("GITHUB_EVENT_PATH")
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 LOG_DIR = "tools/logs/runs"
 METADATA_KEYS = ["run", "date", "trip_start_time", "trip_end_time", "docked"]
