@@ -57,7 +57,7 @@ else:
     report_date = day_runs.iloc[0]["date"]
     is_fallback = True
 
-md_header = "**NO TEST RUNS TODAY. SHOWING LATEST DATA.**\n\n" if is_fallback else ""
+md_header = "**NO TEST RUNS TODAY. SHOWING LATEST RUN DATA.**\n\n" if is_fallback else ""
 summary_counts = {"Improved": 0, "Worse": 0, "Same": 0}
 temp_body = f"## Robot Metrics Report: {report_date}\n\n"
 
