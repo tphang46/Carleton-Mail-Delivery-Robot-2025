@@ -9,7 +9,7 @@ GITHUB_EVENT_PATH = os.environ.get("GITHUB_EVENT_PATH")
 GITHUB_TOKEN = os.environ["GITHUB_TOKEN"]
 LOG_DIR = "tools/logs/runs"
 METADATA_KEYS = ["run", "date", "trip_start_time", "trip_end_time", "docked"]
-METRIC_RULES = {"delivery_time": "lower", "battery_used": "lower", "wall_follow_time": "lower"}
+METRIC_RULES = {"delivery_time": "lower", "battery_used": "lower", "wall_follow_time": "higher"}
 EXCLUDE_METRICS = ["battery_start", "battery_end", "voltage_level", "temperature_level"]
 IN_DE_METRICS = ["lidar_front_avg","wall_distance_avg"]
 
@@ -58,7 +58,6 @@ else:
     report_date = day_runs.iloc[0]["date"]
     is_fallback = True
 
-# Only take the most recent run
 most_recent_run = day_runs.sort_values("run", ascending=False).iloc[0]
 
 last_run_filename = None
@@ -89,9 +88,8 @@ else:
     temp_body += "|--------|-------|--------|--------|\n"
 
 compare_run = None
-if last_run_filename and most_recent_run["run"] != last_run_filename:
-    previous_runs = df[df["run"] != most_recent_run["run"]].sort_values("date", ascending=False)
-    compare_run = previous_runs.iloc[0] if not previous_runs.empty else None
+if last_run_filename and last_run_filename in df["run"].values:
+    compare_run = df[df["run"] == last_run_filename].iloc[0]
 
 for m in metrics:
     val = most_recent_run[m]
@@ -113,7 +111,7 @@ for m in metrics:
             status = "Improved"
         else:
             status = "Worse"
-    summary_counts[status] = summary_counts.get(status, 0) + 1
+    summary_counts[status] += 1
 
     if last_run_filename:
         if compare_run is None or pd.isna(compare_run.get(m)):
