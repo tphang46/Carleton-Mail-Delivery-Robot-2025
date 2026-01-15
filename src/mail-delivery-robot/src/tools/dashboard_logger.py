@@ -179,7 +179,7 @@ def main(args=None):
     except KeyboardInterrupt:
         node.end_trip()
     node.destroy_node()
-    rclpy.shutdown()
+    rclpy.shAutdown()
 
 if __name__ == "__main__":
     main()

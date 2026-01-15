@@ -67,13 +67,14 @@
 const OWNER = "tphang46";
 const REPO = "Carleton-Mail-Delivery-Robot-2025";
 const BRANCH = "robotDashboard";
+const LOG_DIR = "tools/logs/runs";
 const IGNORE_KEYS = ["voltage_level", "temperature_level", "battery_start", "battery_end"];
 const metricRules = { "delivery_time": "lower", "battery_used": "lower" };
 let allRunsData = [], metricsKeys = [], lidarKeys = [], allFoundKeys = [];
 const colors = ['#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'];
 
 async function fetchRunFiles() {
-    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/src/tools/logs/runs?ref=${BRANCH}`);
+    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${LOG_DIR}?ref=${BRANCH}`);
     const files = await res.json();
     return Array.isArray(files) ? files.filter(f => f.name.endsWith(".txt")) : [];
 }
