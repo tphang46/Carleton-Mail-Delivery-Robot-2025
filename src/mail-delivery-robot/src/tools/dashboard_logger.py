@@ -83,13 +83,32 @@ class DeliveryTimeMetric(Metric):
             "trip_end_time": self.end_timestamp
         }
 
-class Dock(Metric):
+
+class DockSuccessMetric(Metric):
     topic_name = '/dock_status'
     topic_type = DockStatus
-    listen_qos = 10
-    def __init__(self): self.docked = False
-    def update(self, msg: DockStatus): self.docked = msg.is_docked
-    def serialize(self): return {"docked": self.docked}
+    listen_qos = QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, history=HistoryPolicy.KEEP_LAST, depth=10)
+
+    def __init__(self):
+        self.dock_command_received = False
+        self.is_docked = False
+        self.success = False
+
+    def update(self, msg: DockStatus):
+        self.is_docked = msg.is_docked
+        if self.dock_command_received and self.is_docked:
+            self.success = True
+
+    def on_navigation_msg(self, msg: String):
+        if msg.data == 'DOCK':
+            self.dock_command_received = True
+
+    def serialize(self):
+        return {
+            "dock_attempted": self.dock_command_received,
+            "dock_final_status": self.is_docked,
+            "dock_success": self.success
+        }
 
 class LidarDistanceMetric(Metric):
     topic_name = "/scan"
@@ -118,6 +137,27 @@ class LidarDistanceMetric(Metric):
         avg_w = round(mean(self.wall_distances), 2) if self.wall_distances else 0.0
         return {"lidar_front_avg": avg_f, "wall_distance_avg": avg_w}
 
+
+class LidarAIFallbackMetric(Metric):
+    def __init__(self, fallback_log_path):
+        self.fallback_log_path = fallback_log_path
+        self.fallback_count = 0
+
+    def end(self):
+        if not os.path.exists(self.fallback_log_path):
+            return
+
+        with open(self.fallback_log_path, "r") as f:
+            self.fallback_count = sum(
+                1 for line in f if "TIMEOUT" in line
+            )
+
+    def serialize(self):
+        return {
+            "ai_fallback_count": self.fallback_count
+        }
+
+
 class FileLogger:
     def __init__(self, log_dir):
         self.log_dir = log_dir
@@ -145,12 +185,14 @@ class RobotGeneralLogger(Node):
         self.declare_parameter('log_dir', './tools/logs')
         log_dir = os.path.abspath(self.get_parameter('log_dir').value)
         self.logger = FileLogger(log_dir)
+        fallback_log_path = os.path.join(log_dir, "ai_fallback_log.txt")
         self.metrics = [
             BatteryMetric(),
             WallFollowMetric(self.logger.wall_log_path),
             DeliveryTimeMetric(),
             LidarDistanceMetric(),
-            Dock()
+            DockSuccessMetric(),
+            LidarAIFallbackMetric(fallback_log_path),
         ]
         for m in self.metrics:
             m.start()
@@ -158,6 +200,12 @@ class RobotGeneralLogger(Node):
                 self.create_subscription(m.topic_type, m.topic_name,
                     lambda msg, metric=m: metric.update(msg), m.listen_qos)
         self.should_shutdown = False
+        self.create_subscription(
+            String,
+            'navigation',
+            self.dock_metric.on_navigation_msg,
+            10)
+
     def end_trip(self):
         data = {}
         for m in self.metrics:
