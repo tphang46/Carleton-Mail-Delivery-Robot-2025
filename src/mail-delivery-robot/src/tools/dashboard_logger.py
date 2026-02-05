@@ -220,7 +220,7 @@ def main(args=None):
     try:
         while rclpy.ok():
             rclpy.spin_once(node, timeout_sec=0.1)
-            docked = any(isinstance(m, Dock) and m.docked for m in node.metrics)
+            docked = any(isinstance(m, DockSuccessMetric) and m.is_docked for m in node.metrics)
             if docked or node.should_shutdown:
                 node.end_trip()
                 break
