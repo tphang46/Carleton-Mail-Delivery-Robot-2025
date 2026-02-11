@@ -73,7 +73,6 @@ class TravelLayer(Node):
         Reads and parses information about nearby walls.
         Expected format from lidar sensor: "feedback:angle:right:left:front"
         '''
-        self.get_logger().info(f"Lidar Data Received: {data.data}")
         try:
             parts = data.data.split(":")            
             if len(parts) != 5:
@@ -137,7 +136,6 @@ class TravelLayer(Node):
             return None
 
         # Use the lidar "feedback" and "angle" fields.
-        self.get_logger().info(f"Lidar Feedback: {self.latest_lidar['feedback']}, Lidar Angle: {self.latest_lidar['angle']}")
         cur_distance = self.latest_lidar["feedback"]
         cur_angle = self.latest_lidar["angle"]
 

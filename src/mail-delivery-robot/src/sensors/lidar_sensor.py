@@ -65,7 +65,7 @@ class LidarSensor(Node):
         min_distance = self.config["LARGE_DEFAULT_DISTANCE"]
 
         for i in range(count):
-            degree = math.degrees(scan.angle_min + scan.angle_increment * i)
+            degree = (math.degrees(scan.angle_min + scan.angle_increment * i) + 180) % 360
             #self.get_logger().info(str(degree) + "  " + str(scan.ranges[i]))
             curDir = scan.ranges[i]
             if curDir == math.inf:

@@ -105,13 +105,20 @@ class DeliveryTimeMetric(Metric):
 class Dock(Metric):
     topic_name = '/dock_status'
     topic_type = DockStatus
-    listen_qos = 10
+    listen_qos = QoSProfile(
+        reliability=ReliabilityPolicy.BEST_EFFORT,
+        history=HistoryPolicy.KEEP_LAST,
+        depth=10
+    )
 
-    def __init__(self): self.docked = False
+    def __init__(self):
+        self.docked = False
 
-    def update(self, msg: DockStatus): self.docked = msg.is_docked
+    def update(self, msg: DockStatus):
+        self.docked = msg.is_docked
 
-    def serialize(self): return {"docked": self.docked}
+    def serialize(self):
+        return {"docked": self.docked}
 
 
 class LidarDistanceMetric(Metric):

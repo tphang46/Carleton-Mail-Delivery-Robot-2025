@@ -51,6 +51,8 @@ class NavigationUnit_AI(Node):
         self.no_msg = String()
         self.no_msg.data = 'NONE'
     
+        self.is_querying = False
+
     def destinations_callback(self, data):
         #works
         '''
@@ -95,32 +97,48 @@ class NavigationUnit_AI(Node):
         self.prev_beacon = self.current_beacon
 
     def update_navigation(self):
-        '''
-        The timer callback. Sends updates to /navigation when necessary.
-        '''
-        #wait for things to be initialized
-        #this is broken
-        self.get_logger().info(f"Current Direction: {self.direction}, Can Send: {self.can_send_direction}")
+        if self.is_querying:
+            self.navigation_publisher.publish(self.no_msg)
+            self.get_logger().info("Holding robot stopped (AI querying)")
+            return
+
         if self.direction is not None and self.can_send_direction:
-            #don't send the message more than once
             self.can_send_direction = False
 
+            self.is_querying = True
+
+            # Immediately stop robot
+            self.navigation_publisher.publish(self.no_msg)
+            print("[NAV] STOP issued, querying AI")
+
             try:
+                ai_decision = self.query_ollama(
+                    self.current_beacon,
+                    self.current_destination
+                )
 
-                ai_decision = self.query_ollama(self.current_beacon, self.current_destination)
-                self.get_logger().info(f"AI Decision: {ai_decision}")
-
-                if ai_decision in ['NAV_LEFT', 'NAV_RIGHT', 'NAV_PASS', 'NAV_U-TURN', 'NAV_DOCK']:
+                if ai_decision in [
+                    'NAV_LEFT',
+                    'NAV_RIGHT',
+                    'NAV_PASS',
+                    'NAV_U-TURN',
+                    'NAV_DOCK'
+                ]:
                     self.direction = ai_decision
-                    #return
-
                 else:
-                    self.get_logger().info("Ollama returned invalid direction, falling back to map-based navigation.")
+                    self.get_logger().info(
+                        "Invalid AI decision, using map-based direction"
+                    )
 
             except Exception as e:
-                self.get_logger().warn(f"Ollama query failed: {e}. Falling back to map-based navigation.")
+                self.get_logger().warn(
+                    f"Ollama query failed: {e}"
+                )
 
-            #translate from old to new naming convention
+            finally:
+                self.is_querying = False
+                print("[NAV] AI finished, sending movement command")
+
             match self.direction:
                 case 'NAV_LEFT':
                     self.navigation_publisher.publish(self.left_msg)
@@ -133,9 +151,9 @@ class NavigationUnit_AI(Node):
                 case 'NAV_DOCK':
                     self.navigation_publisher.publish(self.dock_msg)
                 case _:
-                    #error
                     self.navigation_publisher.publish(self.no_msg)
-                    
+
+                        
     def query_ollama(self, current_beacon: str, destination: str):
         graph = build_nav_graph(self)
         result = graph.invoke({

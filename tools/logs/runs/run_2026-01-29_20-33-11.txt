@@ -1,0 +1,12 @@
+battery_start=15.0
+battery_end=14.0
+battery_used=1.0
+voltage_level=13.68
+temperature_level=32.75
+wall_follow_time=N/A
+delivery_time=69.56
+trip_start_time=2026-01-29 20:32:01.875049
+trip_end_time=2026-01-29 20:33:11.434425
+lidar_front_avg=2.05
+wall_distance_avg=1.23
+docked=False

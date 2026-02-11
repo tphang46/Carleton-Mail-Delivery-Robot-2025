@@ -40,4 +40,3 @@ def loadMap():
     Load the map from MAP_FILE.
     '''
     return parseCSVFile(MAP_FILE)
-
