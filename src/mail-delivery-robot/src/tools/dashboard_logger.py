@@ -2,11 +2,13 @@ import os
 import time
 import re
 from datetime import datetime
+from typing import Any
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 from sensor_msgs.msg import BatteryState
 from irobot_create_msgs.msg import DockStatus
+from std_msgs.msg import String
 import math
 from statistics import mean
 from sensor_msgs.msg import LaserScan
@@ -83,7 +85,6 @@ class DeliveryTimeMetric(Metric):
             "trip_end_time": self.end_timestamp
         }
 
-
 class DockSuccessMetric(Metric):
     topic_name = '/dock_status'
     topic_type = DockStatus
@@ -137,7 +138,6 @@ class LidarDistanceMetric(Metric):
         avg_w = round(mean(self.wall_distances), 2) if self.wall_distances else 0.0
         return {"lidar_front_avg": avg_f, "wall_distance_avg": avg_w}
 
-
 class LidarAIFallbackMetric(Metric):
     def __init__(self, fallback_log_path):
         self.fallback_log_path = fallback_log_path
@@ -157,6 +157,31 @@ class LidarAIFallbackMetric(Metric):
             "ai_fallback_count": self.fallback_count
         }
 
+def make_llm_response_time_metric(ai_node: Any) -> Metric:
+    class LLMResponseTimeMetric(Metric):
+        def __init__(self, node_ref: Any):
+            self.ai_node = node_ref
+            self.samples = []
+
+        def end(self):
+            if hasattr(self.ai_node, "get_llm_response_latencies"):
+                latencies = self.ai_node.get_llm_response_latencies()
+            else:
+                latencies = getattr(self.ai_node, "llm_response_latencies", [])
+            self.samples = [float(x) for x in latencies if isinstance(x, (int, float))]
+
+        def serialize(self):
+            node_name = self.ai_node.get_name() if hasattr(self.ai_node, "get_name") else "ai_node"
+            key_prefix = re.sub(r"[^a-zA-Z0-9_]+", "_", str(node_name)).strip("_").lower() or "ai_node"
+            avg_latency = round(mean(self.samples), 3) if self.samples else 0.0
+            max_latency = round(max(self.samples), 3) if self.samples else 0.0
+            return {
+                f"{key_prefix}_llm_response_avg_s": avg_latency,
+                f"{key_prefix}_llm_response_max_s": max_latency,
+                f"{key_prefix}_llm_response_count": len(self.samples),
+            }
+
+    return LLMResponseTimeMetric(ai_node)
 
 class FileLogger:
     def __init__(self, log_dir):
@@ -180,7 +205,7 @@ class FileLogger:
         open(self.wall_log_path, 'w').close()
 
 class RobotGeneralLogger(Node):
-    def __init__(self):
+    def __init__(self, ai_nodes=None):
         super().__init__('dashboard_logger')
         self.declare_parameter('log_dir', './tools/logs')
         log_dir = os.path.abspath(self.get_parameter('log_dir').value)
@@ -194,16 +219,20 @@ class RobotGeneralLogger(Node):
             DockSuccessMetric(),
             LidarAIFallbackMetric(fallback_log_path),
         ]
+        if ai_nodes:
+            for ai_node in ai_nodes:
+                self.metrics.append(make_llm_response_time_metric(ai_node))
         for m in self.metrics:
             m.start()
             if m.topic_name:
                 self.create_subscription(m.topic_type, m.topic_name,
                     lambda msg, metric=m: metric.update(msg), m.listen_qos)
         self.should_shutdown = False
+        self.dock_metric = next((m for m in self.metrics if isinstance(m, DockSuccessMetric)), None)
         self.create_subscription(
             String,
             'navigation',
-            self.dock_metric.on_navigation_msg,
+            self.dock_metric.on_navigation_msg if self.dock_metric else (lambda msg: None),
             10)
 
     def end_trip(self):
@@ -227,7 +256,7 @@ def main(args=None):
     except KeyboardInterrupt:
         node.end_trip()
     node.destroy_node()
-    rclpy.shAutdown()
+    rclpy.shutdown()
 
 if __name__ == "__main__":
     main()

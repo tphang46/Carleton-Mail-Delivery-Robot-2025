@@ -1,6 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from std_msgs.msg import String
+import time
 from tools.nav_parser import loadConnections
 from tools.map import Map
 from tools.ai_decision_graph import build_nav_graph
@@ -37,6 +38,7 @@ class NavigationUnit_AI(Node):
         self.prev_beacon = None
         self.direction = None
         self.can_send_direction = False
+        self.llm_response_latencies = []
 
         self.left_msg = String()
         self.left_msg.data = 'LEFT_TURN'
@@ -137,14 +139,20 @@ class NavigationUnit_AI(Node):
                     self.navigation_publisher.publish(self.no_msg)
                     
     def query_ollama(self, current_beacon: str, destination: str):
+        start = time.perf_counter()
         graph = build_nav_graph(self)
         result = graph.invoke({
             "current_beacon": current_beacon,
             "destination": destination
         })
+        elapsed = time.perf_counter() - start
+        self.llm_response_latencies.append(elapsed)
         decision = result["direction"]
-        self.get_logger().info(f"Ollama decision: {decision}")
+        self.get_logger().info(f"Ollama decision: {decision} (latency={elapsed:.3f}s)")
         return decision
+
+    def get_llm_response_latencies(self):
+        return list(self.llm_response_latencies)
 
 def main():
     rclpy.init()
