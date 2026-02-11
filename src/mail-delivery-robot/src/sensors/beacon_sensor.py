@@ -62,14 +62,9 @@ class BeaconSensor(Node):
 
         # Perform scan
         devices = self.scanner.scan(self.config["BEACON_SCAN_DURATION"])
-        #self.get_logger().info(f"Devices found this scan: {len(devices)}")
 
         beaconData = String()
         self.scan_counter += 1
-
-        # Log all nearby BLE devices (optional but useful)
-        # for dev in devices:
-        #   self.get_logger().info(f"BLE device detected: {dev.addr} RSSI={dev.rssi}")
 
         # Check if any device matches a known beacon
         for dev in devices:
@@ -77,9 +72,6 @@ class BeaconSensor(Node):
                 if beacon_mac == dev.addr:
 
                     beacon_name = self.beacons[beacon_mac]
-                    #self.get_logger().info(
-                        #f"[MATCH] Beacon detected: {beacon_name} ({beacon_mac}), RSSI={dev.rssi}"
-                    #)
 
                     beacon_rssi = abs(int(dev.rssi))
 
@@ -90,7 +82,6 @@ class BeaconSensor(Node):
                             self.scan[beacon_name] = []
 
                         self.scan[beacon_name].append(beacon_rssi)
-
                     break
 
         # After enough scans, pick the best beacon
@@ -99,17 +90,17 @@ class BeaconSensor(Node):
             best_rssi = 100
 
             for beacon_name, rssi_list in self.scan.items():
-                if len(rssi_list) < 2:
-                    continue
+                self.get_logger().info(
+                    f"[SCAN RESULT] Beacon: {beacon_name}, RSSI readings: {rssi_list}"
+                )
 
-                # Only consider if signal is improving (getting closer)
-                if rssi_list[-1] > rssi_list[-2]:
-                    continue
+                # Use the most recent RSSI reading
+                last_rssi = rssi_list[-1]
 
                 # Lower RSSI → stronger signal
-                if rssi_list[-1] < best_rssi:
+                if last_rssi < best_rssi:
                     best_beacon = beacon_name
-                    best_rssi = rssi_list[-1]
+                    best_rssi = last_rssi
 
             # Publish and log result
             if best_beacon != "":

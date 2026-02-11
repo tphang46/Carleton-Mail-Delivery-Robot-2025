@@ -2,11 +2,13 @@ import os
 import time
 import re
 from datetime import datetime
+from typing import Any
 import rclpy
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 from sensor_msgs.msg import BatteryState
 from irobot_create_msgs.msg import DockStatus
+from std_msgs.msg import String
 import math
 from statistics import mean
 from sensor_msgs.msg import LaserScan
@@ -83,13 +85,31 @@ class DeliveryTimeMetric(Metric):
             "trip_end_time": self.end_timestamp
         }
 
-class Dock(Metric):
+class DockSuccessMetric(Metric):
     topic_name = '/dock_status'
     topic_type = DockStatus
-    listen_qos = 10
-    def __init__(self): self.docked = False
-    def update(self, msg: DockStatus): self.docked = msg.is_docked
-    def serialize(self): return {"docked": self.docked}
+    listen_qos = QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, history=HistoryPolicy.KEEP_LAST, depth=10)
+
+    def __init__(self):
+        self.dock_command_received = False
+        self.is_docked = False
+        self.success = False
+
+    def update(self, msg: DockStatus):
+        self.is_docked = msg.is_docked
+        if self.dock_command_received and self.is_docked:
+            self.success = True
+
+    def on_navigation_msg(self, msg: String):
+        if msg.data == 'DOCK':
+            self.dock_command_received = True
+
+    def serialize(self):
+        return {
+            "dock_attempted": self.dock_command_received,
+            "dock_final_status": self.is_docked,
+            "dock_success": self.success
+        }
 
 class LidarDistanceMetric(Metric):
     topic_name = "/scan"
@@ -118,6 +138,51 @@ class LidarDistanceMetric(Metric):
         avg_w = round(mean(self.wall_distances), 2) if self.wall_distances else 0.0
         return {"lidar_front_avg": avg_f, "wall_distance_avg": avg_w}
 
+class LidarAIFallbackMetric(Metric):
+    def __init__(self, fallback_log_path):
+        self.fallback_log_path = fallback_log_path
+        self.fallback_count = 0
+
+    def end(self):
+        if not os.path.exists(self.fallback_log_path):
+            return
+
+        with open(self.fallback_log_path, "r") as f:
+            self.fallback_count = sum(
+                1 for line in f if "TIMEOUT" in line
+            )
+
+    def serialize(self):
+        return {
+            "ai_fallback_count": self.fallback_count
+        }
+
+def make_llm_response_time_metric(ai_node: Any) -> Metric:
+    class LLMResponseTimeMetric(Metric):
+        def __init__(self, node_ref: Any):
+            self.ai_node = node_ref
+            self.samples = []
+
+        def end(self):
+            if hasattr(self.ai_node, "get_llm_response_latencies"):
+                latencies = self.ai_node.get_llm_response_latencies()
+            else:
+                latencies = getattr(self.ai_node, "llm_response_latencies", [])
+            self.samples = [float(x) for x in latencies if isinstance(x, (int, float))]
+
+        def serialize(self):
+            node_name = self.ai_node.get_name() if hasattr(self.ai_node, "get_name") else "ai_node"
+            key_prefix = re.sub(r"[^a-zA-Z0-9_]+", "_", str(node_name)).strip("_").lower() or "ai_node"
+            avg_latency = round(mean(self.samples), 3) if self.samples else 0.0
+            max_latency = round(max(self.samples), 3) if self.samples else 0.0
+            return {
+                f"{key_prefix}_llm_response_avg_s": avg_latency,
+                f"{key_prefix}_llm_response_max_s": max_latency,
+                f"{key_prefix}_llm_response_count": len(self.samples),
+            }
+
+    return LLMResponseTimeMetric(ai_node)
+
 class FileLogger:
     def __init__(self, log_dir):
         self.log_dir = log_dir
@@ -140,24 +205,36 @@ class FileLogger:
         open(self.wall_log_path, 'w').close()
 
 class RobotGeneralLogger(Node):
-    def __init__(self):
+    def __init__(self, ai_nodes=None):
         super().__init__('dashboard_logger')
         self.declare_parameter('log_dir', './tools/logs')
         log_dir = os.path.abspath(self.get_parameter('log_dir').value)
         self.logger = FileLogger(log_dir)
+        fallback_log_path = os.path.join(log_dir, "ai_fallback_log.txt")
         self.metrics = [
             BatteryMetric(),
             WallFollowMetric(self.logger.wall_log_path),
             DeliveryTimeMetric(),
             LidarDistanceMetric(),
-            Dock()
+            DockSuccessMetric(),
+            LidarAIFallbackMetric(fallback_log_path),
         ]
+        if ai_nodes:
+            for ai_node in ai_nodes:
+                self.metrics.append(make_llm_response_time_metric(ai_node))
         for m in self.metrics:
             m.start()
             if m.topic_name:
                 self.create_subscription(m.topic_type, m.topic_name,
                     lambda msg, metric=m: metric.update(msg), m.listen_qos)
         self.should_shutdown = False
+        self.dock_metric = next((m for m in self.metrics if isinstance(m, DockSuccessMetric)), None)
+        self.create_subscription(
+            String,
+            'navigation',
+            self.dock_metric.on_navigation_msg if self.dock_metric else (lambda msg: None),
+            10)
+
     def end_trip(self):
         data = {}
         for m in self.metrics:
@@ -172,14 +249,14 @@ def main(args=None):
     try:
         while rclpy.ok():
             rclpy.spin_once(node, timeout_sec=0.1)
-            docked = any(isinstance(m, Dock) and m.docked for m in node.metrics)
+            docked = any(isinstance(m, DockSuccessMetric) and m.is_docked for m in node.metrics)
             if docked or node.should_shutdown:
                 node.end_trip()
                 break
     except KeyboardInterrupt:
         node.end_trip()
     node.destroy_node()
-    rclpy.shAutdown()
+    rclpy.shutdown()
 
 if __name__ == "__main__":
     main()
