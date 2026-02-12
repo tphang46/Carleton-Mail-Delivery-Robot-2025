@@ -9,6 +9,7 @@ def generate_launch_description():
     enable_metrics = LaunchConfiguration('enable_metrics')
     use_ai_lidar = LaunchConfiguration('use_ai_lidar')
     use_ai_navigation = LaunchConfiguration('use_ai_navigation')
+    use_ai_avoidance = LaunchConfiguration('use_ai_avoidance')
 
     nodes = [
         Node(package='mail-delivery-robot', executable='captain', name='captain'),
@@ -53,12 +54,25 @@ def generate_launch_description():
             name='navigation_unit_AI',
             condition=IfCondition(use_ai_navigation)
         ),
+
+        # Avoidance nodes - standard vs AI
+        Node(
+            package='mail-delivery-robot',
+            executable='avoidance_layer',
+            name='avoidance_layer',
+            condition=UnlessCondition(use_ai_avoidance)
+        ),
+        Node(
+            package='mail-delivery-robot',
+            executable='avoidance_layer_AI',
+            name='avoidance_layer_AI',
+            condition=IfCondition(use_ai_avoidance)
+        ),
         
         # Common nodes (always run)
         Node(package='mail-delivery-robot', executable='bumper_sensor', name='bumper_sensor'),
         Node(package='mail-delivery-robot', executable='beacon_sensor', name='beacon_sensor'),
         Node(package='mail-delivery-robot', executable='intersection_detection_unit', name='intersection_detection_unit'),
-        Node(package='mail-delivery-robot', executable='avoidance_layer', name='avoidance_layer'),
         Node(package='mail-delivery-robot', executable='docking_layer', name='docking_layer'),
         Node(package='mail-delivery-robot', executable='turning_layer', name='turning_layer'),
         Node(package='mail-delivery-robot', executable='travel_layer', name='travel_layer'),
@@ -89,6 +103,11 @@ def generate_launch_description():
             'enable_metrics',
             default_value='false',
             description='Enable the metric analyzer node'
+        ),
+        DeclareLaunchArgument(
+            'use_ai_avoidance',
+            default_value='false',
+            description='Use AI version of avoidance_layer'
         ),
         *nodes
     ])
