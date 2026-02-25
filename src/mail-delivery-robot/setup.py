@@ -31,6 +31,7 @@ setup(
             'navigation_unit = sensors.navigation_unit:main',
             'navigation_unit_AI = sensors.navigation_unit_AI:main',
             'intersection_detection_unit = sensors.intersection_detection_unit:main',
+            'intersection_detection_unit_AI = sensors.intersection_detection_unit_AI:main',
             'battery_monitor = sensors.battery_monitor:main',
 
             # Layer nodes
